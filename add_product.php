@@ -15,12 +15,18 @@ if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk"
 
 if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION["user_stock"] == 2)) {
 
+    if($_SESSION["user_stock"] == 1){
+        $stock_pd = "stock_it.php";
+    }else{
+        $stock_pd = "stock_hr.php";
+    }
+
     //เรียกใช้ฟังชันดึงประเภทสินค้า
     $result_type = selectType($conn);
 
     //เรียกใช้ฟังชันดึงสถานะสินค้า
     $result_status = selectStatus($conn);
-    $productlist = 1;
+    $productlist = 0;
 
     $types = [];
     while ($type = $result_type->fetch_assoc()) {
@@ -60,55 +66,55 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <div class="col-md-6">
                                         <label>ชื่อสินค้า: </label>
                                         <div class="form-group">
-                                            <input type="text" id="prod_name" placeholder="กรุณากรอกชื่อสินค้า" class="form-control">
-                                            <div class="invalid-feedback" id="nameFeedback"></div>
+                                            <input type="text" id="prod_name_0" placeholder="กรุณากรอกชื่อสินค้า" class="form-control">
+                                            <div class="invalid-feedback" id="nameFeedback_0"></div>
                                         </div>
                                         <label>จำนวนสินค้า: </label>
                                         <div class="form-group">
-                                            <input type="number" id="prod_amount" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้า" class="form-control">
+                                            <input type="number" id="prod_amount_0" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้า" class="form-control">
                                             <div class="invalid-feedback" id="amountFeedback"></div>
                                         </div>
                                         <label>จำนวนสินค้าขั้นต่ำ: </label>
                                         <div class="form-group">
-                                            <input type="number" id="prod_amount_min" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้าขั้นต่ำ" class="form-control">
-                                            <div class="invalid-feedback" id="amountMinFeedback"></div>
+                                            <input type="number" id="prod_amount_min_0" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้าขั้นต่ำ" class="form-control">
+                                            <div class="invalid-feedback" id="amountMinFeedback_0"></div>
                                         </div>
                                         <label>ราคา(บาท): </label>
                                         <div class="form-group">
-                                            <input type="number" id="prod_price" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกราคา" class="form-control">
-                                            <div class="invalid-feedback" id="priceFeedback"></div>
+                                            <input type="number" id="prod_price_0" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกราคา" class="form-control">
+                                            <div class="invalid-feedback" id="priceFeedback_0"></div>
                                         </div>
                                         <label>หน่วย: </label>
                                         <div class="form-group">
-                                            <input type="text" id="prod_unit" placeholder="กรุณากรอกหน่วยสินค้า" class="form-control">
-                                            <div class="invalid-feedback" id="unitFeedback"></div>
+                                            <input type="text" id="prod_unit_0" placeholder="กรุณากรอกหน่วยสินค้า" class="form-control">
+                                            <div class="invalid-feedback" id="unitFeedback_0"></div>
                                         </div>
                                         <label>ประเภท: </label>
                                         <div class="form-group">
-                                            <select class="form-select" id="prod_type">
+                                            <select class="form-select" id="prod_type_0">
                                                 <option value="" selected>กรุณาเลือกประเภทสินค้า</option>
                                                 <?php foreach ($types as $type) : ?>
                                                     <option value="<?php echo $type['prod_type_id']; ?>"><?php echo $type['prod_type_desc']; ?></option>
                                                 <?php endforeach ?>
                                             </select>
-                                            <div class="invalid-feedback" id="typeFeedback"></div>
+                                            <div class="invalid-feedback" id="typeFeedback_0"></div>
                                         </div>
                                         <label>สถานะ: </label>
                                         <div class="form-group">
-                                            <select class="form-select" id="prod_status">
+                                            <select class="form-select" id="prod_status_0">
                                                 <option value="" selected>กรุณาเลือกสถานะสินค้า</option>
                                                 <?php foreach ($statuses as $status): ?>
                                                     <option value="<?php echo $status['prod_status']; ?>"><?php echo $status['prod_status_desc']; ?></option>
                                                 <?php endforeach ?>
                                             </select>
-                                            <div class="invalid-feedback" id="statusFeedback"></div>
+                                            <div class="invalid-feedback" id="statusFeedback_0"></div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="formFile0" class="form-label"> รูปสินค้า </label>
-                                            <input class="form-control" type="file" id="formFile" accept="image/jpeg, image/jpg, image/png">
-                                            <img id="imagePreview" src="" alt="Image Preview" style="display:block; margin-top:10px; max-width: 100%; height: auto;">
+                                            <label for="formFile_0" class="form-label"> รูปสินค้า </label>
+                                            <input class="form-control" type="file" id="formFile_0" accept="image/jpeg, image/jpg, image/png">
+                                            <img id="imagePreview_0" src="" alt="Image Preview" style="display:block; margin-top:10px; max-width: 100%; height: auto;">
                                             <small class="form-text text-muted">Allowed file types: jpeg, jpg, png only / อัพโหลดรูปภาพได้แค่ jpeg, jpg, png เท่านั้น</small>
                                         </div>
                                         <!-- <button type="button" class="btn btn-danger btn-sm" onclick="removeProductForm('product-form-0')">ลบฟอร์ม</button> -->
@@ -124,7 +130,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 <div class="d-flex justify-content-between w-100">
                     <div>
                         <button type="button" class="btn btn-primary btn-fw" onclick="addProductForm()">เพิ่มฟอร์มสินค้า</button>
-                        <button type="submit" class="btn btn-success btn-fw">เพิ่ม excel.csv</button>
+                        <button type="submit" class="btn btn-secondary btn-fw">เพิ่ม excel.csv</button>
                     </div>
                     <div>
                         <button type="button" class="btn btn-danger btn-fw" onclick="window.location.href='stock_it.php';">ยกเลิก</button>
@@ -137,10 +143,95 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         <?php include_once 'footer.php'; ?>
 
         <script>
-            //แสดงรูปที่เลือก
-            document.getElementById('formFile').addEventListener('change', function(event) {
+            function addProductForm() {
+
+                const productFormsContainer = document.getElementById('productFormsContainer');
+                const formCount = document.querySelectorAll('.product-form-container').length;
+
+                const newForm = `
+                        <div class="product-form-container">
+                            <h5>product ${formCount}</h5>
+                            <div class="row product-form" id="product-form-${formCount}">
+                                <div class="col-md-6">
+                                    <label>ชื่อสินค้า: </label>
+                                    <div class="form-group">
+                                        <input type="text" id="prod_name_${formCount}" placeholder="กรุณากรอกชื่อสินค้า" class="form-control">
+                                        <div class="invalid-feedback" id="nameFeedback_${formCount}"></div>
+                                    </div>
+                                    <label>จำนวนสินค้า: </label>
+                                    <div class="form-group">
+                                        <input type="number" id="prod_amount_${formCount}" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้า" class="form-control">
+                                        <div class="invalid-feedback" id="amountFeedback_${formCount}"></div>
+                                    </div>
+                                    <label>จำนวนสินค้าขั้นต่ำ: </label>
+                                    <div class="form-group">
+                                        <input type="number" id="prod_amount_min_${formCount}" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้าขั้นต่ำ" class="form-control">
+                                        <div class="invalid-feedback" id="amountMinFeedback_${formCount}"></div>
+                                    </div>
+                                    <label>ราคา(บาท): </label>
+                                    <div class="form-group">
+                                        <input type="number" id="prod_price_${formCount}" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกราคา" class="form-control">
+                                        <div class="invalid-feedback" id="priceFeedback_${formCount}"></div>
+                                    </div>
+                                    <label>หน่วย: </label>
+                                    <div class="form-group">
+                                        <input type="text" id="prod_unit_${formCount}" placeholder="กรุณากรอกหน่วยสินค้า" class="form-control">
+                                        <div class="invalid-feedback" id="unitFeedback_${formCount}"></div>
+                                    </div>
+                                    <label>ประเภท: </label>
+                                    <div class="form-group">
+                                        <select class="form-select" id="prod_type_${formCount}">
+                                            <option value="" selected>กรุณาเลือกประเภทสินค้า</option>
+                                            ${types.map(type => `<option value="${type.prod_type_id}">${type.prod_type_desc}</option>`).join('')}
+                                        </select>
+                                        <div class="invalid-feedback" id="typeFeedback_${formCount}"></div>
+                                    </div>
+                                    <label>สถานะ: </label>
+                                    <div class="form-group">
+                                        <select class="form-select" id="prod_status_${formCount}">
+                                            <option value="" selected>กรุณาเลือกสถานะสินค้า</option>
+                                            ${statuses.map(status => `<option value="${status.prod_status}">${status.prod_status_desc}</option>`).join('')}
+                                        </select>
+                                        <div class="invalid-feedback" id="statusFeedback_${formCount}"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="formFile${formCount}" class="form-label"> รูปสินค้า </label>
+                                        <input class="form-control" type="file" id="formFile_${formCount}" accept="image/jpeg, image/jpg, image/png">
+                                        <img id="imagePreview_${formCount}" src="" alt="Image Preview" style="display:block; margin-top:10px; max-width: 100%; height: auto;">
+                                        <small class="form-text text-muted">Allowed file types: jpeg, jpg, png only / อัพโหลดรูปภาพได้แค่ jpeg, jpg, png เท่านั้น</small>
+                                    </div>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeProductForm('product-form-${formCount}')">ลบฟอร์ม</button>
+                                </div>
+                            </div>
+                            <hr> <!-- Add a horizontal line between product forms -->
+                        </div>
+                    `;
+
+                productFormsContainer.insertAdjacentHTML('beforeend', newForm);
+
+                // Add event listener to the new file input for image preview
+                document.getElementById(`formFile_${formCount}`).addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    const imagePreview = document.getElementById(`imagePreview_${formCount}`);
+
+                    if (file && (file.type === "image/jpeg" || file.type === "image/jpg" || file.type === "image/png")) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            imagePreview.src = e.target.result;
+                        }
+                        reader.readAsDataURL(file);
+                    } else {
+                        imagePreview.src = 'photo/no_img.jpg';
+                    }
+                });
+            }
+
+            // Handle image preview when a file is selected
+            document.getElementById('formFile_0').addEventListener('change', function(event) {
                 const file = event.target.files[0];
-                const imagePreview = document.getElementById('imagePreview');
+                const imagePreview = document.getElementById('imagePreview_0');
 
                 // Check if a file is selected and is an image
                 if (file && (file.type === "image/jpeg" || file.type === "image/jpg" || file.type === "image/png")) {
@@ -158,99 +249,124 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 }
             });
 
-            function addProductForm() {
 
+            function removeProductForm(formId) {
+                const formElement = document.getElementById(formId);
+                if (formElement) {
+                    formElement.closest('.product-form-container').remove();
+                }
             }
-
 
 
             function addProduct(event) {
                 event.preventDefault(); // Prevent the form from submitting
                 let isValid = true;
+
                 // Reset validation messages
                 $('.invalid-feedback').text('');
                 $('.form-control').removeClass('is-invalid');
 
-                if ($('#prod_name').val() == "") {
-                    $('#prod_name').addClass('is-invalid');
-                    $('#nameFeedback').text("Name is empty.");
-                    isValid = false;
-                }
-                if ($('#prod_amount').val() == "") {
-                    $('#prod_amount').addClass('is-invalid');
-                    $('#amountFeedback').text("Amount is empty.");
-                    isValid = false;
-                }
-                if ($('#prod_amount_min').val() == "") {
-                    $('#prod_amount_min').addClass('is-invalid');
-                    $('#amountMinFeedback').text("Amount Min is empty.");
-                    isValid = false;
-                }
-                if ($('#prod_price').val() == "") {
-                    $('#prod_price').addClass('is-invalid');
-                    $('#priceFeedback').text("Price is empty.");
-                    isValid = false;
-                }
-                if ($('#prod_unit').val() == "") {
-                    $('#prod_unit').addClass('is-invalid');
-                    $('#unitFeedback').text("Unit is empty.");
-                    isValid = false;
-                }
-                if ($('#prod_type').val() == "") {
-                    $('#prod_type').addClass('is-invalid');
-                    $('#typeFeedback').text("Type is empty.");
-                    isValid = false;
-                }
-                if ($('#prod_status').val() == "") {
-                    $('#prod_status').addClass('is-invalid');
-                    $('#statusFeedback').text("Status is empty.");
-                    isValid = false;
-                }
+                // Array to hold AJAX requests
+                let ajaxRequests = [];
 
+                // Loop through each product form
+                $('.product-form').each(function(index) {
+                    const prodName = $(this).find(`#prod_name_${index}`);
+                    const prodAmount = $(this).find(`#prod_amount_${index}`);
+                    const prodAmountMin = $(this).find(`#prod_amount_min_${index}`);
+                    const prodPrice = $(this).find(`#prod_price_${index}`);
+                    const prodUnit = $(this).find(`#prod_unit_${index}`);
+                    const prodType = $(this).find(`#prod_type_${index}`);
+                    const prodStatus = $(this).find(`#prod_status_${index}`);
+                    const formFile = $(this).find(`#formFile_${index}`);
 
-                if (isValid) {
-                    let formData = new FormData();
-                    formData.append('id', $('#prod_id').val());
-                    formData.append('img', $('#formFile')[0].files[0]);
-                    formData.append('name', $('#prod_name').val());
-                    formData.append('amount', $('#prod_amount').val());
-                    formData.append('amount_min', $('#prod_amount_min').val());
-                    formData.append('price', $('#prod_price').val());
-                    formData.append('unit', $('#prod_unit').val());
-                    formData.append('type', $('#prod_type').val());
-                    formData.append('status', $('#prod_status').val());
+                    // Perform validation checks
+                    if (prodName.val() == "") {
+                        prodName.addClass('is-invalid');
+                        $(this).find(`#nameFeedback_${index}`).text("Name is empty.");
+                        isValid = false;
+                    }
+                    if (prodAmount.val() == "") {
+                        prodAmount.addClass('is-invalid');
+                        $(this).find(`#amountFeedback_${index}`).text("Amount is empty.");
+                        isValid = false;
+                    }
+                    if (prodAmountMin.val() == "") {
+                        prodAmountMin.addClass('is-invalid');
+                        $(this).find(`#amountMinFeedback_${index}`).text("Amount Min is empty.");
+                        isValid = false;
+                    }
+                    if (prodPrice.val() == "") {
+                        prodPrice.addClass('is-invalid');
+                        $(this).find(`#priceFeedback_${index}`).text("Price is empty.");
+                        isValid = false;
+                    }
+                    if (prodUnit.val() == "") {
+                        prodUnit.addClass('is-invalid');
+                        $(this).find(`#unitFeedback_${index}`).text("Unit is empty.");
+                        isValid = false;
+                    }
+                    if (prodType.val() == "") {
+                        prodType.addClass('is-invalid');
+                        $(this).find(`#typeFeedback_${index}`).text("Type is empty.");
+                        isValid = false;
+                    }
+                    if (prodStatus.val() == "") {
+                        prodStatus.addClass('is-invalid');
+                        $(this).find(`#statusFeedback_${index}`).text("Status is empty.");
+                        isValid = false;
+                    }
 
-                    $.ajax({
-                        url: "/Final_Project/api/api_add_pd.php",
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        dataType: "json",
-                        success: function(result) {
-                            if (result.status === "successfully") {
-                                Swal.fire({
-                                    title: 'เพิ่มสินค้าสำเร็จ!',
-                                    icon: 'success'
-                                }).then(() => {
-                                    window.location.href = 'stock_it.php';
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: "เพิ่มสินค้าผิดพลาด!",
-                                    text: result.message,
-                                    icon: "error"
-                                });
-                            }
+                    if (isValid) {
+                        let formData = new FormData();
+                        formData.append('name', prodName.val());
+                        formData.append('amount', prodAmount.val());
+                        formData.append('amount_min', prodAmountMin.val());
+                        formData.append('price', prodPrice.val());
+                        formData.append('unit', prodUnit.val());
+                        formData.append('type', prodType.val());
+                        formData.append('status', prodStatus.val());
+
+                        // Check if a file was uploaded
+                        if (formFile[0] && formFile[0].files.length > 0) {
+                            formData.append('img', formFile[0].files[0]);
                         }
+
+                        // Store AJAX request promises
+                        ajaxRequests.push(
+                            $.ajax({
+                                url: "/Final_Project/api/api_add_pd_2.php",
+                                type: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                dataType: "json"
+                            })
+                        );
+                    } else {
+                        Swal.fire({
+                            title: "เพิ่มสินค้าผิดพลาด!",
+                            text: "โปรดตรวจสอบว่ามีข้อมูลใดไม่ถูกต้อง",
+                            icon: "error"
+                        });
+                    }
+                });
+
+                // Process all AJAX requests
+                $.when.apply($, ajaxRequests).done(function() {
+                    Swal.fire({
+                        title: 'เพิ่มสินค้าสำเร็จ!',
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.href = '<?php echo $stock_pd; ?>';
                     });
-                } else {
+                }).fail(function() {
                     Swal.fire({
                         title: "เพิ่มสินค้าผิดพลาด!",
-                        text: "โปรดตรวจสอบว่ามีข้อมูลใดไม่ถูกต้อง",
+                        text: "เกิดข้อผิดพลาดในการเพิ่มสินค้า",
                         icon: "error"
                     });
-                }
+                });
             }
         </script>
 

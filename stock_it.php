@@ -120,11 +120,18 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                             <span class="<?php echo $badge_class; ?>"><?php echo $row['prod_status_desc']; ?></span>
                                         </td>
                                         <td align="center">
-                                            <a href="add_cart.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-primary rounded-pill">เบิก</a>
 
-                                            <a href="edit_product.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-warning rounded-pill">แก้ไข</a>
+                                            <a href="add_cart.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-primary">
+                                            <span class="fas fa-shopping-cart"></span>
+                                            เบิก</a>
 
-                                            <button class="btn btn-danger rounded-pill" onclick="deleteProduct(<?php echo $row['prod_id']; ?>)">ลบ</button>
+                                            <a href="edit_product.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-warning">
+                                            <span class="fas fa-edit"></span>
+                                            แก้ไข</a>
+
+                                            <button class="btn btn-danger" onclick="deleteProduct(<?php echo $row['prod_id']; ?>)">
+                                            <span class="fas fa-trash-alt"></span>
+                                            ลบ</button>
                                         </td>
                                     </tr>
                                 <?php endwhile ?>
@@ -156,26 +163,31 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <div class="form-group">
                                         <input type="text" id="prod_name" placeholder="กรุณากรอกชื่อสินค้า"
                                             class="form-control">
+                                            <div class="invalid-feedback" id="nameFeedback"></div>
                                     </div>
                                     <label>จำนวนสินค้า: </label>
                                     <div class="form-group">
                                         <input type="number" id="prod_amount" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้า"
                                             class="form-control">
+                                            <div class="invalid-feedback" id="amountFeedback"></div>
                                     </div>
                                     <label>จำนวนสินค้าขั้นต่ำ: </label>
                                     <div class="form-group">
                                         <input type="number" id="prod_amount_min" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้าขั้นต่ำ"
                                             class="form-control">
+                                            <div class="invalid-feedback" id="amountMinFeedback"></div>
                                     </div>
                                     <label>ราคา(บาท): </label>
                                     <div class="form-group">
                                         <input type="number" id="prod_price" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้า"
                                             class="form-control">
+                                            <div class="invalid-feedback" id="priceFeedback"></div>
                                     </div>
                                     <label>หน่วย: </label>
                                     <div class="form-group">
                                         <input type="text" id="prod_unit" placeholder="กรุณากรอกหน่วยสินค้า"
                                             class="form-control">
+                                            <div class="invalid-feedback" id="unitFeedback"></div>
                                     </div>
                                     <label>ประเภท: </label>
                                     <div class="form-group">
@@ -187,6 +199,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                                 <option value="<?php echo $type['prod_type_id']; ?>"><?php echo $type['prod_type_desc']; ?></option>
                                             <?php endwhile ?>
                                         </select>
+                                        <div class="invalid-feedback" id="typeFeedback"></div>
                                     </div>
                                     <label>สถานะ: </label>
                                     <div class="form-group">
@@ -198,6 +211,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                                 <option value="<?php echo $status['prod_status']; ?>"><?php echo $status['prod_status_desc']; ?></option>
                                             <?php endwhile ?>
                                         </select>
+                                        <div class="invalid-feedback" id="statusFeedback"></div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

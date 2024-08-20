@@ -2,7 +2,7 @@
 include_once 'connect_db.php';
 
 //ฟังชันดึงข้อมูลของสินค้า
-function selectProduct($conn,$stock)
+function selectProduct($conn, $stock)
 {
     // SQL query to retrieve product data
     $sql = "SELECT 
