@@ -26,6 +26,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
     //เรียกใช้ฟังชันดึงสถานะสินค้า
     $result_status = selectStatus($conn);
 
+    //เรียกใช้ฟังชันดึงแผนก
+    $result_dept = selectDept($conn);
+
 
 ?>
     <!DOCTYPE html>
@@ -75,11 +78,16 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             <section class="section">
                 <div class="card">
                     <div class="card-header">
-                        <!-- Button trigger for login form modal -->
+                        <!-- Button trigger for Add Product form modal -->
                         <button type="button" class="btn btn-primary" data-bs-backdrop="false" data-bs-toggle="modal"
-                            data-bs-target="#inlineForm">
+                            data-bs-target="#modalAddProduct">
                             + เพิ่มสินค้าใหม่
                         </button>
+
+                        <a href="cart_it.php" class="btn btn-primary">
+                            <span class="fas fa-shopping-cart"></span>
+                            <span id="cart_count">0</span></a>
+
                     </div>
                     <div class="card-body">
                         <table class="table table-striped table-hover" id="table1">
@@ -88,12 +96,11 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <th style="text-align: center;">รหัสสินค้า</th>
                                     <th style="text-align: center;"> รูป </th>
                                     <th style="text-align: center;">ชื่อสินค้า</th>
+                                    <th style="text-align: center;">รายละเอียด</th>
                                     <th style="text-align: center;">จำนวน</th>
-                                    <th style="text-align: center;">จำนวนขั้นต่ำ</th>
                                     <th style="text-align: center;">ราคา(บาท)</th>
                                     <th style="text-align: center;">หน่วย</th>
                                     <th style="text-align: center;">ประเภท</th>
-                                    <th style="text-align: center;">สถานะ</th>
                                     <th style="text-align: center;">Action</th>
                                 </tr>
                             </thead>
@@ -102,36 +109,36 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <tr id="row_<?php echo $row['prod_id']; ?>">
                                         <td align="center"><?php echo $row['prod_id']; ?></td>
                                         <td align="center">
-                                            <img src="photo/<?php echo $row['prod_img']; ?>" alt="Product Image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10%;">
+                                            <img src="photo/<?php echo $row['prod_img']; ?>" alt="Product Image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10%;" onclick="expandImage('<?php echo $row['prod_img']; ?>')">
                                         </td>
                                         <td align="center"><?php echo $row['prod_name']; ?></td>
+                                        <td align="center"><?php echo $row['prod_detail']; ?></td>
                                         <td align="right" style="color: <?php echo ($row['prod_amount'] <= $row['prod_amount_min']) ? 'red' : ''; ?>;">
                                             <?php echo $row['prod_amount']; ?>
                                         </td>
-                                        <td align="right"><?php echo $row['prod_amount_min']; ?></td>
                                         <td align="right"><?php echo $row['prod_price']; ?></td>
                                         <td align="center"><?php echo $row['prod_unit']; ?></td>
                                         <td align="center"><?php echo $row['prod_type_desc']; ?></td>
                                         <td align="center">
                                             <?php
-                                            // Determine the badge class based on the status
-                                            $badge_class = ($row['prod_status_desc'] === 'กำลังใช้งาน') ? 'badge bg-success' : 'badge bg-danger';
+                                            // Determine if the button should be disabled
+                                            $button_class = ($row['prod_status_desc'] === 'เบิกสินค้าได้') ? 'btn btn-primary' : 'btn disabled btn-primary';
                                             ?>
-                                            <span class="<?php echo $badge_class; ?>"><?php echo $row['prod_status_desc']; ?></span>
-                                        </td>
-                                        <td align="center">
-
-                                            <a href="add_cart.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-primary">
-                                            <span class="fas fa-shopping-cart"></span>
-                                            เบิก</a>
+                                            <!-- Button trigger for Add Product To Cart form modal -->
+                                            <button type="button" class="<?php echo $button_class; ?>" data-bs-backdrop="false"
+                                                data-bs-toggle="modal" data-bs-target="#modalAddCart"
+                                                data-prod-id="<?php echo $row['prod_id']; ?>"
+                                                <?php echo ($row['prod_status_desc'] !== 'เบิกสินค้าได้') ? 'disabled' : ''; ?>>
+                                                <span class="fas fa-cart-plus"></span> เบิก
+                                            </button>
 
                                             <a href="edit_product.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-warning">
-                                            <span class="fas fa-edit"></span>
-                                            แก้ไข</a>
+                                                <span class="fas fa-edit"></span>
+                                                แก้ไข</a>
 
                                             <button class="btn btn-danger" onclick="deleteProduct(<?php echo $row['prod_id']; ?>)">
-                                            <span class="fas fa-trash-alt"></span>
-                                            ลบ</button>
+                                                <span class="fas fa-trash-alt"></span>
+                                                ลบ</button>
                                         </td>
                                     </tr>
                                 <?php endwhile ?>
@@ -142,8 +149,24 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             </section>
         </div>
 
+
+        <!-- ขยายรูปออกมาเป็น Modal -->
+        <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <img id="imageModalSrc" src="" class="img-fluid" alt="Expanded Image">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ขยายรูปออกมาเป็น Modal -->
+
         <!-- Add Product form Modal l -->
-        <div class="modal fade text-left" id="inlineForm" tabindex="-1"
+        <div class="modal fade text-left" id="modalAddProduct" tabindex="-1"
             role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
                 role="document">
@@ -163,31 +186,31 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <div class="form-group">
                                         <input type="text" id="prod_name" placeholder="กรุณากรอกชื่อสินค้า"
                                             class="form-control">
-                                            <div class="invalid-feedback" id="nameFeedback"></div>
+                                        <div class="invalid-feedback" id="nameFeedback"></div>
                                     </div>
                                     <label>จำนวนสินค้า: </label>
                                     <div class="form-group">
                                         <input type="number" id="prod_amount" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้า"
                                             class="form-control">
-                                            <div class="invalid-feedback" id="amountFeedback"></div>
+                                        <div class="invalid-feedback" id="amountFeedback"></div>
                                     </div>
                                     <label>จำนวนสินค้าขั้นต่ำ: </label>
                                     <div class="form-group">
                                         <input type="number" id="prod_amount_min" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้าขั้นต่ำ"
                                             class="form-control">
-                                            <div class="invalid-feedback" id="amountMinFeedback"></div>
+                                        <div class="invalid-feedback" id="amountMinFeedback"></div>
                                     </div>
                                     <label>ราคา(บาท): </label>
                                     <div class="form-group">
                                         <input type="number" id="prod_price" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้า"
                                             class="form-control">
-                                            <div class="invalid-feedback" id="priceFeedback"></div>
+                                        <div class="invalid-feedback" id="priceFeedback"></div>
                                     </div>
                                     <label>หน่วย: </label>
                                     <div class="form-group">
                                         <input type="text" id="prod_unit" placeholder="กรุณากรอกหน่วยสินค้า"
                                             class="form-control">
-                                            <div class="invalid-feedback" id="unitFeedback"></div>
+                                        <div class="invalid-feedback" id="unitFeedback"></div>
                                     </div>
                                     <label>ประเภท: </label>
                                     <div class="form-group">
@@ -237,7 +260,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     </button>
                                 </div>
                                 <div>
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                         <i class="bx bx-x d-block d-sm-none"></i>
                                         <span class="d-none d-sm-block">ยกเลิก</span>
                                     </button>
@@ -253,6 +276,83 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             </div>
         </div>
         <!-- Add Product form Modal -->
+
+
+        <!-- Add Cart form Modal -->
+        <div class="modal fade text-left" id="modalAddCart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <h4 class="modal-title white" id="myModalLabel33">เพิ่มสินค้าลงตะกร้า</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+
+                                    <!-- prod_id ที่จะส่งไปตะกร้า -->
+                                    <input hidden readonly id="cart_id" class="form-control" type="text">
+
+                                    <label>ชื่อสินค้า: </label>
+                                    <div class="form-group">
+                                        <input type="text" id="cart_name" class="form-control" placeholder="ชื่อสินค้า" readonly>
+                                    </div>
+                                    <label>จำนวนสินค้า: </label>
+                                    <div class="form-group">
+                                        <input type="number" id="cart_amount" min="1" oninput="validity.valid||(value='');"
+                                            placeholder="กรุณากรอกจำนวนสินค้า" class="form-control" required>
+                                        <div class="invalid-feedback" id="amountCartFeedback"></div>
+                                    </div>
+                                    <label>หน่วย: </label>
+                                    <div class="form-group">
+                                        <input type="text" id="cart_unit" class="form-control" placeholder="หน่วยสินค้า" readonly>
+                                    </div>
+                                    <label>รายละเอียด:  * พิมพ์ - ถ้าไม่ต้องการใส่รายละเอียด</label>
+                                    <div class="form-group">
+                                        <input type="text" id="cart_detail" class="form-control" placeholder="รายละเอียด">
+                                        <div class="invalid-feedback" id="detailFeedback"></div>
+                                    </div>
+                                    <label>แผนก: </label>
+                                    <div class="form-group">
+                                        <select class="form-select" id="cart_dept">
+                                            <option value="" selected>แผนกที่เบิก</option> <!-- Default option -->
+                                            <?php
+                                            while ($dept = $result_dept->fetch_assoc()) :
+                                            ?>
+                                                <option value="<?php echo $dept['dept_id']; ?>"><?php echo $dept['dept_name']; ?></option>
+                                            <?php endwhile ?>
+                                        </select>
+                                        <div class="invalid-feedback" id="deptFeedback"></div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6 text-center">
+                                    <div class="form-group">
+                                        <img id="cart_img" src="photo/no_img.jpg" alt="Product Image"
+                                            style="display:block; margin-top:10px; max-width: 100%; height: auto;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="bx bx-x d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">ยกเลิก</span>
+                            </button>
+                            <button type="button" class="btn btn-success ml-1" onclick="addCart()">
+                                <i class="bx bx-check d-block d-sm-none"></i>
+                                <span class="d-none d-sm-block">เพิ่มลงตะกร้า</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Add cart form Modal -->
 
 
 
@@ -332,7 +432,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             });
         }
 
-
+        //ฟังชันเพิ่มสินค้า
         function addProduct() {
             event.preventDefault();
             let isValid = true;
@@ -407,7 +507,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 title: 'เพิ่มสินค้าสำเร็จ!',
                                 icon: 'success'
                             }).then(() => {
-                                    window.location.reload();
+                                window.location.reload();
                             });
                         } else {
                             Swal.fire({
@@ -430,8 +530,120 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
             if (!fileUploaded && isValid) {
                 // Close the modal if no file was uploaded and the form is valid
-                $('#inlineForm').modal('hide');
+                $('#modalAddProduct').modal('hide');
             }
+        }
+
+        // ดึงข้อมูลเพื่อจะเพิ่มสินค้าลงตะกร้า 
+        // Event listener for the modal when it's triggered
+        $('#modalAddCart').on('show.bs.modal', function(event) {
+            // Get the button that triggered the modal
+            var button = $(event.relatedTarget);
+            // Extract the prod_id from the data-* attribute
+            var prod_id = button.data('prod-id');
+
+            // Make an AJAX request to fetch the product details using prod_id
+            $.ajax({
+                url: '/Final_Project/api/api_modal_cart.php', // The PHP file to handle the request
+                type: 'GET',
+                data: {
+                    prod_id: prod_id
+                },
+                success: function(response) {
+                    try {
+                        // Assuming the response is JSON data with product details
+                        var product = JSON.parse(response);
+
+                        // Populate the modal fields with the product details
+                        $('#cart_id').val(product.prod_id);
+                        $('#cart_name').val(product.prod_name);
+                        $('#cart_unit').val(product.prod_unit);
+
+                        // If the image is defined, set it, otherwise use a fallback
+                        if (product.prod_img && product.prod_img !== '') {
+                            $('#cart_img').attr('src', 'photo/' + product.prod_img);
+                        } else {
+                            $('#cart_img').attr('src', 'photo/no_img.jpg');
+                        }
+                    } catch (error) {
+                        console.error('Error parsing product details:', error);
+                    }
+                },
+                error: function() {
+                    console.error('Error loading product details');
+                }
+            });
+        });
+
+        //ฟังชันเอาสินค้าเข้าตะกร้า
+        function addCart() {
+            event.preventDefault();
+            let isValid = true;
+
+            // Reset validation messages
+            $('.invalid-feedback').text('');
+            $('.form-control').removeClass('is-invalid');
+
+            // Form validation checks
+            if ($('#cart_amount').val() == "") {
+                $('#cart_amount').addClass('is-invalid');
+                $('#amountCartFeedback').text("Amount is empty.");
+                isValid = false;
+            }
+            if ($('#cart_detail').val() == "") {
+                $('#cart_detail').addClass('is-invalid');
+                $('#detailFeedback').text("detail is empty.");
+                isValid = false;
+            }
+            if ($('#cart_dept').val() == "") {
+                $('#cart_dept').addClass('is-invalid');
+                $('#deptFeedback').text("department is empty.");
+                isValid = false;
+            }
+
+
+            if (isValid) {
+                let formData = new FormData();
+
+                formData.append('id', $('#cart_id').val());
+                formData.append('amount', $('#cart_amount').val());
+                formData.append('detail', $('#cart_detail').val());
+                formData.append('dept', $('#cart_dept').val());
+
+                $.ajax({
+                    url: "/Final_Project/api/api_add_cart.php",
+                    type: 'POST',
+                    dataType: "json",
+                    data: formData,
+                    processData: false, // Prevent jQuery from converting the FormData object into a query string
+                    contentType: false, // Prevent jQuery from overriding the content type
+                    success: function(result) {
+                        if (result.status === "successfully") {
+                            Swal.fire({
+                                title: 'เพิ่มสินค้าลงตะกร้าสำเร็จ!',
+                                icon: 'success'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "เพิ่มสินค้าลงตะกร้าผิดพลาด!",
+                                text: result.message,
+                                icon: "error"
+                            });
+                        }
+                    }
+                });
+            } else {
+                // Validation failed, show an error message and keep the modal open
+                Swal.fire({
+                    title: "เพิ่มสินค้าลงตะกร้าผิดพลาด!",
+                    text: "กรุณากรอกข้อมูลให้ครบถ้วน",
+                    icon: "error"
+                });
+                return; // Keep modal open if validation fails
+            }
+
         }
 
 
@@ -461,6 +673,14 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         // ไปหน้า add_product.php
         function redirectToAddProduct() {
             window.location.href = 'add_product.php';
+        }
+
+        //ขยายรูปออกมา
+        function expandImage(imageSrc) {
+            // Set the image source in the modal
+            $('#imageModalSrc').attr('src', 'photo/' + imageSrc);
+            // Show the modal
+            $('#imageModal').modal('show');
         }
     </script>
 

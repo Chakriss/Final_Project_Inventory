@@ -48,7 +48,11 @@ if($user_stock == 1){
                         </li>
 
                         <li class="sidebar-item">
-                            <a href= "<?php echo $stock ?>" class='sidebar-link'> <i class="bi bi-stack"></i> <span>Stock <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                            <a href= "<?php echo $stock ?>" class='sidebar-link'> <i class="bi bi-stack"></i> <span>สินค้า <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href= "#" class='sidebar-link'> <i class="bi bi-stack"></i> <span>สถานะของสินค้า <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
                         </li>
 
 

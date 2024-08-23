@@ -20,9 +20,9 @@ $data_json = array();
 if (isset($_POST['id'])) {
 
     // Check for duplicate product name
-    $duplicate_check_sql = "SELECT COUNT(*) FROM product WHERE prod_name = ? AND st_id = ?";
+    $duplicate_check_sql = "SELECT COUNT(*) FROM product WHERE prod_name = ? AND st_id = ? AND prod_id != ?";
     $duplicate_stmt = mysqli_prepare($conn, $duplicate_check_sql);
-    mysqli_stmt_bind_param($duplicate_stmt, "si", $name, $stock);
+    mysqli_stmt_bind_param($duplicate_stmt, "sii", $name, $stock, $id);
     mysqli_stmt_execute($duplicate_stmt);
     mysqli_stmt_bind_result($duplicate_stmt, $count);
     mysqli_stmt_fetch($duplicate_stmt);

@@ -130,7 +130,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 <div class="d-flex justify-content-between w-100">
                     <div>
                         <button type="button" class="btn btn-primary btn-fw" onclick="addProductForm()">เพิ่มฟอร์มสินค้า</button>
-                        <button type="submit" class="btn btn-secondary btn-fw">เพิ่ม excel.csv</button>
+                        <button type="submit" class="btn btn-info btn-fw">เพิ่ม excel.csv</button>
                     </div>
                     <div>
                         <button type="button" class="btn btn-danger btn-fw" onclick="window.location.href='stock_it.php';">ยกเลิก</button>

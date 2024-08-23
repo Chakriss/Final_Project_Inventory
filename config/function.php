@@ -12,7 +12,8 @@ function selectProduct($conn, $stock)
             product.prod_amount_min, 
             product.prod_price, 
             product.prod_unit,
-            product.prod_img, 
+            product.prod_img,
+            product.prod_detail,
             product_status.prod_status_desc, 
             product_type.prod_type_desc 
         FROM product
@@ -72,4 +73,15 @@ function selectStatus($conn)
     $stmt->execute();
     $result_status = $stmt->get_result();
     return $result_status;
+}
+
+//ฟังชันดึงข้อมูลแผนก
+function selectDept($conn)
+{
+    $sql_dept = "SELECT * FROM department";
+    $stmt = mysqli_prepare($conn, $sql_dept);
+    // Execute คำสั่ง SQL
+    $stmt->execute();
+    $result_dept = $stmt->get_result();
+    return $result_dept;
 }

@@ -133,7 +133,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
                 </div>
 
-                <button type="button" class="btn btn-danger btn-fw" onclick="window.location.href='stock_it.php';">ยกเลิก</button>
+                <button type="button" class="btn btn-secondary btn-fw" onclick="window.location.href='stock_it.php';">ยกเลิก</button>
                 <button type="submit" class="btn btn-success btn-fw" onclick="update_product()">อัพเดท</button>
 
             </section>

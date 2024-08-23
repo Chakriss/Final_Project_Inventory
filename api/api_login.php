@@ -26,6 +26,7 @@ if (isset($_POST['email']) && isset($_POST['password']) && isset($_POST['code'])
             $_SESSION["user_name"] = $row['us_name'];
             $_SESSION["user_level"] = $row['us_level'];
             $_SESSION["user_stock"] = $row['st_id'];
+            $_SESSION["user_id"] = $row['us_id'];
 
             if ($_SESSION["user_level"] == "Admin") {
                 $data_json = array("status" => "successfully", "level" => "admin_page.php");
