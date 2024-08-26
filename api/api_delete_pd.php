@@ -18,7 +18,7 @@ if ($row) {
             unlink($img_path);
         }
         
-        $data_json = array("status" => "ข้อมูลถูกลบเรียบร้อย", "color" => "success");
+        $data_json = array("status" => "The product has been successfully deleted.", "color" => "success");
     } else {
         $data_json = array("status" => "Delete Error", "color" => "error");
     }

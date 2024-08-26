@@ -22,7 +22,10 @@ if($user_stock == 1){
         display: none;
     }
 </style>
+
+
 </head>
+
 
 <body>
     <div id="app">
@@ -48,11 +51,11 @@ if($user_stock == 1){
                         </li>
 
                         <li class="sidebar-item">
-                            <a href= "<?php echo $stock ?>" class='sidebar-link'> <i class="bi bi-stack"></i> <span>สินค้า <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                            <a href= "<?php echo $stock ?>" class='sidebar-link'> <i class="bi bi-stack"></i> <span>Product <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
                         </li>
 
                         <li class="sidebar-item">
-                            <a href= "#" class='sidebar-link'> <i class="bi bi-stack"></i> <span>สถานะของสินค้า <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                            <a href= "product_status.php" class='sidebar-link'> <i class="bi bi-collection-fill"></i> <span>Product Status <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
                         </li>
 
 
@@ -65,6 +68,7 @@ if($user_stock == 1){
             </div>
         </div>
         <!-- End Sidebar -->
+
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {

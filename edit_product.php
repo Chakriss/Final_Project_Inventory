@@ -9,7 +9,7 @@ include_once 'navbar.php';
 
 if (empty($_GET["prod_id"])) {
     echo "<script type='text/javascript'>";
-    echo "alert('เกิดข้อผิดพลาด กรุณาเลือกสินค้าก่อน!!');";
+    echo "alert('An error occurred. Please select the product first!!');";
     echo "window.location = 'stock_it.php'; ";
     echo "</script>";
 }
@@ -40,7 +40,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             <div class="page-title">
                 <div class="row">
                     <div class="col-12 col-md-6 order-md-1 order-last">
-                        <h3>แก้ไขสินค้า</h3>
+                        <h3>Edit Product</h3>
                     </div>
                 </div>
             </div>
@@ -54,38 +54,41 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="basicInput">รหัสสินค้า</label>
+                                    <label for="basicInput">Product ID:</label>
                                     <input type="text" class="form-control" id="prod_id" value="<?php echo $row['prod_id']; ?>" readonly="readonly">
                                 </div>
                                 <div class="form-group">
-                                    <label for="basicInput">ชื่อสินค้า</label>
-                                    <input type="text" class="form-control" id="prod_name" value="<?php echo $row['prod_name']; ?>">
+                                    <label for="basicInput">Name:</label>
+                                    <input type="text" class="form-control" id="prod_name" value="<?php echo $row['prod_name']; ?>" placeholder="Please enter name / กรุณากรอกชื่อสินค้า">
                                     <div class="invalid-feedback" id="nameFeedback"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="basicInput">จำนวนสินค้า</label>
-                                    <input type="text" class="form-control" id="prod_amount" value="<?php echo $row['prod_amount']; ?>">
+                                    <label for="basicInput">Amount:</label>
+                                    <input type="text" class="form-control" id="prod_amount" value="<?php echo $row['prod_amount']; ?>" placeholder="Please enter amount / กรุณากรอกจำนวนสินค้า">
                                     <div class="invalid-feedback" id="amountFeedback"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="basicInput">จำนวนสินค้าขั้นต่ำ</label>
-                                    <input type="text" class="form-control" id="prod_amount_min" value="<?php echo $row['prod_amount_min']; ?>">
+                                    <label for="basicInput">Amount Min:</label>
+                                    <input type="text" class="form-control" id="prod_amount_min" value="<?php echo $row['prod_amount_min']; ?>" placeholder="Please enter amount min / กรุณากรอกจำนวนสินค้าขั้นต่ำ">
                                     <div class="invalid-feedback" id="amountMinFeedback"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="basicInput">ราคาสินค้า(บาทต่อหน่วย)</label>
-                                    <input type="text" class="form-control" id="prod_price" value="<?php echo $row['prod_price']; ?>">
+                                    <label for="basicInput">Price(Baht):</label>
+                                    <input type="text" class="form-control" id="prod_price" value="<?php echo $row['prod_price']; ?>" placeholder="Please enter price / กรุณากรอกราคา(บาท)">
                                     <div class="invalid-feedback" id="priceFeedback"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="basicInput">หน่วย</label>
-                                    <input type="text" class="form-control" id="prod_unit" value="<?php echo $row['prod_unit']; ?>">
+                                    <label for="basicInput">Unit:</label>
+                                    <input type="text" class="form-control" id="prod_unit" value="<?php echo $row['prod_unit']; ?>" placeholder="Please enter unit / กรุณากรอกหน่วยสินค้า">
                                     <div class="invalid-feedback" id="unitFeedback"></div>
                                 </div>
-
-
                                 <div class="form-group">
-                                    <label for="basicInput">ประเภทสินค้า</label>
+                                <label>Detail: <span class="required">* If there are no details, enter - / ไม่มีรายละเอียดใส่ -</span></label>
+                                    <textarea class="form-control" id="prod_detail" placeholder="Please enter detail / กรุณากรอกรายละเอียดสินค้า" rows="3"><?php echo $row['prod_detail']; ?></textarea>
+                                    <div class="invalid-feedback" id="detailFeedback"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="basicInput">Product Type:</label>
                                     <select class="choices form-select" id="prod_type">
                                         <?php
                                         $selected_type = $row['prod_type_id'];
@@ -100,7 +103,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
 
                                 <div class="form-group">
-                                    <label for="basicInput">สถานะสินค้า</label>
+                                    <label for="basicInput">Product Status:</label>
                                     <select class="choices form-select" id="prod_status">
                                         <?php
                                         $selected_status = $row['prod_status'];
@@ -118,7 +121,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             <div class="col-md-6">
 
                                 <div class="form-group">
-                                    <label for="formFile" class="form-label"> รูปสินค้า </label>
+                                    <label for="formFile" class="form-label"> Photo </label>
                                     <input class="form-control" type="file" id="formFile" accept="image/jpeg, image/jpg, image/png">
 
                                     <!-- Image preview -->
@@ -133,8 +136,8 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
                 </div>
 
-                <button type="button" class="btn btn-secondary btn-fw" onclick="window.location.href='stock_it.php';">ยกเลิก</button>
-                <button type="submit" class="btn btn-success btn-fw" onclick="update_product()">อัพเดท</button>
+                <button type="button" class="btn btn-secondary btn-fw" onclick="window.location.href='stock_it.php';">Cancle</button>
+                <button type="submit" class="btn btn-success btn-fw" onclick="update_product()">Update</button>
 
             </section>
 
@@ -179,6 +182,11 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     $('#unitFeedback').text("Unit is empty.");
                     isValid = false;
                 }
+                if ($('#prod_detail').val() == "") {
+                    $('#prod_detail').addClass('is-invalid');
+                    $('#detailFeedback').text("detail is empty.");
+                    isValid = false;
+                }
                 if ($('#prod_type').val() == "") {
                     $('#prod_type').addClass('is-invalid');
                     $('#typeFeedback').text("Type is empty.");
@@ -199,6 +207,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     formData.append('amount_min', $('#prod_amount_min').val());
                     formData.append('price', $('#prod_price').val());
                     formData.append('unit', $('#prod_unit').val());
+                    formData.append('detail', $('#prod_detail').val());
                     formData.append('type', $('#prod_type').val());
                     formData.append('status', $('#prod_status').val());
 
@@ -212,7 +221,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         success: function(result) {
                             if (result.status === "successfully") {
                                 Swal.fire({
-                                        title: 'แก้ไข สำเร็จ!',
+                                        title: 'Edited successfully!',
                                         icon: 'success'
                                     })
                                     .then((result) => {
@@ -220,7 +229,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     });
                             } else {
                                 Swal.fire({
-                                    title: "แก้ไข ผิดพลาด!",
+                                    title: "Edit Error!",
                                     text: result.message,
                                     icon: "error"
                                 });
@@ -229,14 +238,12 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     });
                 } else {
                     Swal.fire({
-                        title: "แก้ไขผิดพลาด!",
-                        text: "โปรดตรวจสอบว่ามีข้อมูลใดไม่ถูกต้อง",
+                        title: "Edit Error!",
+                        text: "Please check if any information is incorrect.",
                         icon: "error"
                     });
                 }
             }
-
-
 
 
 

@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-include_once 'config/connect_db.php';
+// include_once 'config/connect_db.php';
 include_once 'config/function.php';
 
 
@@ -31,6 +31,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
 
 ?>
+
     <!DOCTYPE html>
     <html lang="en">
 
@@ -54,6 +55,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
 
     </head>
+
 
     <?php
     // Check the user level and include relevant files
@@ -81,7 +83,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         <!-- Button trigger for Add Product form modal -->
                         <button type="button" class="btn btn-primary" data-bs-backdrop="false" data-bs-toggle="modal"
                             data-bs-target="#modalAddProduct">
-                            + เพิ่มสินค้าใหม่
+                            + New Product
                         </button>
 
                         <a href="cart_it.php" class="btn btn-primary">
@@ -93,14 +95,14 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         <table class="table table-striped table-hover" id="table1">
                             <thead>
                                 <tr>
-                                    <th style="text-align: center;">รหัสสินค้า</th>
-                                    <th style="text-align: center;"> รูป </th>
-                                    <th style="text-align: center;">ชื่อสินค้า</th>
-                                    <th style="text-align: center;">รายละเอียด</th>
-                                    <th style="text-align: center;">จำนวน</th>
-                                    <th style="text-align: center;">ราคา(บาท)</th>
-                                    <th style="text-align: center;">หน่วย</th>
-                                    <th style="text-align: center;">ประเภท</th>
+                                    <th style="text-align: center;">Product ID</th>
+                                    <th style="text-align: center;"> Photo </th>
+                                    <th style="text-align: center;">Name</th>
+                                    <th style="text-align: center;">Detail</th>
+                                    <th style="text-align: center;">Amount</th>
+                                    <th style="text-align: center;">Price(baht)</th>
+                                    <th style="text-align: center;">Unit</th>
+                                    <th style="text-align: center;">Type</th>
                                     <th style="text-align: center;">Action</th>
                                 </tr>
                             </thead>
@@ -122,23 +124,23 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                         <td align="center">
                                             <?php
                                             // Determine if the button should be disabled
-                                            $button_class = ($row['prod_status_desc'] === 'เบิกสินค้าได้') ? 'btn btn-primary' : 'btn disabled btn-primary';
+                                            $button_class = ($row['prod_status_desc'] === 'Active') ? 'btn btn-primary' : 'btn disabled btn-primary';
                                             ?>
                                             <!-- Button trigger for Add Product To Cart form modal -->
                                             <button type="button" class="<?php echo $button_class; ?>" data-bs-backdrop="false"
                                                 data-bs-toggle="modal" data-bs-target="#modalAddCart"
                                                 data-prod-id="<?php echo $row['prod_id']; ?>"
-                                                <?php echo ($row['prod_status_desc'] !== 'เบิกสินค้าได้') ? 'disabled' : ''; ?>>
-                                                <span class="fas fa-cart-plus"></span> เบิก
+                                                <?php echo ($row['prod_status_desc'] !== 'Active') ? 'disabled' : ''; ?>>
+                                                <span class="fas fa-cart-plus"></span> Cart
                                             </button>
 
                                             <a href="edit_product.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-warning">
                                                 <span class="fas fa-edit"></span>
-                                                แก้ไข</a>
+                                                Edit</a>
 
                                             <button class="btn btn-danger" onclick="deleteProduct(<?php echo $row['prod_id']; ?>)">
                                                 <span class="fas fa-trash-alt"></span>
-                                                ลบ</button>
+                                                Delete</button>
                                         </td>
                                     </tr>
                                 <?php endwhile ?>
@@ -158,7 +160,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         <img id="imageModalSrc" src="" class="img-fluid" alt="Expanded Image">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -172,7 +174,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 role="document">
                 <div class="modal-content">
                     <div class="modal-header bg-primary">
-                        <h4 class="modal-title white" id="myModalLabel33">เพิ่มสินค้าใหม่</h4>
+                        <h4 class="modal-title white" id="myModalLabel33">New Product</h4>
                         <button type="button" class="close" data-bs-dismiss="modal"
                             aria-label="Close">
                             <i data-feather="x"></i>
@@ -182,40 +184,40 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label>ชื่อสินค้า: </label>
+                                    <label>Name: </label>
                                     <div class="form-group">
-                                        <input type="text" id="prod_name" placeholder="กรุณากรอกชื่อสินค้า"
+                                        <input type="text" id="prod_name" placeholder="Enter Product Name"
                                             class="form-control">
                                         <div class="invalid-feedback" id="nameFeedback"></div>
                                     </div>
-                                    <label>จำนวนสินค้า: </label>
+                                    <label>Amount: </label>
                                     <div class="form-group">
-                                        <input type="number" id="prod_amount" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้า"
+                                        <input type="number" id="prod_amount" min="0" oninput="validity.valid||(value='');" placeholder="Enter Product Amount"
                                             class="form-control">
                                         <div class="invalid-feedback" id="amountFeedback"></div>
                                     </div>
-                                    <label>จำนวนสินค้าขั้นต่ำ: </label>
+                                    <label>Amount Minimum: </label>
                                     <div class="form-group">
-                                        <input type="number" id="prod_amount_min" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้าขั้นต่ำ"
+                                        <input type="number" id="prod_amount_min" min="0" oninput="validity.valid||(value='');" placeholder="Enter Product Amount Minimum"
                                             class="form-control">
                                         <div class="invalid-feedback" id="amountMinFeedback"></div>
                                     </div>
-                                    <label>ราคา(บาท): </label>
+                                    <label>Price(baht): </label>
                                     <div class="form-group">
-                                        <input type="number" id="prod_price" min="0" oninput="validity.valid||(value='');" placeholder="กรุณากรอกจำนวนสินค้า"
+                                        <input type="number" id="prod_price" min="0" oninput="validity.valid||(value='');" placeholder="Enter Product Price"
                                             class="form-control">
                                         <div class="invalid-feedback" id="priceFeedback"></div>
                                     </div>
-                                    <label>หน่วย: </label>
+                                    <label>Unit: </label>
                                     <div class="form-group">
-                                        <input type="text" id="prod_unit" placeholder="กรุณากรอกหน่วยสินค้า"
+                                        <input type="text" id="prod_unit" placeholder="Enter Product Unit"
                                             class="form-control">
                                         <div class="invalid-feedback" id="unitFeedback"></div>
                                     </div>
-                                    <label>ประเภท: </label>
+                                    <label>Product Type: </label>
                                     <div class="form-group">
                                         <select class="form-select" id="prod_type">
-                                            <option value="" selected>กรุณาเลือกประเภทสินค้า</option> <!-- Default option -->
+                                            <option value="" selected>Select Product Type</option> <!-- Default option -->
                                             <?php
                                             while ($type = $result_type->fetch_assoc()) :
                                             ?>
@@ -224,10 +226,10 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                         </select>
                                         <div class="invalid-feedback" id="typeFeedback"></div>
                                     </div>
-                                    <label>สถานะ: </label>
+                                    <label>Product Status: </label>
                                     <div class="form-group">
                                         <select class="form-select" id="prod_status">
-                                            <option value="" selected>กรุณาเลือกสถานะสินค้า</option> <!-- Default option -->
+                                            <option value="" selected>Select Product Status</option> <!-- Default option -->
                                             <?php
                                             while ($status = $result_status->fetch_assoc()) :
                                             ?>
@@ -238,9 +240,14 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     </div>
                                 </div>
                                 <div class="col-md-6">
+                                    <label>Detail: <span class="required">* If there are no details, enter - / ไม่มีรายละเอียดใส่ -</span></label>
+                                    <div class="form-group">
+                                        <textarea class="form-control" id="prod_detail" placeholder="Please enter detail / กรุณากรอกรายละเอียดสินค้า" rows="3"></textarea>
+                                        <div class="invalid-feedback" id="detailFeedback"></div>
+                                    </div>
 
                                     <div class="form-group">
-                                        <label for="formFile" class="form-label"> รูปสินค้า </label>
+                                        <label for="formFile" class="form-label"> Photo </label>
                                         <input class="form-control" type="file" id="formFile" accept="image/jpeg, image/jpg, image/png">
 
                                         <!-- Image preview -->
@@ -256,17 +263,17 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 <div>
                                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="redirectToAddProduct()">
                                         <i class="bx bx-x d-block d-sm-none"></i>
-                                        <span class="d-none d-sm-block">เพิ่มสินค้าหลายชิ้น</span>
+                                        <span class="d-none d-sm-block">Add multiple products</span>
                                     </button>
                                 </div>
                                 <div>
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                         <i class="bx bx-x d-block d-sm-none"></i>
-                                        <span class="d-none d-sm-block">ยกเลิก</span>
+                                        <span class="d-none d-sm-block">Cancle</span>
                                     </button>
                                     <button type="button" class="btn btn-success ml-1" onclick="addProduct()">
                                         <i class="bx bx-check d-block d-sm-none"></i>
-                                        <span class="d-none d-sm-block">เพิ่ม</span>
+                                        <span class="d-none d-sm-block">Add</span>
                                     </button>
                                 </div>
                             </div>
@@ -284,7 +291,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header bg-primary">
-                        <h4 class="modal-title white" id="myModalLabel33">เพิ่มสินค้าลงตะกร้า</h4>
+                        <h4 class="modal-title white" id="myModalLabel33">Add Product To Cart</h4>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <i data-feather="x"></i>
                         </button>
@@ -297,29 +304,29 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <!-- prod_id ที่จะส่งไปตะกร้า -->
                                     <input hidden readonly id="cart_id" class="form-control" type="text">
 
-                                    <label>ชื่อสินค้า: </label>
+                                    <label>Name: </label>
                                     <div class="form-group">
                                         <input type="text" id="cart_name" class="form-control" placeholder="ชื่อสินค้า" readonly>
                                     </div>
-                                    <label>จำนวนสินค้า: </label>
+                                    <label>Amount: </label>
                                     <div class="form-group">
                                         <input type="number" id="cart_amount" min="1" oninput="validity.valid||(value='');"
-                                            placeholder="กรุณากรอกจำนวนสินค้า" class="form-control" required>
+                                            placeholder="Enter Product Amount" class="form-control" required>
                                         <div class="invalid-feedback" id="amountCartFeedback"></div>
                                     </div>
-                                    <label>หน่วย: </label>
+                                    <label>Unit: </label>
                                     <div class="form-group">
                                         <input type="text" id="cart_unit" class="form-control" placeholder="หน่วยสินค้า" readonly>
                                     </div>
-                                    <label>รายละเอียด:  * พิมพ์ - ถ้าไม่ต้องการใส่รายละเอียด</label>
+                                    <label>Detail:<span class="required">* If there are no details, enter - / ไม่มีรายละเอียดใส่ -</span></label>
                                     <div class="form-group">
-                                        <input type="text" id="cart_detail" class="form-control" placeholder="รายละเอียด">
+                                        <input type="text" id="cart_detail" class="form-control" placeholder="Enter Detail">
                                         <div class="invalid-feedback" id="detailFeedback"></div>
                                     </div>
-                                    <label>แผนก: </label>
+                                    <label>Department: </label>
                                     <div class="form-group">
                                         <select class="form-select" id="cart_dept">
-                                            <option value="" selected>แผนกที่เบิก</option> <!-- Default option -->
+                                            <option value="" selected>Select Department</option> <!-- Default option -->
                                             <?php
                                             while ($dept = $result_dept->fetch_assoc()) :
                                             ?>
@@ -341,11 +348,11 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                 <i class="bx bx-x d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">ยกเลิก</span>
+                                <span class="d-none d-sm-block">Cancle</span>
                             </button>
                             <button type="button" class="btn btn-success ml-1" onclick="addCart()">
                                 <i class="bx bx-check d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">เพิ่มลงตะกร้า</span>
+                                <span class="d-none d-sm-block">Add To Cart</span>
                             </button>
                         </div>
                     </form>
@@ -391,14 +398,13 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         function deleteProduct(prod_id) {
             event.preventDefault();
             Swal.fire({
-                title: 'คุณแน่ใจไหม?',
-                text: "จะไม่สามารถแก้ไขอะไรได้อีก!",
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
-                confirmButtonText: 'ใช่  ลบเลย!',
-                cancelButtonText: 'ยกเลิก'
+                confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -467,6 +473,11 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 $('#unitFeedback').text("Unit is empty.");
                 isValid = false;
             }
+            if ($('#prod_detail').val() == "") {
+                $('#prod_detail').addClass('is-invalid');
+                $('#detailFeedback').text("detail is empty.");
+                isValid = false;
+            }
             if ($('#prod_type').val() == "") {
                 $('#prod_type').addClass('is-invalid');
                 $('#typeFeedback').text("Type is empty.");
@@ -491,6 +502,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 formData.append('amount_min', $('#prod_amount_min').val());
                 formData.append('price', $('#prod_price').val());
                 formData.append('unit', $('#prod_unit').val());
+                formData.append('detail', $('#prod_detail').val());
                 formData.append('type', $('#prod_type').val());
                 formData.append('status', $('#prod_status').val());
 
@@ -504,14 +516,14 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     success: function(result) {
                         if (result.status === "successfully") {
                             Swal.fire({
-                                title: 'เพิ่มสินค้าสำเร็จ!',
+                                title: 'Add product success!',
                                 icon: 'success'
                             }).then(() => {
                                 window.location.reload();
                             });
                         } else {
                             Swal.fire({
-                                title: "เพิ่มสินค้าผิดพลาด!",
+                                title: "Wrong product added!",
                                 text: result.message,
                                 icon: "error"
                             });
@@ -521,8 +533,8 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             } else {
                 // Validation failed, show an error message and keep the modal open
                 Swal.fire({
-                    title: "เพิ่มสินค้าผิดพลาด!",
-                    text: "กรุณากรอกข้อมูลให้ครบถ้วน",
+                    title: "Wrong product added!",
+                    text: "Please fill in all information completely.",
                     icon: "error"
                 });
                 return; // Keep modal open if validation fails
@@ -620,14 +632,14 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     success: function(result) {
                         if (result.status === "successfully") {
                             Swal.fire({
-                                title: 'เพิ่มสินค้าลงตะกร้าสำเร็จ!',
+                                title: 'Product added to cart successfully!',
                                 icon: 'success'
                             }).then(() => {
                                 window.location.reload();
                             });
                         } else {
                             Swal.fire({
-                                title: "เพิ่มสินค้าลงตะกร้าผิดพลาด!",
+                                title: "Wrong item added to cart!",
                                 text: result.message,
                                 icon: "error"
                             });
@@ -637,8 +649,8 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             } else {
                 // Validation failed, show an error message and keep the modal open
                 Swal.fire({
-                    title: "เพิ่มสินค้าลงตะกร้าผิดพลาด!",
-                    text: "กรุณากรอกข้อมูลให้ครบถ้วน",
+                    title: "Wrong item added to cart!",
+                    text: "Please fill in all information completely.",
                     icon: "error"
                 });
                 return; // Keep modal open if validation fails

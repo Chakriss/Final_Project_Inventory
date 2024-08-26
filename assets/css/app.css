@@ -1283,3 +1283,7 @@ a {
 .product-form {
   margin-bottom: 20px;
 }
+.required {
+  color: red;
+  font-weight: bold;
+}

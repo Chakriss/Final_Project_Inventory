@@ -25,7 +25,7 @@ mysqli_stmt_fetch($duplicate_stmt);
 mysqli_stmt_close($duplicate_stmt);
 
 if ($count > 0) {
-    $data_json = array("status" => "error", "message" => "มีสินค้าชื่อนี้อยู่แล้ว");
+    $data_json = array("status" => "error", "message" => "There is already a product with this name.");
     echo json_encode($data_json);
     exit();
 }

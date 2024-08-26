@@ -80,10 +80,10 @@
                         if (result.status === "successfully") {
                             Swal.fire({
                                 title: "Login successfully!",
-                                text: "ยินดีต้อนรับเข้าสู่ระบบ",
+                                text: "Welcome To Inventory Management System",
                                 icon: "success"
                             }).then(() => {
-                                    window.location.href = result.level;
+                                window.location.href = result.level;
                             });
                         } else {
                             Swal.fire({

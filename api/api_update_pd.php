@@ -11,6 +11,7 @@ $amount = $_POST['amount'];
 $amount_min = $_POST['amount_min'];
 $price = $_POST['price'];
 $unit = $_POST['unit'];
+$detail = $_POST['detail'];
 $type = $_POST['type'];
 $status = $_POST['status'];
 
@@ -29,7 +30,7 @@ if (isset($_POST['id'])) {
     mysqli_stmt_close($duplicate_stmt);
 
     if ($count > 0) {
-        $data_json = array("status" => "error", "message" => "มีสินค้าชื่อนี้อยู่แล้ว");
+        $data_json = array("status" => "error", "message" => "There is already a product with this name.");
         echo json_encode($data_json);
         exit();
     }
@@ -88,23 +89,23 @@ if (isset($_POST['id'])) {
 
 
     if ($prod_img) {
-        $sql = "UPDATE product SET prod_name = ?, prod_amount = ?, prod_amount_min = ?, prod_price = ?, prod_unit = ?, prod_type_id = ?, prod_status = ?, prod_img = ? WHERE prod_id = ?";
+        $sql = "UPDATE product SET prod_name = ?, prod_amount = ?, prod_amount_min = ?, prod_price = ?, prod_unit = ?, prod_type_id = ?, prod_status = ?, prod_img = ?, prod_detail = ? WHERE prod_id = ?";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "siiisissi", $name, $amount, $amount_min, $price, $unit, $type, $status, $prod_img, $id);
+        mysqli_stmt_bind_param($stmt, "siiisisssi", $name, $amount, $amount_min, $price, $unit, $type, $status, $prod_img, $detail, $id);
     } else {
-        $sql = "UPDATE product SET prod_name = ?, prod_amount = ?, prod_amount_min = ?, prod_price = ?, prod_unit = ?, prod_type_id = ?, prod_status = ? WHERE prod_id = ?";
+        $sql = "UPDATE product SET prod_name = ?, prod_amount = ?, prod_amount_min = ?, prod_price = ?, prod_unit = ?, prod_type_id = ?, prod_status = ?, prod_detail = ? WHERE prod_id = ?";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "siiisisi", $name, $amount, $amount_min, $price, $unit, $type, $status, $id);
+        mysqli_stmt_bind_param($stmt, "siiisissi", $name, $amount, $amount_min, $price, $unit, $type, $status, $detail, $id);
     }
 
     $result = mysqli_stmt_execute($stmt);
     if ($result) {
         $data_json = array("status" => "successfully");
     } else {
-        $data_json = array("status" => "error", "message" => "เพิ่มสินค้าลงฐานข้อมูลผิดพลาด");
+        $data_json = array("status" => "error", "message" => "Wrong product added to database");
     }
 } else {
-    $data_json = array("status" => "error", "message" => "ไม่พบรหัสสินค้า");
+    $data_json = array("status" => "error", "message" => "Product ID not found");
 }
 
 echo json_encode($data_json);
