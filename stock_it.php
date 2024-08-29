@@ -79,7 +79,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             </div>
             <section class="section">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <!-- Button trigger for Add Product form modal -->
                         <button type="button" class="btn btn-primary" data-bs-backdrop="false" data-bs-toggle="modal"
                             data-bs-target="#modalAddProduct">
@@ -242,7 +242,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 <div class="col-md-6">
                                     <label>Detail: <span class="required">* If there are no details, enter - / ไม่มีรายละเอียดใส่ -</span></label>
                                     <div class="form-group">
-                                        <textarea class="form-control" id="prod_detail" placeholder="Please enter detail / กรุณากรอกรายละเอียดสินค้า" rows="3"></textarea>
+                                        <textarea class="form-control" id="prod_detail" placeholder="Please enter detail" rows="3"></textarea>
                                         <div class="invalid-feedback" id="detailFeedback"></div>
                                     </div>
 
@@ -604,26 +604,24 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             }
             if ($('#cart_detail').val() == "") {
                 $('#cart_detail').addClass('is-invalid');
-                $('#detailFeedback').text("detail is empty.");
+                $('#detailFeedback').text("Detail is empty.");
                 isValid = false;
             }
             if ($('#cart_dept').val() == "") {
                 $('#cart_dept').addClass('is-invalid');
-                $('#deptFeedback').text("department is empty.");
+                $('#deptFeedback').text("Department is empty.");
                 isValid = false;
             }
 
-
             if (isValid) {
                 let formData = new FormData();
-
                 formData.append('id', $('#cart_id').val());
                 formData.append('amount', $('#cart_amount').val());
                 formData.append('detail', $('#cart_detail').val());
                 formData.append('dept', $('#cart_dept').val());
 
                 $.ajax({
-                    url: "/Final_Project/api/api_add_cart.php",
+                    url: "/Final_Project/api/api_add_cart_it.php",
                     type: 'POST',
                     dataType: "json",
                     data: formData,
@@ -655,8 +653,8 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 });
                 return; // Keep modal open if validation fails
             }
-
         }
+
 
 
 
@@ -694,6 +692,30 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             // Show the modal
             $('#imageModal').modal('show');
         }
+
+        //นับจำนวนสินค้าที่อยู่ในรถเข็นขึ้น show ที่ปุ่ม
+        $(document).ready(function() {
+            // Fetch the cart count on page load
+            updateCartCount();
+
+            function updateCartCount() {
+                $.ajax({
+                    url: '/Final_Project/api/api_cart_count.php', // Adjust the path as needed
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === "success") {
+                            $('#cart_count').text(response.total_items);
+                        } else {
+                            $('#cart_count').text(0); // Fallback if something goes wrong
+                        }
+                    },
+                    error: function() {
+                        $('#cart_count').text(0); // Fallback in case of error
+                    }
+                });
+            }
+        });
     </script>
 
 

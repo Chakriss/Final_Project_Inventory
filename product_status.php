@@ -10,7 +10,7 @@ if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk"
 }
 
 if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION["user_stock"] == 2)) {
-    $stock = 1;
+    $stock = $_SESSION['user_stock'];
     // Fetch product data using the selectProduct function
     $result = selectProduct($conn, $stock);
     if ($result === false) {
@@ -62,7 +62,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 <div class="card">
                     <div class="card-header">
                         <div class="bulk-actions">
-                            <button type="button" class="btn btn-primary" id="bulk-update-status">Update status for selected products</button>
+                            <button type="button" class="btn btn-primary" id="bulk-update-status">Update All</button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -78,7 +78,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <th style="text-align: center;">Name</th>
                                     <th style="text-align: center;">Type</th>
                                     <th style="text-align: center;">Status</th>
-                                    <th style="text-align: center;">Action</th>
+                                    <th style="text-align: center;">Off-On</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,9 +100,11 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                             <span class="<?php echo $badge_class; ?>"><?php echo $row['prod_status_desc']; ?></span>
                                         </td>
                                         <td align="center">
+                                        <div class="d-flex justify-content-center align-items-center">
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input switch-status" type="checkbox" id="flexSwitchCheckChecked" data-id="<?php echo $row['prod_id']; ?>" <?php echo ($row['prod_status_desc'] === 'Active') ? 'checked' : ''; ?>>
                                             </div>
+                                        </div>
                                         </td>
                                     </tr>
                                 <?php endwhile ?>

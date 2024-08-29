@@ -7,10 +7,16 @@ include_once 'header.php';
 include_once 'menu_admin.php';
 include_once 'navbar.php';
 
+if($_SESSION['user_stock'] == 1){
+    $stock = 'stock_it.php';
+}else{
+    $stock = 'stock_hr.php';
+}
+
 if (empty($_GET["prod_id"])) {
     echo "<script type='text/javascript'>";
     echo "alert('An error occurred. Please select the product first!!');";
-    echo "window.location = 'stock_it.php'; ";
+    echo "window.location = '$stock'; ";
     echo "</script>";
 }
 
@@ -64,17 +70,17 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 </div>
                                 <div class="form-group">
                                     <label for="basicInput">Amount:</label>
-                                    <input type="text" class="form-control" id="prod_amount" value="<?php echo $row['prod_amount']; ?>" placeholder="Please enter amount / กรุณากรอกจำนวนสินค้า">
+                                    <input type="number" class="form-control" id="prod_amount" value="<?php echo $row['prod_amount']; ?>" min="0" oninput="validity.valid||(value='');" placeholder="Please enter amount / กรุณากรอกจำนวนสินค้า">
                                     <div class="invalid-feedback" id="amountFeedback"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="basicInput">Amount Min:</label>
-                                    <input type="text" class="form-control" id="prod_amount_min" value="<?php echo $row['prod_amount_min']; ?>" placeholder="Please enter amount min / กรุณากรอกจำนวนสินค้าขั้นต่ำ">
+                                    <input type="number" class="form-control" id="prod_amount_min" value="<?php echo $row['prod_amount_min']; ?>" min="0" oninput="validity.valid||(value='');" placeholder="Please enter amount min / กรุณากรอกจำนวนสินค้าขั้นต่ำ">
                                     <div class="invalid-feedback" id="amountMinFeedback"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="basicInput">Price(Baht):</label>
-                                    <input type="text" class="form-control" id="prod_price" value="<?php echo $row['prod_price']; ?>" placeholder="Please enter price / กรุณากรอกราคา(บาท)">
+                                    <input type="number" class="form-control" id="prod_price" value="<?php echo $row['prod_price']; ?>" placeholder="Please enter price / กรุณากรอกราคา(บาท)">
                                     <div class="invalid-feedback" id="priceFeedback"></div>
                                 </div>
                                 <div class="form-group">
