@@ -26,10 +26,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
     //เรียกใช้ฟังชันดึงสถานะสินค้า
     $result_status = selectStatus($conn);
 
-    //เรียกใช้ฟังชันดึงแผนก
-    $result_dept = selectDept($conn);
-
-
 ?>
 
     <!DOCTYPE html>
@@ -49,7 +45,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
         <link rel="stylesheet" href="assets/vendors/choices.js/choices.min.css" />
         <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
-        <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link rel="stylesheet" href="assets/css/app.css">
         <link rel="shortcut icon" href="assets/images/logo/optinova.jpg" type="image/x-icon">
 
@@ -323,19 +319,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                         <input type="text" id="cart_detail" class="form-control" placeholder="Enter Detail">
                                         <div class="invalid-feedback" id="detailFeedback"></div>
                                     </div>
-                                    <label>Department: </label>
-                                    <div class="form-group">
-                                        <select class="form-select" id="cart_dept">
-                                            <option value="" selected>Select Department</option> <!-- Default option -->
-                                            <?php
-                                            while ($dept = $result_dept->fetch_assoc()) :
-                                            ?>
-                                                <option value="<?php echo $dept['dept_id']; ?>"><?php echo $dept['dept_name']; ?></option>
-                                            <?php endwhile ?>
-                                        </select>
-                                        <div class="invalid-feedback" id="deptFeedback"></div>
-                                    </div>
-
                                 </div>
                                 <div class="col-md-6 text-center">
                                     <div class="form-group">
@@ -607,18 +590,12 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 $('#detailFeedback').text("Detail is empty.");
                 isValid = false;
             }
-            if ($('#cart_dept').val() == "") {
-                $('#cart_dept').addClass('is-invalid');
-                $('#deptFeedback').text("Department is empty.");
-                isValid = false;
-            }
 
             if (isValid) {
                 let formData = new FormData();
                 formData.append('id', $('#cart_id').val());
                 formData.append('amount', $('#cart_amount').val());
                 formData.append('detail', $('#cart_detail').val());
-                formData.append('dept', $('#cart_dept').val());
 
                 $.ajax({
                     url: "/Final_Project/api/api_add_cart_it.php",

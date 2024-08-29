@@ -7,7 +7,6 @@ $data_json = array();
 if (isset($_POST['id'])) {
     $prod_id = $_POST['id'];
     $amount = $_POST['amount'];
-    $prod_dept = $_POST['dept'];
     $detail = $_POST['detail'];
     $us_id = $_SESSION["user_id"];
     $stock = '1';  // Assuming stock ID is fixed for the query
@@ -40,9 +39,9 @@ if (isset($_POST['id'])) {
     
     // If no existing cart, create a new one
     if (!$cart) {
-        $sql = "INSERT INTO cart (cart_id, st_id, us_id, dept_id, cart_status_id) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO cart (cart_id, st_id, us_id, cart_status_id) VALUES (?, ?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "iiiis", $null, $stock, $us_id, $prod_dept, $status);
+        mysqli_stmt_bind_param($stmt, "iiis", $null, $stock, $us_id, $status);
         mysqli_stmt_execute($stmt);
         $cart = mysqli_insert_id($conn);
         mysqli_stmt_close($stmt);

@@ -7,9 +7,13 @@ if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk"
     exit();
 }
 
+//เรียกใช้ฟังชันดึงข้อมูลใน cart
 $cart_data = cartDetail($conn);
 $max_cart_id = $cart_data['max_cart_id'];
 $cart_result = $cart_data['cart_result'];
+
+//เรียกใช้ฟังชันดึงแผนก
+$result_dept = selectDept($conn);
 
 ?>
 
@@ -30,7 +34,7 @@ $cart_result = $cart_data['cart_result'];
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <link rel="stylesheet" href="assets/vendors/choices.js/choices.min.css" />
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/logo/optinova.jpg" type="image/x-icon">
 </head>
@@ -83,6 +87,11 @@ include_once 'navbar.php';
     .btn-increase:hover {
         background-color: #27ae60;
     }
+
+    .custom-select-width {
+        width: 200px;
+        /* Adjust the width as needed */
+    }
 </style>
 
 
@@ -98,6 +107,18 @@ include_once 'navbar.php';
         <section class="section">
             <div class="card">
                 <div class="card-header">
+                    <label>Department: <span class="required">*</span></label>
+                    <div class="form-group">
+                        <select class="form-select" id="cart_dept" style="width: 200px;"> <!-- Adjust the width as needed -->
+                            <option value="" selected>Select Department</option> <!-- Default option -->
+                            <?php
+                            while ($dept = $result_dept->fetch_assoc()) :
+                            ?>
+                                <option value="<?php echo $dept['dept_id']; ?>"><?php echo $dept['dept_name']; ?></option>
+                            <?php endwhile ?>
+                        </select>
+                        <div class="invalid-feedback" id="deptFeedback"></div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped table-hover" id="table1">
@@ -137,9 +158,14 @@ include_once 'navbar.php';
                 </div>
             </div>
             <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-success" onclick="comfirmCart()"> <span class="fas fa-check"></span>
-                    Confirm</button>
+                <a class="btn btn-primary me-2" href="stock_it.php">
+                    Back to Stock
+                </a>
+                <button class="btn btn-success" onclick="comfirmCart()">
+                    <span class="fas fa-check"></span> Confirm
+                </button>
             </div>
+
         </section>
     </div>
 
@@ -243,47 +269,80 @@ include_once 'navbar.php';
     }
 
     function updateCartQuantity(cart_detail_id, newQuantity) {
-        // ส่งข้อมูลจำนวนใหม่ไปยังเซิร์ฟเวอร์ผ่าน AJAX เพื่ออัพเดตในฐานข้อมูล
         $.ajax({
             url: '/Final_Project/api/api_update_cart.php',
             type: 'POST',
+            dataType: 'json', // เพิ่มการระบุประเภทข้อมูลที่คาดหวังจากเซิร์ฟเวอร์
             data: {
                 cart_detail_id: cart_detail_id,
                 cart_amount: newQuantity
-            }
-        });
-    }
-
-
-    function comfirmCart() {
-        event.preventDefault();
-        let cart_id = "<?php echo $max_cart_id; ?>";
-
-        $.ajax({
-            url: "/Final_Project/api/api_confirm_cart_it.php",
-            type: 'POST',
-            dataType: "json",
-            data: {
-                code: "xxx",  
-                cart_id: cart_id
             },
             success: function(result) {
                 if (result.status === "successfully") {
-                    Swal.fire({
-                        title: 'Confirm cart successfully!',
-                        icon: 'success'
-                    }).then(() => {
-                        window.location.reload();
-                    });
+                    // เพิ่มการจัดการกรณีที่การอัพเดตสำเร็จ เช่น การรีเฟรชข้อมูล
                 } else {
                     Swal.fire({
-                        title: "Confirm cart fail!",
+                        title: "Add amount fail!",
                         text: result.message,
                         icon: "error"
                     });
                 }
             }
         });
+    }
+
+
+
+    function comfirmCart() {
+        event.preventDefault();
+        let cart_id = "<?php echo $max_cart_id; ?>";
+        let isValid = true;
+
+        // Reset validation messages
+        $('.invalid-feedback').text('');
+        $('.form-control').removeClass('is-invalid');
+
+        if ($('#cart_dept').val() == "") {
+            $('#cart_dept').addClass('is-invalid');
+            $('#deptFeedback').text("Department is empty.");
+            isValid = false;
+        }
+
+        if (isValid) {
+            $.ajax({
+                url: "/Final_Project/api/api_confirm_cart_it.php",
+                type: 'POST',
+                dataType: "json",
+                data: {
+                    code: "xxx",
+                    cart_id: cart_id,
+                    dept: $('#cart_dept').val()
+                },
+                success: function(result) {
+                    if (result.status === "successfully") {
+                        Swal.fire({
+                            title: 'Confirm cart successfully!',
+                            icon: 'success'
+                        }).then(() => {
+                            window.location.href="stock_it.php";
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Confirm cart fail!",
+                            text: result.message,
+                            icon: "error"
+                        });
+                    }
+                }
+            });
+        } else {
+            Swal.fire({
+                title: "Wrong confirm cart!",
+                text: "Please fill in the department.",
+                icon: "error"
+            });
+            return; // Keep modal open if validation fails
+        }
     }
 </script>
 

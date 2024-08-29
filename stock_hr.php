@@ -37,7 +37,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 2 || $_SESSION
         <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
 
         <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
-        <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link rel="stylesheet" href="assets/css/app.css">
         <link rel="shortcut icon" href="assets/images/logo/optinova.jpg" type="image/x-icon">
 

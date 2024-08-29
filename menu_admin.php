@@ -51,7 +51,11 @@ if($user_stock == 1){
                         </li>
 
                         <li class="sidebar-item">
-                            <a href= "<?php echo $stock ?>" class='sidebar-link'> <i class="bi bi-stack"></i> <span>Product <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                            <a href= "<?php echo $stock ?>" class='sidebar-link'> <i class="bi bi-database"></i> <span>Product <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href= "receive_product.php" class='sidebar-link'> <i class="bi bi-database-add"></i></i> <span>Receive the product <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
                         </li>
 
                         <li class="sidebar-item">
@@ -63,7 +67,6 @@ if($user_stock == 1){
                         </li>
 
 
-                        
                         <!-- Add other menu items based on user permissions -->
                         <li class="sidebar-title">Forms &amp; Tables</li>
                     </ul>
