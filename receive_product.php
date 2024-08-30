@@ -29,7 +29,33 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
     <script>
         let productData = <?php echo json_encode($productData); ?>;
     </script>
+    <style>
+        .card-header {
+            background: linear-gradient(135deg, #6a82fb, #fc5c7d);
+            /* Gradient background */
+            border-bottom: 2px solid #ddd;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+            color: #fff;
+            /* White text color to contrast with the gradient background */
+        }
 
+        .card-header h3 {
+            margin: 0;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #fff;
+            /* Ensure the header text remains white */
+        }
+
+        .card-header label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            /* Ensure the label text remains white */
+        }
+    </style>
 
     <div id="main">
         <div class="page-heading">
@@ -44,9 +70,21 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 <div class="row" id="table-bordered">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header"></div>
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="receive_date">Receive Date: <span class="required">*</span></label>
+                                        <input type="date" id="receive_date" class="form-control">
+                                        <div class="invalid-feedback" id="dateFeedback"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="receive_time">Receive Time: <span class="required">*</span></label>
+                                        <input type="time" id="receive_time" class="form-control">
+                                        <div class="invalid-feedback" id="timeFeedback"></div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="card-content">
-
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped table-hover" id="productTable">
                                         <thead>
@@ -209,7 +247,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             row.remove();
         }
 
-    
+
 
         function comfirmProduct() {
             event.preventDefault();
@@ -219,6 +257,16 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             $('.invalid-feedback').text('');
             $('.form-control').removeClass('is-invalid');
 
+            if ($('#receive_date').val() == "") {
+                $('#receive_date').addClass('is-invalid');
+                $('#dateFeedback').text("date is empty.");
+                isValid = false;
+            }
+            if ($('#receive_time').val() == "") {
+                $('#receive_time').addClass('is-invalid');
+                $('#timeFeedback').text("time is empty.");
+                isValid = false;
+            }
             // Gather all product data
             let products = [];
             $('#productTable tbody tr').each(function(index, row) {
@@ -252,7 +300,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     url: '/Final_Project/api/api_receive_product.php',
                     type: 'POST',
                     data: {
-                        products: products
+                        products: products,
+                        date: $('#receive_date').val(),
+                        time: $('#receive_time').val()
                     },
                     dataType: 'json',
                     success: function(response) {
@@ -261,7 +311,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 icon: 'success',
                                 title: 'Success',
                                 text: 'Products have been successfully received!',
-                                timer: 2000,
+                                timer: 1000,
                                 showConfirmButton: false
                             }).then(() => {
                                 // Optionally reload the page or redirect to another page

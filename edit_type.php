@@ -103,7 +103,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             if (result.status === "successfully") {
                                 Swal.fire({
                                     title: 'Edited successfully!',
-                                    icon: 'success'
+                                    icon: 'success',
+                                    timer: 1000,
+                                    showConfirmButton: false
                                 }).then((result) => {
                                     window.location.href = 'product_type.php';
                                 });

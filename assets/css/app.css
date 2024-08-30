@@ -1287,3 +1287,13 @@ a {
   color: red;
   font-weight: bold;
 }
+.card-header {
+  background: linear-gradient(135deg, #6a82fb, #fc5c7d);
+  /* Gradient background */
+  border-bottom: 2px solid #ddd;
+  padding: 20px;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  /* White text color to contrast with the gradient background */
+}

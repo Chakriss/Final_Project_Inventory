@@ -122,6 +122,7 @@ function cartDetail($conn)
 
     // Step 2: Fetch cart details based on max_cart_id
     $cart_sql = "SELECT cart_detail.cart_detail_id,
+                        cart_detail.prod_id,
                         product.prod_name, 
                         cart_detail.cart_amount, 
                         cart_detail.cart_detail, 

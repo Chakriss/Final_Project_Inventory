@@ -1,15 +1,14 @@
 <?php
 include_once('../config/connect_db.php');
-
 // Set the timezone to Bangkok
 date_default_timezone_set('Asia/Bangkok');
-$date = date('Y-m-d');
-$time = date('H:i:s');
 
 if (isset($_POST['code']) && isset($_POST['cart_id']) && isset($_POST['dept'])) {
     $code = $_POST['code'];
     $cart_id = $_POST['cart_id'];
     $dept = $_POST['dept'];
+    $date = $_POST['date'];
+    $time = $_POST['time'];
     $cart_status = 'P';  // Assuming 'P' stands for the status code for 'confirmed'
 
     if ($code == 'xxx') {
@@ -33,26 +32,35 @@ if (isset($_POST['code']) && isset($_POST['cart_id']) && isset($_POST['dept'])) 
             mysqli_stmt_execute($cart_detail_stmt);
             $cart_detail_result = mysqli_stmt_get_result($cart_detail_stmt);
 
+            $errors = [];  // Array to hold error messages
+
             while ($cart_item = mysqli_fetch_assoc($cart_detail_result)) {
                 $cart_detail_id = $cart_item['cart_detail_id'];
                 $cart_amount = $cart_item['cart_amount'];
                 $prod_id = $cart_item['prod_id'];
 
-                // Get the product amount from the product table
-                $stock_sql = "SELECT prod_amount FROM product WHERE prod_id = ?";
+                // Get the product amount and status from the product table
+                $stock_sql = "SELECT prod_amount, prod_status FROM product WHERE prod_id = ?";
                 $stock_stmt = mysqli_prepare($conn, $stock_sql);
                 mysqli_stmt_bind_param($stock_stmt, "i", $prod_id);
                 mysqli_stmt_execute($stock_stmt);
-                mysqli_stmt_bind_result($stock_stmt, $prod_amount);
+                mysqli_stmt_bind_result($stock_stmt, $prod_amount, $prod_status);
                 mysqli_stmt_fetch($stock_stmt);
                 mysqli_stmt_close($stock_stmt);
+
+                // Check if the product is inactive
+                if ($prod_status == 'I') {
+                    $errors[] = "Product ID $prod_id cannot be withdrawn because it is inactive.";
+                    continue;  // Skip to the next product
+                }
 
                 // Calculate the new stock amount
                 $new_stock_amount = $prod_amount - $cart_amount;
 
                 // Check if stock is sufficient
                 if ($new_stock_amount < 0) {
-                    throw new Exception("Insufficient stock for product ID $prod_id.");
+                    $errors[] = "Insufficient stock for product ID $prod_id.";
+                    continue;  // Skip to the next product
                 }
 
                 // Update the product amount in the product table
@@ -66,26 +74,34 @@ if (isset($_POST['code']) && isset($_POST['cart_id']) && isset($_POST['dept'])) 
                 mysqli_stmt_close($update_stock_stmt);
             }
 
-            // Update the status in cart_detail for the given cart_id
-            $update_cart_detail_sql = "UPDATE cart_detail SET cart_status_id = ? WHERE cart_id = ?";
-            $update_cart_detail_stmt = mysqli_prepare($conn, $update_cart_detail_sql);
-            mysqli_stmt_bind_param($update_cart_detail_stmt, "si", $cart_status, $cart_id);
+            // If there are any errors, rollback the transaction
+            if (!empty($errors)) {
+                mysqli_rollback($conn);
+                $data_json = array("status" => "error", "message" => $errors);
+            } else {
+                // Update the status in cart_detail for the given cart_id
+                $update_cart_detail_sql = "UPDATE cart_detail SET cart_status_id = ? WHERE cart_id = ?";
+                $update_cart_detail_stmt = mysqli_prepare($conn, $update_cart_detail_sql);
+                mysqli_stmt_bind_param($update_cart_detail_stmt, "si", $cart_status, $cart_id);
 
-            if (!mysqli_stmt_execute($update_cart_detail_stmt)) {
-                throw new Exception("Failed to update cart details.");
+                if (!mysqli_stmt_execute($update_cart_detail_stmt)) {
+                    throw new Exception("Failed to update cart details.");
+                }
+
+                // Commit the transaction
+                mysqli_commit($conn);
+                $data_json = array("status" => "successfully");
             }
-
-            // Commit the transaction
-            mysqli_commit($conn);
-            $data_json = array("status" => "successfully");
         } catch (Exception $e) {
             // Rollback the transaction
             mysqli_rollback($conn);
             $data_json = array("status" => "error", "message" => $e->getMessage());
         }
 
-        mysqli_stmt_close($cart_stmt);
-        mysqli_stmt_close($update_cart_detail_stmt);
+        // Close the prepared statements only if they were initialized
+        if (isset($cart_stmt)) mysqli_stmt_close($cart_stmt);
+        if (isset($update_cart_detail_stmt)) mysqli_stmt_close($update_cart_detail_stmt);
+        if (isset($cart_detail_stmt)) mysqli_stmt_close($cart_detail_stmt);
     }
 }
 

@@ -92,6 +92,41 @@ include_once 'navbar.php';
         width: 200px;
         /* Adjust the width as needed */
     }
+
+    .card-header {
+        background: linear-gradient(135deg, #6a82fb, #fc5c7d);
+        /* Gradient background */
+        border-bottom: 2px solid #ddd;
+        padding: 20px;
+        border-radius: 8px 8px 0 0;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+        color: #fff;
+        /* White text color to contrast with the gradient background */
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #fff;
+        /* Ensure the header text remains white */
+    }
+
+    .card-header label {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #fff;
+        /* Ensure the label text remains white */
+    }
+
+    .form-select-t {
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        padding: 8px;
+        font-size: 1rem;
+        background-color: #fff;
+        color: #333;
+    }
 </style>
 
 
@@ -107,35 +142,49 @@ include_once 'navbar.php';
         <section class="section">
             <div class="card">
                 <div class="card-header">
-                    <label>Department: <span class="required">*</span></label>
-                    <div class="form-group">
-                        <select class="form-select" id="cart_dept" style="width: 200px;"> <!-- Adjust the width as needed -->
-                            <option value="" selected>Select Department</option> <!-- Default option -->
-                            <?php
-                            while ($dept = $result_dept->fetch_assoc()) :
-                            ?>
-                                <option value="<?php echo $dept['dept_id']; ?>"><?php echo $dept['dept_name']; ?></option>
-                            <?php endwhile ?>
-                        </select>
-                        <div class="invalid-feedback" id="deptFeedback"></div>
+                    <div class="row">
+                        <!-- Department Dropdown -->
+                        <div class="col-md-4">
+                            <label>Department: <span class="required">*</span></label>
+                            <select class="form-select" id="cart_dept">
+                                <option value="" selected>Select Department</option>
+                                <?php while ($dept = $result_dept->fetch_assoc()) : ?>
+                                    <option value="<?php echo $dept['dept_id']; ?>"><?php echo $dept['dept_name']; ?></option>
+                                <?php endwhile ?>
+                            </select>
+                            <div class="invalid-feedback" id="deptFeedback"></div>
+                        </div>
+
+                        <!-- Date Input -->
+                        <div class="col-md-4">
+                            <label for="cart_date">Date: <span class="required">*</span></label>
+                            <input type="date" id="cart_date" class="form-control">
+                            <div class="invalid-feedback" id="dateFeedback"></div>
+                        </div>
+
+                        <!-- Time Input -->
+                        <div class="col-md-4">
+                            <label for="cart_time">Time: <span class="required">*</span></label>
+                            <input type="time" id="cart_time" class="form-control">
+                            <div class="invalid-feedback" id="timeFeedback"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped table-hover" id="table1">
                         <thead>
                             <tr>
+                                <th style="text-align: center;">Product ID</th>
                                 <th style="text-align: center;">Name</th>
                                 <th style="text-align: center;">Amount</th>
                                 <th style="text-align: center;">Detail</th>
-                                <th style="text-align: center;">Status</th>
                                 <th style="text-align: center;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php while ($row = $cart_result->fetch_assoc()) : ?>
                                 <tr id="row_<?php echo $row['cart_detail_id']; ?>">
-                                    <!-- prod_id ที่จะส่งไปตะกร้า -->
-                                    <input hidden readonly id="cart_id" class="form-control" type="text">
+                                    <td align="center"><?php echo $row['prod_id']; ?></td>
                                     <td align="center"><?php echo $row['prod_name']; ?></td>
                                     <td align="center">
                                         <button class="quantity-button btn-decrease" onclick="decreaseQuantity(<?php echo $row['cart_detail_id']; ?>)">-</button>
@@ -143,9 +192,6 @@ include_once 'navbar.php';
                                         <button class="quantity-button btn-increase" onclick="increaseQuantity(<?php echo $row['cart_detail_id']; ?>)">+</button>
                                     </td>
                                     <td align="center"><?php echo $row['cart_detail']; ?></td>
-                                    <td align="center">
-                                        <span class="badge bg-warning"><?php echo $row['cart_status']; ?></span>
-                                    </td>
                                     <td align="center">
                                         <button style="border-radius: 50%;" class="btn btn-danger" onclick="deleteCart(<?php echo $row['cart_detail_id']; ?>)">
                                             <span class="fas fa-eraser"></span>
@@ -228,7 +274,9 @@ include_once 'navbar.php';
                             Swal.fire({
                                 title: "Deleted!",
                                 icon: result.color,
-                                text: result.status
+                                text: result.status,
+                                timer: 1000,
+                                showConfirmButton: false
                             });
                         } else {
                             // Show error message
@@ -307,6 +355,16 @@ include_once 'navbar.php';
             $('#deptFeedback').text("Department is empty.");
             isValid = false;
         }
+        if ($('#cart_date').val() == "") {
+            $('#cart_date').addClass('is-invalid');
+            $('#dateFeedback').text("date is empty.");
+            isValid = false;
+        }
+        if ($('#cart_time').val() == "") {
+            $('#cart_time').addClass('is-invalid');
+            $('#timeFeedback').text("time is empty.");
+            isValid = false;
+        }
 
         if (isValid) {
             $.ajax({
@@ -316,15 +374,19 @@ include_once 'navbar.php';
                 data: {
                     code: "xxx",
                     cart_id: cart_id,
-                    dept: $('#cart_dept').val()
+                    dept: $('#cart_dept').val(),
+                    date: $('#cart_date').val(),
+                    time: $('#cart_time').val()
                 },
                 success: function(result) {
                     if (result.status === "successfully") {
                         Swal.fire({
                             title: 'Confirm cart successfully!',
-                            icon: 'success'
+                            icon: 'success',
+                            timer: 1000,
+                            showConfirmButton: false
                         }).then(() => {
-                            window.location.href="stock_it.php";
+                            window.location.href = "stock_it.php";
                         });
                     } else {
                         Swal.fire({

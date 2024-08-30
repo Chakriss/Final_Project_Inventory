@@ -100,11 +100,11 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                             <span class="<?php echo $badge_class; ?>"><?php echo $row['prod_status_desc']; ?></span>
                                         </td>
                                         <td align="center">
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input switch-status" type="checkbox" id="flexSwitchCheckChecked" data-id="<?php echo $row['prod_id']; ?>" <?php echo ($row['prod_status_desc'] === 'Active') ? 'checked' : ''; ?>>
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input switch-status" type="checkbox" id="flexSwitchCheckChecked" data-id="<?php echo $row['prod_id']; ?>" <?php echo ($row['prod_status_desc'] === 'Active') ? 'checked' : ''; ?>>
+                                                </div>
                                             </div>
-                                        </div>
                                         </td>
                                     </tr>
                                 <?php endwhile ?>
@@ -277,7 +277,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         if (jsonResponse.status === 'successfully') {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Status updated successfully!'
+                                title: 'Status updated successfully!',
+                                timer: 1000,
+                                showConfirmButton: false
                             }).then(() => {
                                 // Update UI directly without page reload
                                 productIds.forEach(id => {

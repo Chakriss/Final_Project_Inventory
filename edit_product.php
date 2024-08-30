@@ -7,9 +7,9 @@ include_once 'header.php';
 include_once 'menu_admin.php';
 include_once 'navbar.php';
 
-if($_SESSION['user_stock'] == 1){
+if ($_SESSION['user_stock'] == 1) {
     $stock = 'stock_it.php';
-}else{
+} else {
     $stock = 'stock_hr.php';
 }
 
@@ -89,7 +89,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <div class="invalid-feedback" id="unitFeedback"></div>
                                 </div>
                                 <div class="form-group">
-                                <label>Detail: <span class="required">* If there are no details, enter - / ไม่มีรายละเอียดใส่ -</span></label>
+                                    <label>Detail: <span class="required">* If there are no details, enter - / ไม่มีรายละเอียดใส่ -</span></label>
                                     <textarea class="form-control" id="prod_detail" placeholder="Please enter detail / กรุณากรอกรายละเอียดสินค้า" rows="3"><?php echo $row['prod_detail']; ?></textarea>
                                     <div class="invalid-feedback" id="detailFeedback"></div>
                                 </div>
@@ -228,7 +228,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             if (result.status === "successfully") {
                                 Swal.fire({
                                         title: 'Edited successfully!',
-                                        icon: 'success'
+                                        icon: 'success',
+                                        timer: 1000,
+                                        showConfirmButton: false
                                     })
                                     .then((result) => {
                                         window.location.href = 'stock_it.php';

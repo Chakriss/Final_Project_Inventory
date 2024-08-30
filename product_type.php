@@ -200,7 +200,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         if (result.status === "successfully") {
                             Swal.fire({
                                 title: 'Add type success!',
-                                icon: 'success'
+                                icon: 'success',
+                                timer: 1000,
+                                showConfirmButton: false
                             }).then(() => {
                                 window.location.reload();
                             });
@@ -252,7 +254,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 Swal.fire({
                                     title: "Deleted!",
                                     icon: result.color,
-                                    text: result.status
+                                    text: result.status,
+                                    timer: 1000,
+                                    showConfirmButton: false
                                 });
                             } else {
                                 // Show error message
@@ -267,7 +271,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 }
             });
         }
-
     </script>
 
     </body>
