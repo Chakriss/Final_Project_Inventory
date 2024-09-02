@@ -1,6 +1,7 @@
 <?php
 include_once 'connect_db.php';
 
+//<----------------------------- ส่วนของ stock -------------------------------------------------->
 //ฟังชันดึงข้อมูลของสินค้า
 function selectProduct($conn, $stock)
 {
@@ -102,6 +103,32 @@ function selectDept($conn)
     return $result_dept;
 }
 
+//ฟังชันดึงข้อมูลสต๊อก
+function selectStock($conn)
+{
+    $sql_stock = "SELECT * FROM stock_main WHERE st_id IN (1, 2)";
+    $stmt = mysqli_prepare($conn, $sql_stock);
+
+    // Execute the query
+    $stmt->execute();
+    $result_stock = $stmt->get_result();
+    return $result_stock;
+}
+
+//ฟังชันดึงข้อมูลสถานะของผู้ใช้
+function selectStatusUser($conn)
+{
+    $sql_status_user = "SELECT * FROM user_status";
+    $stmt = mysqli_prepare($conn, $sql_status_user);
+    // Execute คำสั่ง SQL
+    $stmt->execute();
+    $result_status_user = $stmt->get_result();
+    return $result_status_user;
+}
+
+
+//<----------------------------- ส่วนของ stock -------------------------------------------------->
+
 
 //<----------------------------- ส่วนของ cart -------------------------------------------------->
 function cartDetail($conn)
@@ -143,3 +170,115 @@ function cartDetail($conn)
     return ['max_cart_id' => $max_cart_id, 'cart_result' => $cart_result];
 }
 //<----------------------------- ส่วนของ cart -------------------------------------------------->
+
+//<----------------------------- ส่วนของ Admin -------------------------------------------------->
+function selectAdmin($conn)
+{
+    $admin_sql = "SELECT 
+                      user.us_id,
+                      user.us_name,
+                      user.us_email,
+                      user_status.us_status_desc
+                  FROM user 
+                  LEFT JOIN user_status ON user.us_status_id = user_status.us_status_id  
+                  WHERE user.us_level_id = ?";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($conn, $admin_sql);
+
+    // Check if the statement was prepared successfully
+    if ($stmt === false) {
+        // Handle error - could log or return false, based on your needs
+        error_log("Failed to prepare the statement: " . mysqli_error($conn));
+        return false;
+    }
+
+    // Bind the parameter for the 'Admin' level
+    $admin_level = 'A';
+    mysqli_stmt_bind_param($stmt, "s", $admin_level);
+
+    // Execute the statement
+    if (mysqli_stmt_execute($stmt)) {
+        // Fetch the result set
+        $result_admin = $stmt->get_result();
+        return $result_admin;
+    } else {
+        // Handle execution error - could log or return false
+        error_log("Failed to execute the statement: " . mysqli_error($conn));
+        return false;
+    }
+}
+
+//ดึงข้อมูลadmin มาแก้ไข
+function editAdmin($conn, $us_id)
+{
+    $sql = "SELECT * FROM user WHERE us_id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $us_id);
+    // Execute คำสั่ง SQL
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($row = $result->fetch_assoc()) {
+        // Assuming us_password is base64 encoded
+        $row['us_password'] = base64_decode($row['us_password']);
+    }
+
+    return $row;
+}
+
+
+//ฟังชันดึงข้อมูลสิทธิ์การเข้าถึง
+function selectPermission($conn)
+{
+    $sql_permission = "SELECT * FROM user_permission";
+    $stmt = mysqli_prepare($conn, $sql_permission);
+    // Execute คำสั่ง SQL
+    $stmt->execute();
+    $result_permission = $stmt->get_result();
+    return $result_permission;
+}
+
+
+//<----------------------------- ส่วนของ Admin -------------------------------------------------->
+
+//<----------------------------- ส่วนของ user -------------------------------------------------->
+function selectUser($conn)
+{
+    $admin_sql = "SELECT 
+                      user.us_id,
+                      user.us_name,
+                      user.us_email,
+                      user_status.us_status_desc
+                  FROM user 
+                  LEFT JOIN user_status ON user.us_status_id = user_status.us_status_id  
+                  WHERE user.us_level_id = ?";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($conn, $admin_sql);
+
+    // Check if the statement was prepared successfully
+    if ($stmt === false) {
+        // Handle error - could log or return false, based on your needs
+        error_log("Failed to prepare the statement: " . mysqli_error($conn));
+        return false;
+    }
+
+    // Bind the parameter for the 'Admin' level
+    $user_level = 'U';
+    mysqli_stmt_bind_param($stmt, "s", $user_level);
+
+    // Execute the statement
+    if (mysqli_stmt_execute($stmt)) {
+        // Fetch the result set
+        $result_user = $stmt->get_result();
+        return $result_user;
+    } else {
+        // Handle execution error - could log or return false
+        error_log("Failed to execute the statement: " . mysqli_error($conn));
+        return false;
+    }
+}
+
+
+//<----------------------------- ส่วนของ user -------------------------------------------------->

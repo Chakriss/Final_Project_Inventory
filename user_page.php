@@ -9,7 +9,7 @@ if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk"
 }
 
 // Check the user level and include relevant files
-if (isset($_SESSION["user_level"]) && $_SESSION["user_level"] === "User") {
+if (isset($_SESSION["user_level"]) && $_SESSION["user_level"] === "U") {
 
     include_once 'header.php';
     include_once 'menu_user.php';

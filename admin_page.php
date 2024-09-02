@@ -8,7 +8,7 @@ if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk"
     exit();
 }
 // Check the user level and include relevant files
-if (isset($_SESSION["user_level"]) && $_SESSION["user_level"] === "Admin") {
+if (isset($_SESSION["user_level"]) && $_SESSION["user_level"] === "A") {
     include_once 'header.php';
     include_once 'menu_admin.php';
     include_once 'navbar.php';

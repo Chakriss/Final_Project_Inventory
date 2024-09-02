@@ -2,9 +2,9 @@
 $user_stock = $_SESSION["user_stock"];
 
 
-if($user_stock == 1){
+if ($user_stock == 1) {
     $stock = 'stock_it.php';
-}else {
+} else {
     $stock = 'stock_hr.php';
 }
 
@@ -51,24 +51,40 @@ if($user_stock == 1){
                         </li>
 
                         <li class="sidebar-item">
-                            <a href= "<?php echo $stock ?>" class='sidebar-link'> <i class="bi bi-database"></i> <span>Product <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                            <a href="<?php echo $stock ?>" class='sidebar-link'> <i class="bi bi-database"></i> <span>Product <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
                         </li>
 
                         <li class="sidebar-item">
-                            <a href= "receive_product.php" class='sidebar-link'> <i class="bi bi-database-add"></i></i> <span>Receive the product <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                            <a href="receive_product.php" class='sidebar-link'> <i class="bi bi-database-add"></i></i> <span>Receive the product <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
                         </li>
 
-                        <li class="sidebar-item">
-                            <a href= "product_status.php" class='sidebar-link'> <i class="bi bi-app-indicator"></i> <span>Product Status <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
-                        </li>
+                        <li class="sidebar-item  has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-stack"></i>
+                                <span>Product Detail</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="product_status.php"><span>Product Status <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                                </li>
 
-                        <li class="sidebar-item">
-                            <a href= "product_type.php" class='sidebar-link'> <i class="bi bi-window"></i> <span>Product Type <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                                <li class="submenu-item">
+                                    <a href="product_type.php"><span>Product Type <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                                </li>
+                            </ul>
                         </li>
-
 
                         <!-- Add other menu items based on user permissions -->
-                        <li class="sidebar-title">Forms &amp; Tables</li>
+                        <li class="sidebar-title">Account Setting</li>
+
+                        <li class="sidebar-item">
+                            <a href="account_set.php" class='sidebar-link'> <i class="bi bi-people-fill"></i></i> <span> Users</a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="department.php" class='sidebar-link'> <i class="bi bi-person-vcard"></i></i> <span> department</a>
+                        </li>
+
                     </ul>
                 </div>
                 <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
