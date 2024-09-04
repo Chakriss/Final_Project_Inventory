@@ -47,7 +47,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link rel="stylesheet" href="assets/css/app.css">
         <link rel="shortcut icon" href="assets/images/logo/optinova.jpg" type="image/x-icon">
-
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     </head>
 
@@ -79,6 +79,10 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             </li>
 
                             <li class="sidebar-item">
+                                <a href="#" class='sidebar-link'> <i class="bi bi-cart-check-fill"></i> </i> <span>Withdraw</span> <span id="withdraw_count"></span></a>
+                            </li>
+
+                            <li class="sidebar-item">
                                 <a href="receive_product.php" class='sidebar-link'> <i class="bi bi-database-add"></i></i> <span>Receive the product <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
                             </li>
 
@@ -101,7 +105,13 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             <!-- Add other menu items based on user permissions -->
                             <li class="sidebar-title">Account Setting</li>
 
-                        
+                            <li class="sidebar-item">
+                                <a href="account_set.php" class='sidebar-link'> <i class="bi bi-people-fill"></i></i> <span> Users</a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a href="department.php" class='sidebar-link'> <i class="bi bi-person-vcard"></i></i> <span> department</a>
+                            </li>
 
                         </ul>
                     </div>
@@ -139,7 +149,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                         <tr>
                                             <th style="text-align: center;">
                                                 <input type="checkbox" id="select-all" class="form-check-input"> <!-- Checkbox to select all -->
-                                                Select All
+
                                             </th>
                                             <th style="text-align: center;">Product ID</th>
                                             <th style="text-align: center;"> Photo </th>
@@ -222,7 +232,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 let table1 = document.querySelector('#table1');
                 let dataTable = new simpleDatatables.DataTable(table1);
             </script>
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
             <script src="assets/js/main.js"></script>
@@ -390,6 +399,44 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     // Show the modal
                     $('#imageModal').modal('show');
                 }
+
+                //นับจำนวนสินค้าที่อยู่ในรถเข็นขึ้น show ที่ปุ่ม
+                $(document).ready(function() {
+                    // ดึงค่า withdraw_count จาก Local Storage ถ้ามี
+                    let savedWithdrawCount = localStorage.getItem('withdraw_count');
+                    if (savedWithdrawCount !== null) {
+                        $('#withdraw_count').text(savedWithdrawCount);
+                    }
+
+                    // Fetch the cart count on page load
+                    updateCartCount();
+
+                    function updateCartCount() {
+                        $.ajax({
+                            url: '/Final_Project/api/api_withdraw_count.php', // Adjust the path as needed
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(response) {
+                                console.log(response); // ตรวจสอบว่าข้อมูลมาถูกต้อง
+                                if (response.status === "success") {
+                                    console.log("Updating withdraw_count to:", response.total_items);
+                                    $('#withdraw_count').text(response.total_items);
+
+                                    // เก็บค่าใน Local Storage
+                                    localStorage.setItem('withdraw_count', response.total_items);
+                                } else {
+                                    console.log("API status is not 'success'");
+                                    $('#withdraw_count').text(0); // Fallback if something goes wrong
+                                    localStorage.setItem('withdraw_count', 0);
+                                }
+                            },
+                            error: function() {
+                                $('#withdraw_count').text(0); // Fallback in case of error
+                                localStorage.setItem('withdraw_count', 0);
+                            }
+                        });
+                    }
+                });
             </script>
 
     </body>

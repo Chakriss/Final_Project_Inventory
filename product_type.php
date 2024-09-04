@@ -48,6 +48,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         <link rel="stylesheet" href="assets/css/app.css">
         <link rel="shortcut icon" href="assets/images/logo/optinova.jpg" type="image/x-icon">
 
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     </head>
 
@@ -79,6 +80,10 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             </li>
 
                             <li class="sidebar-item">
+                                <a href="#" class='sidebar-link'> <i class="bi bi-cart-check-fill"></i> </i> <span>Withdraw</span>  <span id="withdraw_count"></span></a>
+                            </li>
+
+                            <li class="sidebar-item">
                                 <a href="receive_product.php" class='sidebar-link'> <i class="bi bi-database-add"></i></i> <span>Receive the product <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
                             </li>
 
@@ -100,6 +105,15 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
                             <!-- Add other menu items based on user permissions -->
                             <li class="sidebar-title">Account Setting</li>
+
+                            <li class="sidebar-item">
+                                <a href="account_set.php" class='sidebar-link'> <i class="bi bi-people-fill"></i></i> <span> Users</a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a href="department.php" class='sidebar-link'> <i class="bi bi-person-vcard"></i></i> <span> department</a>
+                            </li>
+
                         </ul>
                     </div>
                     <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
@@ -146,7 +160,8 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                                 <td align="center"><?php echo $row['prod_type_id']; ?></td>
                                                 <td align="center"><?php echo $row['prod_type_desc']; ?></td>
                                                 <td align="center">
-                                                    <a href="edit_type.php?prod_type_id=<?php echo $row['prod_type_id']; ?>" class="btn btn-warning">
+                                                    <a href="javascript:void(0)" class="btn btn-warning"
+                                                        onclick="showEditModal('<?php echo $row['prod_type_id']; ?>', '<?php echo $row['prod_type_desc']; ?>')">
                                                         <span class="fas fa-edit"></span> Edit
                                                     </a>
 
@@ -206,6 +221,47 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 </div>
                 <!-- Add Product form Modal -->
 
+                <!-- Edit Product Type Modal -->
+                <div class="modal fade text-left" id="modalEditProductType" tabindex="-1"
+                    role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+                        role="document">
+                        <div class="modal-content">
+                            <div class="modal-header bg-warning">
+                                <h4 class="modal-title white" id="editModalLabel">Edit Product Type</h4>
+                                <button type="button" class="close" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <i data-feather="x"></i>
+                                </button>
+                            </div>
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <input type="hidden" id="edit_prod_type_id">
+                                            <label>Type Name: </label>
+                                            <div class="form-group">
+                                                <input type="text" id="edit_prod_type_desc" placeholder="Enter Type Name"
+                                                    class="form-control">
+                                                <div class="invalid-feedback" id="editNameTypeFeedback"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <span>Cancel</span>
+                                        </button>
+                                        <button type="button" class="btn btn-success ml-1" onclick="updateType()">
+                                            <span>Update</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Edit Product Type Modal -->
+
                 <footer>
                     <div class="footer clearfix mb-0 text-muted">
                         <div class="float-start">
@@ -228,7 +284,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 let table1 = document.querySelector('#table1');
                 let dataTable = new simpleDatatables.DataTable(table1);
             </script>
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
             <script src="assets/js/main.js"></script>
@@ -335,6 +390,114 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         }
                     });
                 }
+
+                function showEditModal(typeId, typeDesc) {
+                    // Populate the modal with the product type data
+                    $('#edit_prod_type_id').val(typeId);
+                    $('#edit_prod_type_desc').val(typeDesc);
+
+                    // Open the modal
+                    $('#modalEditProductType').modal('show');
+                }
+
+                function updateType() {
+                    event.preventDefault();
+                    let isValid = true;
+
+                    // Reset validation messages
+                    $('.invalid-feedback').text('');
+                    $('.form-control').removeClass('is-invalid');
+
+                    if ($('#edit_prod_type_desc').val() === "") {
+                        $('#edit_prod_type_desc').addClass('is-invalid');
+                        $('#editNameTypeFeedback').text("Type Name is empty.");
+                        isValid = false;
+                    }
+
+                    if (isValid) {
+                        let formData = new FormData();
+                        formData.append('id', $('#edit_prod_type_id').val());
+                        formData.append('name', $('#edit_prod_type_desc').val());
+
+                        $.ajax({
+                            url: "/Final_Project/api/api_update_type.php",
+                            type: 'POST',
+                            dataType: "json",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(result) {
+                                if (result.status === "successfully") {
+                                    Swal.fire({
+                                        title: 'Edited successfully!',
+                                        icon: 'success',
+                                        timer: 1000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: "Edit Error!",
+                                        text: result.message,
+                                        icon: "error"
+                                    });
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                Swal.fire({
+                                    title: "Edit Error!",
+                                    text: "An error occurred: " + error,
+                                    icon: "error"
+                                });
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Edit Error!",
+                            text: "Please check if any information is incorrect.",
+                            icon: "error"
+                        });
+                    }
+                }
+
+                //นับจำนวนสินค้าที่อยู่ในรถเข็นขึ้น show ที่ปุ่ม
+            $(document).ready(function() {
+                // ดึงค่า withdraw_count จาก Local Storage ถ้ามี
+                let savedWithdrawCount = localStorage.getItem('withdraw_count');
+                if (savedWithdrawCount !== null) {
+                    $('#withdraw_count').text(savedWithdrawCount);
+                }
+
+                // Fetch the cart count on page load
+                updateCartCount();
+
+                function updateCartCount() {
+                    $.ajax({
+                        url: '/Final_Project/api/api_withdraw_count.php', // Adjust the path as needed
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response); // ตรวจสอบว่าข้อมูลมาถูกต้อง
+                            if (response.status === "success") {
+                                console.log("Updating withdraw_count to:", response.total_items);
+                                $('#withdraw_count').text(response.total_items);
+
+                                // เก็บค่าใน Local Storage
+                                localStorage.setItem('withdraw_count', response.total_items);
+                            } else {
+                                console.log("API status is not 'success'");
+                                $('#withdraw_count').text(0); // Fallback if something goes wrong
+                                localStorage.setItem('withdraw_count', 0);
+                            }
+                        },
+                        error: function() {
+                            $('#withdraw_count').text(0); // Fallback in case of error
+                            localStorage.setItem('withdraw_count', 0);
+                        }
+                    });
+                }
+            });
             </script>
 
     </body>

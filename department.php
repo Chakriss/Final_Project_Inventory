@@ -10,21 +10,8 @@ if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk"
 }
 
 if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION["user_stock"] == 2)) {
-    $stock = $_SESSION['user_stock'];
-    // Fetch product data using the selectProduct function
-    $result = selectType($conn);
-    if ($result === false) {
-        echo "Failed to retrieve product data.";
-        exit();
-    }
 
-    $user_stock = $_SESSION["user_stock"];
-
-    if ($user_stock == 1) {
-        $stock_menu = 'stock_it.php';
-    } else {
-        $stock_menu = 'stock_hr.php';
-    }
+    $result_dept = selectDept($conn);
 ?>
 
     <!DOCTYPE html>
@@ -48,6 +35,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         <link rel="stylesheet" href="assets/css/app.css">
         <link rel="shortcut icon" href="assets/images/logo/optinova.jpg" type="image/x-icon">
 
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     </head>
 
@@ -71,30 +59,31 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     <div class="card-header">
                         <!-- Button trigger for Add Product form modal -->
                         <button type="button" class="btn btn-primary" data-bs-backdrop="false" data-bs-toggle="modal"
-                            data-bs-target="#modalAddProductType">
-                            + New Product Type
+                            data-bs-target="#modalAddDepartment">
+                            + New Department
                         </button>
                     </div>
                     <div class="card-body">
                         <table class="table table-striped table-hover" id="table1">
                             <thead>
                                 <tr>
-                                    <th style="text-align: center;">Type ID</th>
-                                    <th style="text-align: center;">Type Name</th>
+                                    <th style="text-align: center;">Department ID</th>
+                                    <th style="text-align: center;">Department Name</th>
                                     <th style="text-align: center;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php while ($row = $result->fetch_assoc()) : ?>
-                                    <tr id="row_<?php echo $row['prod_type_id']; ?>">
-                                        <td align="center"><?php echo $row['prod_type_id']; ?></td>
-                                        <td align="center"><?php echo $row['prod_type_desc']; ?></td>
+                                <?php while ($row = $result_dept->fetch_assoc()) : ?>
+                                    <tr id="row_<?php echo $row['dept_id']; ?>">
+                                        <td align="center"><?php echo $row['dept_id']; ?></td>
+                                        <td align="center"><?php echo $row['dept_name']; ?></td>
                                         <td align="center">
-                                            <a href="edit_type.php?prod_type_id=<?php echo $row['prod_type_id']; ?>" class="btn btn-warning">
+                                            <a href="javascript:void(0)" class="btn btn-warning"
+                                                onclick="showEditModal('<?php echo $row['dept_id']; ?>', '<?php echo $row['dept_name']; ?>')">
                                                 <span class="fas fa-edit"></span> Edit
                                             </a>
 
-                                            <button class="btn btn-danger" onclick="deleteType(<?php echo $row['prod_type_id']; ?>)">
+                                            <button class="btn btn-danger" onclick="deleteDept(<?php echo $row['dept_id']; ?>)">
                                                 <span class="fas fa-trash-alt"></span> Delete
                                             </button>
                                         </td>
@@ -108,14 +97,14 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         </div>
 
 
-        <!-- Add Product form Modal l -->
-        <div class="modal fade text-left" id="modalAddProductType" tabindex="-1"
+        <!-- Add Department form Modal l -->
+        <div class="modal fade text-left" id="modalAddDepartment" tabindex="-1"
             role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
                 role="document">
                 <div class="modal-content">
                     <div class="modal-header bg-primary">
-                        <h4 class="modal-title white" id="myModalLabel33">New Product Type</h4>
+                        <h4 class="modal-title white" id="myModalLabel33">New Department</h4>
                         <button type="button" class="close" data-bs-dismiss="modal"
                             aria-label="Close">
                             <i data-feather="x"></i>
@@ -125,11 +114,11 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label>Type Name: </label>
+                                    <label>Department Name: </label>
                                     <div class="form-group">
-                                        <input type="text" id="prod_type_desc" placeholder="Enter Type Name"
+                                        <input type="text" id="dept_name" placeholder="Enter Department Name"
                                             class="form-control">
-                                        <div class="invalid-feedback" id="nameTypeFeedback"></div>
+                                        <div class="invalid-feedback" id="deptNameFeedback"></div>
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +127,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <i class="bx bx-x d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Cancle</span>
                                 </button>
-                                <button type="button" class="btn btn-success ml-1" onclick="addType()">
+                                <button type="button" class="btn btn-success ml-1" onclick="addDept()">
                                     <i class="bx bx-check d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Add</span>
                                 </button>
@@ -148,7 +137,48 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 </div>
             </div>
         </div>
-        <!-- Add Product form Modal -->
+        <!-- Add Department form Modal -->
+
+        <!-- Edit Department  Modal -->
+        <div class="modal fade text-left" id="modalEditDepartment" tabindex="-1"
+            role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+                role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h4 class="modal-title white" id="editModalLabel">Edit Product Type</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="hidden" id="edit_department_id">
+                                    <label>Department Name: </label>
+                                    <div class="form-group">
+                                        <input type="text" id="edit_dept_name" placeholder="Enter Department Name"
+                                            class="form-control">
+                                        <div class="invalid-feedback" id="editDeptFeedback"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <span>Cancel</span>
+                                </button>
+                                <button type="button" class="btn btn-success ml-1" onclick="updateDept()">
+                                    <span>Update</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Edit Department Modal -->
 
         <footer>
             <div class="footer clearfix mb-0 text-muted">
@@ -172,14 +202,13 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
     <script src="assets/js/main.js"></script>
 
     <script>
         //ฟังชันเพิ่มประเภทสินค้า
-        function addType() {
+        function addDept() {
             event.preventDefault();
             let isValid = true;
 
@@ -188,17 +217,17 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             $('.form-control').removeClass('is-invalid');
 
             // Form validation checks
-            if ($('#prod_type_desc').val() == "") {
-                $('#prod_type_desc').addClass('is-invalid');
-                $('#nameTypeFeedback').text("Name Type is empty.");
+            if ($('#dept_name').val() == "") {
+                $('#dept_name').addClass('is-invalid');
+                $('#deptNameFeedback').text("Department Name is empty.");
                 isValid = false;
             }
             if (isValid) {
                 let formData = new FormData();
-                formData.append('type_name', $('#prod_type_desc').val());
+                formData.append('dept', $('#dept_name').val());
 
                 $.ajax({
-                    url: "/Final_Project/api/api_add_type.php",
+                    url: "/Final_Project/api/api_add_dept.php",
                     type: 'POST',
                     dataType: "json",
                     data: formData,
@@ -207,7 +236,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     success: function(result) {
                         if (result.status === "successfully") {
                             Swal.fire({
-                                title: 'Add type success!',
+                                title: 'Add department success!',
                                 icon: 'success',
                                 timer: 1000,
                                 showConfirmButton: false
@@ -216,7 +245,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             });
                         } else {
                             Swal.fire({
-                                title: "Wrong type added!",
+                                title: "Wrong department added!",
                                 text: result.message,
                                 icon: "error"
                             });
@@ -226,7 +255,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             } else {
                 // Validation failed, show an error message and keep the modal open
                 Swal.fire({
-                    title: "Wrong type added!",
+                    title: "Wrong department added!",
                     text: "Please fill in all information completely.",
                     icon: "error"
                 });
@@ -235,7 +264,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         }
 
         //ฟังชันลบประเภทสินค้า
-        function deleteType(prod_type_id) {
+        function deleteDept(dept_id) {
             event.preventDefault();
             Swal.fire({
                 title: 'Are you sure?',
@@ -248,16 +277,16 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/Final_Project/api/api_delete_type.php",
+                        url: "/Final_Project/api/api_delete_dept.php",
                         type: 'POST',
                         dataType: "json",
                         data: {
-                            prod_type_id: prod_type_id
+                            dept_id: dept_id
                         },
                         success: function(result) {
                             if (result.color === "success") {
                                 // Remove the row from the table
-                                $('#row_' + prod_type_id).remove();
+                                $('#row_' + dept_id).remove();
                                 // Show success message and reload the page
                                 Swal.fire({
                                     title: "Deleted!",
@@ -278,6 +307,76 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     });
                 }
             });
+        }
+
+        function showEditModal(deptId, dept_Name) {
+            // Populate the modal with the product type data
+            $('#edit_department_id').val(deptId);
+            $('#edit_dept_name').val(dept_Name);
+
+            // Open the modal
+            $('#modalEditDepartment').modal('show');
+        }
+
+        function updateDept() {
+            event.preventDefault();
+            let isValid = true;
+
+            // Reset validation messages
+            $('.invalid-feedback').text('');
+            $('.form-control').removeClass('is-invalid');
+
+            if ($('#edit_dept_name').val() === "") {
+                $('#edit_dept_name').addClass('is-invalid');
+                $('#editDeptFeedback').text("Department Name is empty.");
+                isValid = false;
+            }
+
+            if (isValid) {
+                let formData = new FormData();
+                formData.append('id', $('#edit_department_id').val());
+                formData.append('name', $('#edit_dept_name').val());
+
+                $.ajax({
+                    url: "/Final_Project/api/api_update_dept.php",
+                    type: 'POST',
+                    dataType: "json",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(result) {
+                        if (result.status === "successfully") {
+                            Swal.fire({
+                                title: 'Edited successfully!',
+                                icon: 'success',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Edit Error!",
+                                text: result.message,
+                                icon: "error"
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: "Edit Error!",
+                            text: "An error occurred: " + error,
+                            icon: "error"
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: "Edit Error!",
+                    text: "Please check if any information is incorrect.",
+                    icon: "error"
+                });
+            }
         }
     </script>
 

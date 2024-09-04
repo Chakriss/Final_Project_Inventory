@@ -37,6 +37,7 @@ $result_dept = selectDept($conn);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/logo/optinova.jpg" type="image/x-icon">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <?php
@@ -240,7 +241,6 @@ include_once 'navbar.php';
     let table1 = document.querySelector('#table1');
     let dataTable = new simpleDatatables.DataTable(table1);
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
 <script src="assets/js/main.js"></script>

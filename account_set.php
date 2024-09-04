@@ -55,7 +55,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link rel="stylesheet" href="assets/css/app.css">
         <link rel="shortcut icon" href="assets/images/logo/optinova.jpg" type="image/x-icon">
-
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     </head>
 
@@ -132,7 +132,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         <!-- Button trigger for Add User form Modal -->
                         <button type="button" class="btn btn-primary" data-bs-backdrop="false" data-bs-toggle="modal"
                             data-bs-target="#modalAddUser">
-                            + New Product Type
+                            + New User
                         </button>
                     </div>
                     <div class="card-body">
@@ -380,7 +380,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         let table2 = document.querySelector('#table2');
         let dataTable2 = new simpleDatatables.DataTable(table2);
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
     <script src="assets/js/main.js"></script>

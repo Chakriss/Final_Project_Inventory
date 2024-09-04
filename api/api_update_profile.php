@@ -8,8 +8,6 @@ $id = $_POST['id'];
 $name = $_POST['name'];
 $email = $_POST['email'];
 $dept = $_POST['dept'];
-$status = $_POST['status'];
-$stock = isset($_POST['stock']) ? $_POST['stock'] : null; // ตรวจสอบว่ามี stock หรือไม่
 
 $data_json = array();
 
@@ -31,15 +29,10 @@ if (isset($_POST['id'])) {
     }
 
     // อัพเดทข้อมูลผู้ใช้
-    if ($stock !== null) {
-        $sql = "UPDATE user SET us_name = ?, us_email = ?, dept_id = ?, st_id = ?, us_status_id = ? WHERE us_id = ?";
+        $sql = "UPDATE user SET us_name = ?, us_email = ?, dept_id = ? WHERE us_id = ?";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ssiisi", $name, $email, $dept, $stock, $status, $id);
-    } else {
-        $sql = "UPDATE user SET us_name = ?, us_email = ?, dept_id = ?, us_status_id = ? WHERE us_id = ?";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ssisi", $name, $email, $dept, $status, $id);
-    }
+        mysqli_stmt_bind_param($stmt, "ssii", $name, $email, $dept, $id);
+
 
     $result = mysqli_stmt_execute($stmt);
     if ($result) {
@@ -47,16 +40,16 @@ if (isset($_POST['id'])) {
         if ($id == $_SESSION["user_id"]) {
             $data_json = array("status" => "login_required", "message" => "Your profile has been updated. Please log in again.");
         } else {
-            $data_json = array("status" => "successfully", "message" => "Admin updated successfully.");
+            $data_json = array("status" => "successfully", "message" => "updated successfully.");
         }
     } else {
-        $data_json = array("status" => "error", "message" => "Failed to update admin: " . mysqli_error($conn));
+        $data_json = array("status" => "error", "message" => "Failed to update : " . mysqli_error($conn));
     }
 
     mysqli_stmt_close($stmt);
 
 } else {
-    $data_json = array("status" => "error", "message" => "Admin ID not found.");
+    $data_json = array("status" => "error", "message" => "User ID not found.");
 }
 
 echo json_encode($data_json);

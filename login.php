@@ -81,7 +81,9 @@
                             Swal.fire({
                                 title: "Login successfully!",
                                 text: "Welcome To Inventory Management System",
-                                icon: "success"
+                                icon: "success",
+                                timer: 1500,
+                                showConfirmButton: false
                             }).then(() => {
                                 window.location.href = result.level;
                             });

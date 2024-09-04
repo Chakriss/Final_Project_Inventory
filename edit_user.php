@@ -27,9 +27,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
     //เรียกใช้ฟังชันดึงข้อมูล
     $row = editAdmin($conn, $us_id);
     $result_dept = selectDept($conn);
-    $result_stock = selectStock($conn);
     $result_status_user = selectStatusUser($conn);
-    $result_permission = selectPermission($conn);
 
 ?>
     <div id="main">
@@ -66,6 +64,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <input type="email" class="form-control" id="us_email" value="<?php echo $row['us_email']; ?>" placeholder="Please enter email / กรุณากรอกอีเมล">
                                     <div class="invalid-feedback" id="emailFeedback"></div>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="basicInput">Department:</label>
                                     <select class="choices form-select" id="dept_id">
@@ -83,20 +82,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
                             <div class="col-md-6">
 
-
-                                <div class="form-group">
-                                    <label for="basicInput">Stock:</label>
-                                    <select class="form-select" id="st_id">
-                                        <?php
-                                        $selected_stock = $row['st_id'];
-                                        while ($stock = $result_stock->fetch_assoc()) :
-                                            $select_stock = ($stock['st_id'] == $selected_stock) ? 'selected' : '';
-                                        ?>
-                                            <option value="<?php echo $stock['st_id']; ?>" <?php echo $select_stock; ?>><?php echo $stock['st_name']; ?></option>
-                                        <?php endwhile ?>
-                                    </select>
-                                    <div class="invalid-feedback" id="stockFeedback"></div>
-                                </div>
 
                                 <div class="form-group">
                                     <label for="basicInput">Status:</label>
@@ -121,7 +106,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 </div>
 
                 <button type="button" class="btn btn-secondary btn-fw" onclick="window.location.href='account_set.php';">Cancle</button>
-                <button type="submit" class="btn btn-success btn-fw" onclick="update_admin()">Update</button>
+                <button type="submit" class="btn btn-success btn-fw" onclick="update_user()">Update</button>
 
             </section>
 
@@ -133,7 +118,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         ?>
 
         <script>
-            function update_admin() {
+            function update_user() {
                 event.preventDefault();
                 let isValid = true;
 
@@ -156,11 +141,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     $('#deptFeedback').text("Department is empty.");
                     isValid = false;
                 }
-                if ($('#st_id').val() == "") {
-                    $('#st_id').addClass('is-invalid');
-                    $('#stockFeedback').text("Stock is empty.");
-                    isValid = false;
-                }
                 if ($('#us_status_id').val() == "") {
                     $('#us_status_id').addClass('is-invalid');
                     $('#statusFeedback').text("Status is empty.");
@@ -173,7 +153,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     formData.append('name', $('#us_name').val());
                     formData.append('email', $('#us_email').val());
                     formData.append('dept', $('#dept_id').val());
-                    formData.append('stock', $('#st_id').val());
                     formData.append('status', $('#us_status_id').val());
 
                     $.ajax({
