@@ -79,15 +79,23 @@ if ($user_stock == 1) {
                         </li>
 
                         <!-- Add other menu items based on user permissions -->
+                        <li class="sidebar-title">History</li>
+
+                            <li class="sidebar-item">
+                                <a href="History_withdraw.php" class='sidebar-link'> <i class="bi bi-clock-history"></i></i> <span>Withdraw History <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                            </li>
+
+
+
                         <li class="sidebar-title">Account Setting</li>
 
-                        <li class="sidebar-item">
-                            <a href="account_set.php" class='sidebar-link'> <i class="bi bi-people-fill"></i></i> <span> Users</a>
-                        </li>
+                            <li class="sidebar-item">
+                                <a href="account_set.php" class='sidebar-link'> <i class="bi bi-people-fill"></i></i> <span> Users</a>
+                            </li>
 
-                        <li class="sidebar-item">
-                            <a href="department.php" class='sidebar-link'> <i class="bi bi-person-vcard"></i></i> <span> department</a>
-                        </li>
+                            <li class="sidebar-item">
+                                <a href="department.php" class='sidebar-link'> <i class="bi bi-person-vcard"></i></i> <span> department</a>
+                            </li>
 
 
                     </ul>
@@ -221,6 +229,4 @@ if ($user_stock == 1) {
                     });
                 }
             });
-
-
         </script>

@@ -215,7 +215,7 @@ function cartDetailHr($conn)
 //<----------------------------- ส่วนของ withdraw -------------------------------------------------->
 
 function orderHead($conn, $stock)
-{   
+{
     $status = 'P';
     $order_sql = "SELECT cart.cart_id, 
                          user.us_name, 
@@ -238,10 +238,105 @@ function orderHead($conn, $stock)
 }
 
 //<----------------------------- ส่วนของ withdraw -------------------------------------------------->
+//<----------------------------- ส่วนของ withdraw User -------------------------------------------------->
+function orderHeadUser($conn, $us_id)
+{
+    $excluded_status = 'P';
+    $order_user_sql = "SELECT cart.cart_id, 
+                             user.us_name, 
+                             department.dept_name, 
+                             cart.cart_date, 
+                             cart.cart_time, 
+                             cart_status.cart_status
+                      FROM cart 
+                      LEFT JOIN user ON cart.us_id = user.us_id
+                      LEFT JOIN department ON cart.dept_id = department.dept_id
+                      LEFT JOIN cart_status ON cart.cart_status_id = cart_status.cart_status_id
+                      WHERE cart.cart_status_id = ? AND cart.us_id = ?
+                      ORDER BY cart.cart_date DESC, cart.cart_time DESC";
+
+    $order_head_user_stmt = mysqli_prepare($conn, $order_user_sql);
+    mysqli_stmt_bind_param($order_head_user_stmt, "si", $excluded_status, $us_id);
+    mysqli_stmt_execute($order_head_user_stmt);
+
+    $result_order_head_user = $order_head_user_stmt->get_result();
+    return $result_order_head_user;
+}
 
 
+//<----------------------------- ส่วนของ withdraw User -------------------------------------------------->
 
+//<----------------------------- ส่วนของ history Admin -------------------------------------------------->
+function orderHistory($conn, $stock)
+{
+    // Statuses to include
+    $included_statuses = ['A', 'R'];
 
+    // Convert the statuses to a string format for use in the SQL query
+    $status_placeholders = implode(',', array_fill(0, count($included_statuses), '?'));
+
+    $order_user_sql = "SELECT cart.cart_id, 
+                             user.us_name, 
+                             department.dept_name, 
+                             cart.cart_date, 
+                             cart.cart_time, 
+                             cart_status.cart_status
+                      FROM cart 
+                      LEFT JOIN user ON cart.us_id = user.us_id
+                      LEFT JOIN department ON cart.dept_id = department.dept_id
+                      LEFT JOIN cart_status ON cart.cart_status_id = cart_status.cart_status_id
+                      WHERE cart.cart_status_id IN ($status_placeholders) AND cart.st_id = ?
+                      ORDER BY cart.cart_date DESC, cart.cart_time DESC";
+
+    $order_history_stmt = mysqli_prepare($conn, $order_user_sql);
+
+    // Bind the status parameters
+    $status_params = array_merge($included_statuses, [$stock]);
+    mysqli_stmt_bind_param($order_history_stmt, str_repeat('s', count($included_statuses)) . 'i', ...$status_params);
+
+    mysqli_stmt_execute($order_history_stmt);
+
+    $result_order_history = $order_history_stmt->get_result();
+    return $result_order_history;
+}
+
+//<----------------------------- ส่วนของ history Admin -------------------------------------------------->
+
+//<----------------------------- ส่วนของ history User -------------------------------------------------->
+function orderHistoryUser($conn, $us_id)
+{
+    // Statuses to include
+    $included_statuses = ['A', 'R'];
+
+    // Convert the statuses to a string format for use in the SQL query
+    $status_placeholders = implode(',', array_fill(0, count($included_statuses), '?'));
+
+    $order_user_sql = "SELECT cart.cart_id, 
+                             user.us_name, 
+                             department.dept_name, 
+                             cart.cart_date, 
+                             cart.cart_time, 
+                             cart_status.cart_status
+                      FROM cart 
+                      LEFT JOIN user ON cart.us_id = user.us_id
+                      LEFT JOIN department ON cart.dept_id = department.dept_id
+                      LEFT JOIN cart_status ON cart.cart_status_id = cart_status.cart_status_id
+                      WHERE cart.cart_status_id IN ($status_placeholders) AND cart.us_id = ?
+                      ORDER BY cart.cart_date DESC, cart.cart_time DESC";
+
+    $order_head_user_stmt = mysqli_prepare($conn, $order_user_sql);
+
+    // Bind the status parameters
+    $status_params = array_merge($included_statuses, [$us_id]);
+    mysqli_stmt_bind_param($order_head_user_stmt, str_repeat('s', count($included_statuses)) . 'i', ...$status_params);
+
+    mysqli_stmt_execute($order_head_user_stmt);
+
+    $result_order_head_user = $order_head_user_stmt->get_result();
+    return $result_order_head_user;
+}
+
+//<----------------------------- ส่วนของ history User -------------------------------------------------->
 
 
 //<----------------------------- ส่วนของ Admin -------------------------------------------------->

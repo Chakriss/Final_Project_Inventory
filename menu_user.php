@@ -41,21 +41,25 @@
 
                         <li class="sidebar-item ">
                             <a href="stock_it.php" class='sidebar-link'>
-                                <i class="bi bi-stack"></i>
+                                <i class="bi bi-database"></i>
                                 <span>Stock IT</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item ">
                             <a href="stock_hr.php" class='sidebar-link'>
-                                <i class="bi bi-stack"></i>
+                                <i class="bi bi-database"></i>
                                 <span>Stock HR</span>
                             </a>
                         </li>
+                        
+                        <li class="sidebar-item">
+                            <a href="user_cart_status.php" class='sidebar-link'> <i class="bi bi-cart-check-fill"></i></i> <span>Order</span> <span id="withdraw_count"></span></a>
+                        </li>
 
-
-                        <li class="sidebar-title">Forms &amp; Tables</li>
-
+                        <li class="sidebar-item">
+                            <a href="user_cart_history.php" class='sidebar-link'> <i class="bi bi-clock-history"></i></i> <span>History</span></a>
+                        </li>
 
                     </ul>
                 </div>
@@ -149,5 +153,44 @@
 
                 // Call function to handle initial state
                 scrollToActiveSidebarItem();
+            });
+
+
+            //นับจำนวนสินค้าที่อยู่ในรถเข็นขึ้น show ที่ปุ่ม
+            $(document).ready(function() {
+                // ดึงค่า withdraw_count จาก Local Storage ถ้ามี
+                let savedWithdrawCount = localStorage.getItem('withdraw_count');
+                if (savedWithdrawCount !== null) {
+                    $('#withdraw_count').text(savedWithdrawCount);
+                }
+
+                // Fetch the cart count on page load
+                updateCartCount();
+
+                function updateCartCount() {
+                    $.ajax({
+                        url: '/Final_Project/api/api_withdraw_user_count.php', // Adjust the path as needed
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response); // ตรวจสอบว่าข้อมูลมาถูกต้อง
+                            if (response.status === "success") {
+                                console.log("Updating withdraw_count to:", response.total_items);
+                                $('#withdraw_count').text(response.total_items);
+
+                                // เก็บค่าใน Local Storage
+                                localStorage.setItem('withdraw_count', response.total_items);
+                            } else {
+                                console.log("API status is not 'success'");
+                                $('#withdraw_count').text(0); // Fallback if something goes wrong
+                                localStorage.setItem('withdraw_count', 0);
+                            }
+                        },
+                        error: function() {
+                            $('#withdraw_count').text(0); // Fallback in case of error
+                            localStorage.setItem('withdraw_count', 0);
+                        }
+                    });
+                }
             });
         </script>

@@ -241,7 +241,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                             <img id="imagePreview_${formCount}" src="" alt="Image Preview" style="display:block; margin-top:10px; max-width: 100%; height: auto;">
                                             <small class="form-text text-muted">Allowed file types: jpeg, jpg, png only / อัพโหลดรูปภาพได้แค่ jpeg, jpg, png เท่านั้น</small>
                                         </div>
-                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeProductForm('product-form-${formCount}')">ลบฟอร์ม</button>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeProductForm('product-form-${formCount}')">Delete Form</button>
                                     </div>
                                 </div>
                                 <hr>
