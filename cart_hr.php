@@ -8,7 +8,7 @@ if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk"
 }
 
 //เรียกใช้ฟังชันดึงข้อมูลใน cart
-$cart_data = cartDetailIt($conn);
+$cart_data = cartDetailHr($conn);
 $max_cart_id = $cart_data['max_cart_id'];
 $cart_result = $cart_data['cart_result'];
 
@@ -205,7 +205,7 @@ include_once 'navbar.php';
                 </div>
             </div>
             <div class="d-flex justify-content-end mt-3">
-                <a class="btn btn-primary me-2" href="stock_it.php">
+                <a class="btn btn-primary me-2" href="stock_hr.php">
                     Back to Stock
                 </a>
                 <button class="btn btn-success" onclick="comfirmCart()">
@@ -386,7 +386,7 @@ include_once 'navbar.php';
                             timer: 1000,
                             showConfirmButton: false
                         }).then(() => {
-                            window.location.href = "stock_it.php";
+                            window.location.href = "stock_hr.php";
                         });
                     } else {
                         Swal.fire({

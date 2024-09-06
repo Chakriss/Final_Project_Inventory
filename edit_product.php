@@ -40,6 +40,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
     //เรียกใช้ฟังชันดึงสถานะสินค้า
     $result_status = selectStatus($conn);
 
+
 ?>
     <div id="main">
         <div class="page-heading">
@@ -110,7 +111,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
                                 <div class="form-group">
                                     <label for="basicInput">Product Status:</label>
-                                    <select class="choices form-select" id="prod_status">
+                                    <select class="form-select" id="prod_status">
                                         <?php
                                         $selected_status = $row['prod_status'];
                                         while ($status = $result_status->fetch_assoc()) :
@@ -142,7 +143,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
                 </div>
 
-                <button type="button" class="btn btn-secondary btn-fw" onclick="window.location.href='stock_it.php';">Cancle</button>
+                <button type="button" class="btn btn-secondary btn-fw" onclick="window.location.href='<?php echo $stock; ?>';">Cancle</button>
                 <button type="submit" class="btn btn-success btn-fw" onclick="update_product()">Update</button>
 
             </section>
@@ -233,7 +234,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                         showConfirmButton: false
                                     })
                                     .then((result) => {
-                                        window.location.href = 'stock_it.php';
+                                        window.location.href = '<?php echo $stock;?>';
                                     });
                             } else {
                                 Swal.fire({

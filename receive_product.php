@@ -123,16 +123,16 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <div class="d-flex justify-content-between w-100">
-                                        <div>
-                                            <button type="button" class="btn btn-primary mt-3" onclick="addProductRow()">Add Form Product</button>
-                                        </div>
-                                        <div>
-                                            <button class="btn btn-success mt-3 ms-3" onclick="comfirmProduct()">
-                                                <span class="fas fa-check"></span> Confirm
-                                            </button>
-                                        </div>
-                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between w-100">
+                                <div>
+                                    <button type="button" class="btn btn-primary mt-3" onclick="addProductRow()">Add Form Product</button>
+                                </div>
+                                <div>
+                                    <button class="btn btn-success mt-3 ms-3" onclick="comfirmProduct()">
+                                        <span class="fas fa-check"></span> Confirm
+                                    </button>
                                 </div>
                             </div>
                         </div>

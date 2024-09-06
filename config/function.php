@@ -132,7 +132,7 @@ function selectStatusUser($conn)
 
 
 //<----------------------------- ส่วนของ cart -------------------------------------------------->
-function cartDetail($conn)
+function cartDetailIt($conn)
 {
     $us_id = $_SESSION['user_id'];
     $stock = 1;  // Assuming stock ID is fixed for the query
@@ -170,7 +170,79 @@ function cartDetail($conn)
     // Return both max_cart_id and the result set
     return ['max_cart_id' => $max_cart_id, 'cart_result' => $cart_result];
 }
+
+function cartDetailHr($conn)
+{
+    $us_id = $_SESSION['user_id'];
+    $stock = 2;  // Assuming stock ID is fixed for the query
+    $status = 'TBC';  // Assuming 'WC' is the status code for active carts
+
+    // Step 1: Get the maximum cart_id
+    $max_cart_sql = "SELECT MAX(cart_id) as max_cart_id FROM cart 
+                     WHERE st_id = ? AND us_id = ? AND cart_status_id = ?";
+    $max_cart_stmt = mysqli_prepare($conn, $max_cart_sql);
+    mysqli_stmt_bind_param($max_cart_stmt, "iis", $stock, $us_id, $status);
+    mysqli_stmt_execute($max_cart_stmt);
+    mysqli_stmt_bind_result($max_cart_stmt, $max_cart_id);
+    mysqli_stmt_fetch($max_cart_stmt);
+    mysqli_stmt_close($max_cart_stmt);
+
+    // Step 2: Fetch cart details based on max_cart_id
+    $cart_sql = "SELECT cart_detail.cart_detail_id,
+                        cart_detail.prod_id,
+                        product.prod_name, 
+                        cart_detail.cart_amount, 
+                        cart_detail.cart_detail, 
+                        cart_status.cart_status, 
+                        cart_detail.cart_status_id
+                FROM cart_detail
+                LEFT JOIN product ON cart_detail.prod_id = product.prod_id
+                LEFT JOIN cart_status ON cart_detail.cart_status_id = cart_status.cart_status_id
+                WHERE cart_detail.cart_id = ?";
+    $cart_stmt = mysqli_prepare($conn, $cart_sql);
+    mysqli_stmt_bind_param($cart_stmt, "i", $max_cart_id);
+    mysqli_stmt_execute($cart_stmt);
+
+    // Get the result
+    $cart_result = mysqli_stmt_get_result($cart_stmt);
+
+    // Return both max_cart_id and the result set
+    return ['max_cart_id' => $max_cart_id, 'cart_result' => $cart_result];
+}
 //<----------------------------- ส่วนของ cart -------------------------------------------------->
+
+
+//<----------------------------- ส่วนของ withdraw -------------------------------------------------->
+
+function orderHead($conn, $stock)
+{   
+    $status = 'P';
+    $order_sql = "SELECT cart.cart_id, 
+                         user.us_name, 
+                         department.dept_name, 
+                         cart.cart_date, 
+                         cart.cart_time, 
+                         cart_status.cart_status
+                         FROM cart 
+                         LEFT JOIN user ON cart.us_id = user.us_id
+                         LEFT JOIN department ON cart.dept_id = department.dept_id
+                         LEFT JOIN cart_status ON cart.cart_status_id = cart_status.cart_status_id
+                         WHERE cart.cart_status_id = ? AND cart.st_id = ?";
+
+    $order_head_stmt = mysqli_prepare($conn, $order_sql);
+    mysqli_stmt_bind_param($order_head_stmt, "si", $status, $stock);
+    mysqli_stmt_execute($order_head_stmt);
+
+    $result_order_head = $order_head_stmt->get_result();
+    return $result_order_head;
+}
+
+//<----------------------------- ส่วนของ withdraw -------------------------------------------------->
+
+
+
+
+
 
 //<----------------------------- ส่วนของ Admin -------------------------------------------------->
 function selectAdmin($conn)

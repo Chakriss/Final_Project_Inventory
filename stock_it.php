@@ -112,10 +112,10 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                         </td>
                                         <td align="center"><?php echo $row['prod_name']; ?></td>
                                         <td align="center"><?php echo $row['prod_detail']; ?></td>
-                                        <td align="right" style="color: <?php echo ($row['prod_amount'] <= $row['prod_amount_min']) ? 'red' : ''; ?>;">
+                                        <td align="center" style="color: <?php echo ($row['prod_amount'] <= $row['prod_amount_min']) ? 'red' : ''; ?>;">
                                             <?php echo $row['prod_amount']; ?>
                                         </td>
-                                        <td align="right"><?php echo $row['prod_price']; ?></td>
+                                        <td align="center"><?php echo $row['prod_price']; ?></td>
                                         <td align="center"><?php echo $row['prod_unit']; ?></td>
                                         <td align="center"><?php echo $row['prod_type_desc']; ?></td>
                                         <td align="center">
@@ -683,7 +683,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
             function updateCartCount() {
                 $.ajax({
-                    url: '/Final_Project/api/api_cart_count.php', // Adjust the path as needed
+                    url: '/Final_Project/api/api_cart_count_it.php', // Adjust the path as needed
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {

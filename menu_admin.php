@@ -55,7 +55,7 @@ if ($user_stock == 1) {
                         </li>
 
                         <li class="sidebar-item">
-                            <a href="#" class='sidebar-link'> <i class="bi bi-cart-check-fill"></i></i> <span>Withdraw</span>  <span id="withdraw_count"></span></a>
+                            <a href="withdraw.php" class='sidebar-link'> <i class="bi bi-cart-check-fill"></i></i> <span>Withdraw</span> <span id="withdraw_count"></span></a>
                         </li>
 
                         <li class="sidebar-item">
@@ -88,6 +88,7 @@ if ($user_stock == 1) {
                         <li class="sidebar-item">
                             <a href="department.php" class='sidebar-link'> <i class="bi bi-person-vcard"></i></i> <span> department</a>
                         </li>
+
 
                     </ul>
                 </div>
@@ -220,4 +221,6 @@ if ($user_stock == 1) {
                     });
                 }
             });
+
+
         </script>
