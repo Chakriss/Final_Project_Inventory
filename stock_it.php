@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-// include_once 'config/connect_db.php';
+
 include_once 'config/function.php';
 
 
@@ -77,13 +77,14 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             <section class="section">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <!-- Button trigger for Add Product form modal -->
-                        <button type="button" class="btn btn-primary" data-bs-backdrop="false" data-bs-toggle="modal"
-                            data-bs-target="#modalAddProduct">
-                            + New Product
-                        </button>
-
-                        <a href="cart_it.php" class="btn btn-primary">
+                        <?php if ($_SESSION["user_level"] !== "U") : ?>
+                            <!-- Button trigger for Add Product form modal -->
+                            <button type="button" class="btn btn-primary" data-bs-backdrop="false" data-bs-toggle="modal"
+                                data-bs-target="#modalAddProduct">
+                                + New Product
+                            </button>
+                        <?php endif; ?>
+                        <a href="cart_it.php" class="btn btn-warning">
                             <span class="fas fa-shopping-cart"></span>
                             <span id="cart_count">0</span></a>
 
@@ -97,7 +98,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <th style="text-align: center;">Name</th>
                                     <th style="text-align: center;">Detail</th>
                                     <th style="text-align: center;">Amount</th>
-                                    <th style="text-align: center;">Price(baht)</th>
+                                    <?php if ($_SESSION["user_level"] !== "U") : ?>
+                                        <th style="text-align: center;">Price(baht)</th>
+                                    <?php endif; ?>
                                     <th style="text-align: center;">Unit</th>
                                     <th style="text-align: center;">Type</th>
                                     <th style="text-align: center;">Action</th>
@@ -115,7 +118,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                         <td align="center" style="color: <?php echo ($row['prod_amount'] <= $row['prod_amount_min']) ? 'red' : ''; ?>;">
                                             <?php echo $row['prod_amount']; ?>
                                         </td>
-                                        <td align="center"><?php echo $row['prod_price']; ?></td>
+                                        <?php if ($_SESSION["user_level"] !== "U") : ?>
+                                            <td align="center"><?php echo $row['prod_price']; ?></td>
+                                        <?php endif; ?>
                                         <td align="center"><?php echo $row['prod_unit']; ?></td>
                                         <td align="center"><?php echo $row['prod_type_desc']; ?></td>
                                         <td align="center">
@@ -131,13 +136,15 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                                 <span class="fas fa-cart-plus"></span> Cart
                                             </button>
 
-                                            <a href="edit_product.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-warning">
-                                                <span class="fas fa-edit"></span>
-                                                Edit</a>
+                                            <?php if ($_SESSION["user_level"] !== "U") : ?>
+                                                <a href="edit_product.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-warning">
+                                                    <span class="fas fa-edit"></span>
+                                                    Edit</a>
 
-                                            <button class="btn btn-danger" onclick="deleteProduct(<?php echo $row['prod_id']; ?>)">
-                                                <span class="fas fa-trash-alt"></span>
-                                                Delete</button>
+                                                <button class="btn btn-danger" onclick="deleteProduct(<?php echo $row['prod_id']; ?>)">
+                                                    <span class="fas fa-trash-alt"></span>
+                                                    Delete</button>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                 <?php endwhile ?>

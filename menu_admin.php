@@ -79,23 +79,32 @@ if ($user_stock == 1) {
                         </li>
 
                         <!-- Add other menu items based on user permissions -->
-                        <li class="sidebar-title">History</li>
+                        <li class="sidebar-item  has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-clock-history"></i>
+                                <span>History</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="History_withdraw.php"><span>Withdraw <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                                </li>
 
-                            <li class="sidebar-item">
-                                <a href="History_withdraw.php" class='sidebar-link'> <i class="bi bi-clock-history"></i></i> <span>Withdraw History <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
-                            </li>
-
+                                <li class="submenu-item">
+                                    <a href="History_receive.php"><span>Receive <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                                </li>
+                            </ul>
+                        </li>
 
 
                         <li class="sidebar-title">Account Setting</li>
 
-                            <li class="sidebar-item">
-                                <a href="account_set.php" class='sidebar-link'> <i class="bi bi-people-fill"></i></i> <span> Users</a>
-                            </li>
+                        <li class="sidebar-item">
+                            <a href="account_set.php" class='sidebar-link'> <i class="bi bi-people-fill"></i></i> <span> Users</a>
+                        </li>
 
-                            <li class="sidebar-item">
-                                <a href="department.php" class='sidebar-link'> <i class="bi bi-person-vcard"></i></i> <span> department</a>
-                            </li>
+                        <li class="sidebar-item">
+                            <a href="department.php" class='sidebar-link'> <i class="bi bi-person-vcard"></i></i> <span> department</a>
+                        </li>
 
 
                     </ul>

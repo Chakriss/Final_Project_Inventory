@@ -82,7 +82,7 @@
                                 title: "Login successfully!",
                                 text: "Welcome To Inventory Management System",
                                 icon: "success",
-                                timer: 1500,
+                                timer: 1000,
                                 showConfirmButton: false
                             }).then(() => {
                                 window.location.href = result.level;

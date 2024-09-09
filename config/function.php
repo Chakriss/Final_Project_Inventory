@@ -243,13 +243,11 @@ function orderHeadUser($conn, $us_id)
 {
     $excluded_status = 'P';
     $order_user_sql = "SELECT cart.cart_id, 
-                             user.us_name, 
                              department.dept_name, 
                              cart.cart_date, 
                              cart.cart_time, 
                              cart_status.cart_status
                       FROM cart 
-                      LEFT JOIN user ON cart.us_id = user.us_id
                       LEFT JOIN department ON cart.dept_id = department.dept_id
                       LEFT JOIN cart_status ON cart.cart_status_id = cart_status.cart_status_id
                       WHERE cart.cart_status_id = ? AND cart.us_id = ?
@@ -267,6 +265,8 @@ function orderHeadUser($conn, $us_id)
 //<----------------------------- ส่วนของ withdraw User -------------------------------------------------->
 
 //<----------------------------- ส่วนของ history Admin -------------------------------------------------->
+
+//ประวัติออเดอร์
 function orderHistory($conn, $stock)
 {
     // Statuses to include
@@ -300,7 +300,29 @@ function orderHistory($conn, $stock)
     return $result_order_history;
 }
 
+
+//ประวัติสินค้าเข้า
+
+
 //<----------------------------- ส่วนของ history Admin -------------------------------------------------->
+function receiveHistory($conn, $stock)
+{
+    $receive_sql = "SELECT receive_product.rec_id,
+                           receive_product.rec_date,
+                           receive_product.rec_time,
+                           user.us_name 
+                    FROM receive_product 
+                    LEFT JOIN user ON receive_product.us_id = user.us_id
+                    WHERE receive_product.st_id = ?
+                    ORDER BY receive_product.rec_date DESC, receive_product.rec_time DESC";
+
+    $receive_history_stmt = mysqli_prepare($conn, $receive_sql);
+    mysqli_stmt_bind_param($receive_history_stmt, "i", $stock);
+    // Execute คำสั่ง SQL
+    $receive_history_stmt->execute();
+    $result_receive = $receive_history_stmt->get_result();
+    return $result_receive;
+}
 
 //<----------------------------- ส่วนของ history User -------------------------------------------------->
 function orderHistoryUser($conn, $us_id)
@@ -312,13 +334,11 @@ function orderHistoryUser($conn, $us_id)
     $status_placeholders = implode(',', array_fill(0, count($included_statuses), '?'));
 
     $order_user_sql = "SELECT cart.cart_id, 
-                             user.us_name, 
                              department.dept_name, 
                              cart.cart_date, 
                              cart.cart_time, 
                              cart_status.cart_status
                       FROM cart 
-                      LEFT JOIN user ON cart.us_id = user.us_id
                       LEFT JOIN department ON cart.dept_id = department.dept_id
                       LEFT JOIN cart_status ON cart.cart_status_id = cart_status.cart_status_id
                       WHERE cart.cart_status_id IN ($status_placeholders) AND cart.us_id = ?

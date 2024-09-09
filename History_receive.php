@@ -14,7 +14,7 @@ if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk"
 if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION["user_stock"] == 2)) {
     $stock = $_SESSION["user_stock"];
 
-    $result_order_history = orderHistory($conn, $stock);
+    $result_receive_history = receiveHistory($conn, $stock);
 
     $user_stock = $_SESSION["user_stock"];
 
@@ -108,11 +108,11 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <span>History</span>
                                 </a>
                                 <ul class="submenu active">
-                                    <li class="submenu-item active">
+                                    <li class="submenu-item">
                                         <a href="History_withdraw.php"><span>Withdraw <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
                                     </li>
 
-                                    <li class="submenu-item">
+                                    <li class="submenu-item active">
                                         <a href="History_receive.php"><span>Receive <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
                                     </li>
                                 </ul>
@@ -134,6 +134,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 </div>
             </div>
             <!-- End Sidebar -->
+
             <?php
             include_once 'navbar.php';
             ?>
@@ -144,8 +145,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     <div class="page-title">
                         <div class="row align-items-center">
                             <div class="col-12 col-md-6 order-md-1 order-last">
-                                <h3 class="mb-2">History Withdraw</h3>
-                                <!-- <p class="mb-0">Click on the order to approve or disapprove it.</p> -->
+                                <h3 class="mb-2">History Receive</h3>
                             </div>
                         </div>
                     </div>
@@ -158,43 +158,19 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 <table class="table table-striped table-hover" id="table1">
                                     <thead>
                                         <tr>
-                                            <th style="text-align: center;">Order ID</th>
+                                            <th style="text-align: center;">Receive ID</th>
                                             <th style="text-align: center;">User Name</th>
-                                            <th style="text-align: center;">Department</th>
                                             <th style="text-align: center;">Date</th>
                                             <th style="text-align: center;">Time</th>
-                                            <th style="text-align: center;">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php while ($row = $result_order_history->fetch_assoc()) : ?>
-                                            <tr id="row_<?php echo $row['cart_id']; ?>" class="order-row" data-order-id="<?php echo $row['cart_id']; ?>">
-                                                <td align="center"><?php echo $row['cart_id']; ?></td>
+                                        <?php while ($row = $result_receive_history->fetch_assoc()) : ?>
+                                            <tr id="row_<?php echo $row['rec_id']; ?>" class="order-row" data-order-id="<?php echo $row['rec_id']; ?>">
+                                                <td align="center"><?php echo $row['rec_id']; ?></td>
                                                 <td align="center"><?php echo $row['us_name']; ?></td>
-                                                <td align="center"><?php echo $row['dept_name']; ?></td>
-                                                <td align="center"><?php echo $row['cart_date']; ?></td>
-                                                <td align="center"><?php echo $row['cart_time']; ?></td>
-                                                <td align="center">
-                                                    <?php
-                                                    // Determine the badge class based on the cart_status value
-                                                    switch ($row['cart_status']) {
-                                                        case 'Pending':
-                                                            $badge_class = 'badge bg-warning';
-                                                            break;
-                                                        case 'Approved':
-                                                            $badge_class = 'badge bg-success';
-                                                            break;
-                                                        case 'Reject':
-                                                            $badge_class = 'badge bg-danger';
-                                                            break;
-                                                        default:
-                                                            $badge_class = 'badge bg-secondary'; // Default class if status is unknown
-                                                            break;
-                                                    }
-                                                    ?>
-                                                    <span class="<?php echo $badge_class; ?>"><?php echo $row['cart_status']; ?></span>
-                                                </td>
-
+                                                <td align="center"><?php echo $row['rec_date']; ?></td>
+                                                <td align="center"><?php echo $row['rec_time']; ?></td>
                                             </tr>
                                         <?php endwhile ?>
                                     </tbody>
@@ -278,7 +254,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
                         // Make an AJAX request to fetch order details
                         $.ajax({
-                            url: '/Final_Project/api/api_order_details_user.php', // PHP file that handles fetching order details
+                            url: '/Final_Project/api/api_receive_details.php', // PHP file that handles fetching order details
                             method: 'GET',
                             data: {
                                 order_id: orderId

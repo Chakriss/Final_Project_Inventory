@@ -79,7 +79,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             </li>
 
                             <li class="sidebar-item">
-                                <a href="#" class='sidebar-link'> <i class="bi bi-cart-check-fill"></i> </i> <span>Withdraw</span> <span id="withdraw_count"></span></a>
+                                <a href="withdraw.php" class='sidebar-link'> <i class="bi bi-cart-check-fill"></i> </i> <span>Withdraw</span> <span id="withdraw_count"></span></a>
                             </li>
 
                             <li class="sidebar-item">
@@ -103,6 +103,22 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             </li>
 
                             <!-- Add other menu items based on user permissions -->
+                            <li class="sidebar-item  has-sub">
+                                <a href="#" class='sidebar-link'>
+                                    <i class="bi bi-clock-history"></i>
+                                    <span>History</span>
+                                </a>
+                                <ul class="submenu">
+                                    <li class="submenu-item">
+                                        <a href="History_withdraw.php"><span>Withdraw <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                                    </li>
+
+                                    <li class="submenu-item">
+                                        <a href="History_receive.php"><span>Receive <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                                    </li>
+                                </ul>
+                            </li>
+
                             <li class="sidebar-title">Account Setting</li>
 
                             <li class="sidebar-item">

@@ -80,7 +80,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             </li>
 
                             <li class="sidebar-item">
-                                <a href="#" class='sidebar-link'> <i class="bi bi-cart-check-fill"></i> </i> <span>Withdraw</span>  <span id="withdraw_count"></span></a>
+                                <a href="withdraw.php" class='sidebar-link'> <i class="bi bi-cart-check-fill"></i> </i> <span>Withdraw</span> <span id="withdraw_count"></span></a>
                             </li>
 
                             <li class="sidebar-item">
@@ -104,6 +104,22 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             </li>
 
                             <!-- Add other menu items based on user permissions -->
+                            <li class="sidebar-item  has-sub">
+                                <a href="#" class='sidebar-link'>
+                                    <i class="bi bi-clock-history"></i>
+                                    <span>History</span>
+                                </a>
+                                <ul class="submenu">
+                                    <li class="submenu-item">
+                                        <a href="History_withdraw.php"><span>Withdraw <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                                    </li>
+
+                                    <li class="submenu-item">
+                                        <a href="History_receive.php"><span>Receive <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
+                                    </li>
+                                </ul>
+                            </li>
+
                             <li class="sidebar-title">Account Setting</li>
 
                             <li class="sidebar-item">
@@ -462,42 +478,42 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 }
 
                 //นับจำนวนสินค้าที่อยู่ในรถเข็นขึ้น show ที่ปุ่ม
-            $(document).ready(function() {
-                // ดึงค่า withdraw_count จาก Local Storage ถ้ามี
-                let savedWithdrawCount = localStorage.getItem('withdraw_count');
-                if (savedWithdrawCount !== null) {
-                    $('#withdraw_count').text(savedWithdrawCount);
-                }
+                $(document).ready(function() {
+                    // ดึงค่า withdraw_count จาก Local Storage ถ้ามี
+                    let savedWithdrawCount = localStorage.getItem('withdraw_count');
+                    if (savedWithdrawCount !== null) {
+                        $('#withdraw_count').text(savedWithdrawCount);
+                    }
 
-                // Fetch the cart count on page load
-                updateCartCount();
+                    // Fetch the cart count on page load
+                    updateCartCount();
 
-                function updateCartCount() {
-                    $.ajax({
-                        url: '/Final_Project/api/api_withdraw_count.php', // Adjust the path as needed
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(response) {
-                            console.log(response); // ตรวจสอบว่าข้อมูลมาถูกต้อง
-                            if (response.status === "success") {
-                                console.log("Updating withdraw_count to:", response.total_items);
-                                $('#withdraw_count').text(response.total_items);
+                    function updateCartCount() {
+                        $.ajax({
+                            url: '/Final_Project/api/api_withdraw_count.php', // Adjust the path as needed
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(response) {
+                                console.log(response); // ตรวจสอบว่าข้อมูลมาถูกต้อง
+                                if (response.status === "success") {
+                                    console.log("Updating withdraw_count to:", response.total_items);
+                                    $('#withdraw_count').text(response.total_items);
 
-                                // เก็บค่าใน Local Storage
-                                localStorage.setItem('withdraw_count', response.total_items);
-                            } else {
-                                console.log("API status is not 'success'");
-                                $('#withdraw_count').text(0); // Fallback if something goes wrong
+                                    // เก็บค่าใน Local Storage
+                                    localStorage.setItem('withdraw_count', response.total_items);
+                                } else {
+                                    console.log("API status is not 'success'");
+                                    $('#withdraw_count').text(0); // Fallback if something goes wrong
+                                    localStorage.setItem('withdraw_count', 0);
+                                }
+                            },
+                            error: function() {
+                                $('#withdraw_count').text(0); // Fallback in case of error
                                 localStorage.setItem('withdraw_count', 0);
                             }
-                        },
-                        error: function() {
-                            $('#withdraw_count').text(0); // Fallback in case of error
-                            localStorage.setItem('withdraw_count', 0);
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                });
             </script>
 
     </body>
