@@ -115,22 +115,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 3)) {
         </div>
 
 
-        <!-- ขยายรูปออกมาเป็น Modal -->
-        <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <img id="imageModalSrc" src="" class="img-fluid" alt="Expanded Image">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- ขยายรูปออกมาเป็น Modal -->
-
-
         <!-- Order Details Modal -->
         <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
@@ -211,15 +195,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 3)) {
             });
         });
 
-
-
-        //ขยายรูปออกมา
-        function expandImage(imageSrc) {
-            // Set the image source in the modal
-            $('#imageModalSrc').attr('src', 'photo/' + imageSrc);
-            // Show the modal
-            $('#imageModal').modal('show');
-        }
     </script>
 
 <?php

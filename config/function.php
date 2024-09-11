@@ -151,7 +151,8 @@ function cartDetailIt($conn)
     // Step 2: Fetch cart details based on max_cart_id
     $cart_sql = "SELECT cart_detail.cart_detail_id,
                         cart_detail.prod_id,
-                        product.prod_name, 
+                        product.prod_name,
+                        product.prod_amount, 
                         cart_detail.cart_amount, 
                         cart_detail.cart_detail, 
                         cart_status.cart_status, 
@@ -190,7 +191,8 @@ function cartDetailHr($conn)
     // Step 2: Fetch cart details based on max_cart_id
     $cart_sql = "SELECT cart_detail.cart_detail_id,
                         cart_detail.prod_id,
-                        product.prod_name, 
+                        product.prod_name,
+                        product.prod_amount, 
                         cart_detail.cart_amount, 
                         cart_detail.cart_detail, 
                         cart_status.cart_status, 
@@ -209,6 +211,8 @@ function cartDetailHr($conn)
     // Return both max_cart_id and the result set
     return ['max_cart_id' => $max_cart_id, 'cart_result' => $cart_result];
 }
+
+
 //<----------------------------- ส่วนของ cart -------------------------------------------------->
 
 
@@ -470,3 +474,18 @@ function selectUser($conn)
 
 
 //<----------------------------- ส่วนของ user -------------------------------------------------->
+
+
+//<----------------------------- ส่วนของ Report -------------------------------------------------->
+function selectLowStock($conn, $stock)
+{
+    $sql = "SELECT * FROM product WHERE st_id = ? AND prod_amount <= prod_amount_min";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $stock);
+    // Execute คำสั่ง SQL
+    $stmt->execute();
+    $result_low_stock = $stmt->get_result();
+    return $result_low_stock;
+}
+
+//<----------------------------- ส่วนของ Report -------------------------------------------------->

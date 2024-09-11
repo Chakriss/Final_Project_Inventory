@@ -112,6 +112,22 @@ if ($user_stock == 1) {
                             </ul>
                         </li>
 
+                        <li class="sidebar-item  has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-clipboard2-fill"></i>
+                                <span>Report</span>
+                            </a>
+                            <ul class="submenu">
+                                <li class="submenu-item">
+                                    <a href="report_product_min.php"><span> Product Low</a>
+                                </li>
+
+                                <li class="submenu-item">
+                                    <a href="#"><span> Report</a>
+                                </li>
+                            </ul>
+                        </li>
+
                     </ul>
                 </div>
                 <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>

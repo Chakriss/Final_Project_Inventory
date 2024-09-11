@@ -177,6 +177,7 @@ include_once 'navbar.php';
                             <tr>
                                 <th style="text-align: center;">Product ID</th>
                                 <th style="text-align: center;">Name</th>
+                                <th style="text-align: center;">Total Amount</th>
                                 <th style="text-align: center;">Amount</th>
                                 <th style="text-align: center;">Detail</th>
                                 <th style="text-align: center;">Action</th>
@@ -187,6 +188,7 @@ include_once 'navbar.php';
                                 <tr id="row_<?php echo $row['cart_detail_id']; ?>">
                                     <td align="center"><?php echo $row['prod_id']; ?></td>
                                     <td align="center"><?php echo $row['prod_name']; ?></td>
+                                    <td align="center"><?php echo $row['prod_amount']; ?></td>
                                     <td align="center">
                                         <button class="quantity-button btn-decrease" onclick="decreaseQuantity(<?php echo $row['cart_detail_id']; ?>)">-</button>
                                         <span id="quantity-<?php echo $row['cart_detail_id']; ?>"><?php echo $row['cart_amount']; ?></span>
