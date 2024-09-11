@@ -8,7 +8,7 @@ if (isset($_POST['order_id'])) {
 
     $data_json = array();
 
-    // เริ่มต้นการทำธุรกรรม
+    // Start transaction
     mysqli_begin_transaction($conn);
 
     try {
@@ -27,6 +27,12 @@ if (isset($_POST['order_id'])) {
 
         // Step 3: Iterate through the results and set flags
         while ($row = mysqli_fetch_assoc($result)) {
+            // Check if any product is still pending (status 'P')
+            if ($row['cart_status_id'] == 'P') {
+                // If a pending status is found, rollback and return an error message
+                throw new Exception("Please choose to allow or deny first.");
+            }
+
             if ($row['cart_status_id'] == 'A') {
                 $hasApproved = true;
                 $isAllRejected = false; // There is at least one approved, so it can't be all rejected
@@ -79,10 +85,10 @@ if (isset($_POST['order_id'])) {
             $data_json = array("status" => "error", "message" => "Please approve or reject the product first.");
         }
 
-        // ถ้าไม่มีข้อผิดพลาด ให้ commit การทำธุรกรรม
+        // Commit the transaction if no errors
         mysqli_commit($conn);
     } catch (Exception $e) {
-        // ถ้ามีข้อผิดพลาด ให้ rollback การทำธุรกรรม
+        // Rollback the transaction in case of error
         mysqli_rollback($conn);
         $data_json = array("status" => "error", "message" => "Transaction failed: " . $e->getMessage());
     }

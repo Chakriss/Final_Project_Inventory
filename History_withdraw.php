@@ -78,10 +78,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             </li>
 
                             <li class="sidebar-item">
-                                <a href="withdraw.php" class='sidebar-link'> <i class="bi bi-cart-check-fill"></i> </i> <span>Withdraw</span> <span id="withdraw_count"></span></a>
-                            </li>
-
-                            <li class="sidebar-item">
                                 <a href="receive_product.php" class='sidebar-link'> <i class="bi bi-database-add"></i></i> <span>Receive the product <?php echo $user_stock == 1 ? 'IT' : 'HR'; ?></span> </a>
                             </li>
 
@@ -101,6 +97,10 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 </ul>
                             </li>
 
+                            <li class="sidebar-item">
+                                <a href="withdraw.php" class='sidebar-link'> <i class="bi bi-cart-check-fill"></i> </i> <span>Withdraw</span> <span id="withdraw_count"></span></a>
+                            </li>
+
                             <!-- Add other menu items based on user permissions -->
                             <li class="sidebar-item active has-sub">
                                 <a href="#" class='sidebar-link'>
@@ -118,14 +118,20 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 </ul>
                             </li>
 
-                            <li class="sidebar-title">Account Setting</li>
+                            <li class="sidebar-item  has-sub">
+                                <a href="#" class='sidebar-link'>
+                                    <i class="bi bi-people-fill"></i>
+                                    <span>Account</span>
+                                </a>
+                                <ul class="submenu">
+                                    <li class="submenu-item">
+                                        <a href="account_set.php"><span> Users</a>
+                                    </li>
 
-                            <li class="sidebar-item">
-                                <a href="account_set.php" class='sidebar-link'> <i class="bi bi-people-fill"></i></i> <span> Users</a>
-                            </li>
-
-                            <li class="sidebar-item">
-                                <a href="department.php" class='sidebar-link'> <i class="bi bi-person-vcard"></i></i> <span> department</a>
+                                    <li class="submenu-item">
+                                        <a href="department.php"><span> department</a>
+                                    </li>
+                                </ul>
                             </li>
 
                         </ul>
