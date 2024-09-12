@@ -145,7 +145,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 </li>
 
                                 <li class="submenu-item">
-                                    <a href="#"><span> Report</a>
+                                <a href="report_popular_product.php"><span> Popular Products</a>
                                 </li>
                             </ul>
                         </li>

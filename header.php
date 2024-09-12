@@ -19,4 +19,5 @@
     <link rel="shortcut icon" href="assets/images/logo/optinova.jpg" type="image/x-icon">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>

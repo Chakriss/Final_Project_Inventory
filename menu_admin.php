@@ -123,7 +123,11 @@ if ($user_stock == 1) {
                                 </li>
 
                                 <li class="submenu-item">
-                                    <a href="#"><span> Report</a>
+                                    <a href="report_popular_product.php"><span> Popular Products</a>
+                                </li>
+
+                                <li class="submenu-item">
+                                    <a href="report_popular_product.php"><span> Popular Products</a>
                                 </li>
                             </ul>
                         </li>
@@ -239,7 +243,7 @@ if ($user_stock == 1) {
                         type: 'GET',
                         dataType: 'json',
                         success: function(response) {
-                            console.log(response); // ตรวจสอบว่าข้อมูลมาถูกต้อง
+                            // console.log(response); // ตรวจสอบว่าข้อมูลมาถูกต้อง
                             if (response.status === "success") {
                                 console.log("Updating withdraw_count to:", response.total_items);
                                 $('#withdraw_count').text(response.total_items);
