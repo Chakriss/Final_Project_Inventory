@@ -477,6 +477,8 @@ function selectUser($conn)
 
 
 //<----------------------------- ส่วนของ Report -------------------------------------------------->
+
+//สินค้าเหลือน้อย
 function selectLowStock($conn, $stock)
 {
     $sql = "SELECT * FROM product WHERE st_id = ? AND prod_amount <= prod_amount_min";
@@ -486,6 +488,168 @@ function selectLowStock($conn, $stock)
     $stmt->execute();
     $result_low_stock = $stmt->get_result();
     return $result_low_stock;
+}
+
+//สินค้ายอดนิยม
+function selectPopularProduct($conn, $stock, $selectedMonth, $selectedYear)
+{
+    $sql = "SELECT product.prod_name, SUM(cart_detail.cart_amount) AS prod_amount
+            FROM cart_detail
+            LEFT JOIN product ON cart_detail.prod_id = product.prod_id
+            LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
+            WHERE cart.st_id = ? 
+            AND cart_detail.cart_status_id = 'A'
+            AND cart.cart_status_id = 'A'
+            AND MONTH(cart.cart_date) = ?
+            AND YEAR(cart.cart_date) = ?
+            GROUP BY cart_detail.prod_id, product.prod_name
+            ORDER BY SUM(cart_detail.cart_amount) DESC LIMIT 10";
+
+    // Prepare the SQL statement
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, "iss", $stock, $selectedMonth, $selectedYear);
+
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch the results
+    $result_popular_product = $stmt->get_result();
+
+    return $result_popular_product;
+}
+
+//แผนกที่เบิกสินค้าเยอะที่สุด
+function selectWithdrawMostProduct($conn, $stock, $selectedMonth, $selectedYear)
+{
+    $sql = "SELECT department.dept_name, SUM(cart_detail.cart_amount) AS prod_amount
+            FROM cart_detail
+            LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
+            LEFT JOIN department ON cart.dept_id = department.dept_id
+            WHERE cart.st_id = ? 
+            AND cart_detail.cart_status_id = 'A'
+            AND cart.cart_status_id = 'A'
+            AND MONTH(cart.cart_date) = ?
+            AND YEAR(cart.cart_date) = ?
+            GROUP BY department.dept_name
+            ORDER BY SUM(cart_detail.cart_amount) DESC LIMIT 10";
+
+    // Prepare the SQL statement
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, "iss", $stock, $selectedMonth, $selectedYear);
+
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch the results
+    $result_withdraw_most_product = $stmt->get_result();
+
+    return $result_withdraw_most_product;
+}
+
+// ดึงข้อมูลสินค้าแยกตามแผนก และเรียงตามยอดรวมการเบิกมากที่สุดขึ้นก่อน
+function selectProductDeptByDept($conn, $stock, $selectedMonth, $selectedYear)
+{
+    $sql = "SELECT department.dept_name, product.prod_name, SUM(cart_detail.cart_amount) AS prod_amount, dept_totals.total_amount
+            FROM cart_detail
+            LEFT JOIN product ON cart_detail.prod_id = product.prod_id
+            LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
+            LEFT JOIN department ON cart.dept_id = department.dept_id
+            LEFT JOIN (
+                SELECT department.dept_id, SUM(cart_detail.cart_amount) AS total_amount
+                FROM cart_detail
+                LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
+                LEFT JOIN department ON cart.dept_id = department.dept_id
+                WHERE cart.st_id = ?
+                AND cart_detail.cart_status_id = 'A'
+                AND cart.cart_status_id = 'A'
+                AND MONTH(cart.cart_date) = ?
+                AND YEAR(cart.cart_date) = ?
+                GROUP BY department.dept_id
+            ) AS dept_totals ON department.dept_id = dept_totals.dept_id
+            WHERE cart.st_id = ?
+            AND cart_detail.cart_status_id = 'A'
+            AND cart.cart_status_id = 'A'
+            AND MONTH(cart.cart_date) = ?
+            AND YEAR(cart.cart_date) = ?
+            GROUP BY department.dept_name, product.prod_name
+            ORDER BY dept_totals.total_amount DESC, SUM(cart_detail.cart_amount) DESC
+            LIMIT 10";
+
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ssssss", $stock, $selectedMonth, $selectedYear, $stock, $selectedMonth, $selectedYear);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    return $result;
+}
+
+
+//แผนกที่เบิกสินค้าที่ราคาเยอะที่สุด
+function selectTotalPriceMost($conn, $stock, $selectedMonth, $selectedYear)
+{
+    $sql = "SELECT department.dept_name, SUM(cart_detail.cart_amount * product.prod_price) AS total_value
+            FROM cart_detail
+            LEFT JOIN product ON cart_detail.prod_id = product.prod_id
+            LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
+            LEFT JOIN department ON cart.dept_id = department.dept_id
+            WHERE cart.st_id = ? 
+            AND cart_detail.cart_status_id = 'A'
+            AND cart.cart_status_id = 'A'
+            AND MONTH(cart.cart_date) = ?
+            AND YEAR(cart.cart_date) = ?
+            GROUP BY department.dept_name
+            ORDER BY total_value DESC
+            LIMIT 10";
+
+    // Prepare the SQL statement
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, "iss", $stock, $selectedMonth, $selectedYear);
+
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch the results
+    $result_total_price_most = $stmt->get_result();
+
+    return $result_total_price_most;
+}
+
+// ดึงข้อมูลสินค้าแยกตามแผนก และเรียงตามยอดรวมการเบิกมากที่แพงที่สุดขึ้นก่อน
+function selectTotalPriceMostByDept($conn, $stock, $selectedMonth, $selectedYear)
+{
+    $sql = "SELECT department.dept_name, product.prod_name, cart_detail.cart_amount, SUM(cart_detail.cart_amount * product.prod_price) AS total_value
+            FROM cart_detail
+            LEFT JOIN product ON cart_detail.prod_id = product.prod_id
+            LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
+            LEFT JOIN department ON cart.dept_id = department.dept_id
+            WHERE cart.st_id = ? 
+            AND cart_detail.cart_status_id = 'A'
+            AND cart.cart_status_id = 'A'
+            AND MONTH(cart.cart_date) = ?
+            AND YEAR(cart.cart_date) = ?
+            GROUP BY department.dept_name, product.prod_name
+            ORDER BY total_value DESC 
+            LIMIT 10";
+
+    // Prepare the SQL statement
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, "iss", $stock, $selectedMonth, $selectedYear);
+
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch the results
+    $result_total_price_by_dept = $stmt->get_result();
+
+    return $result_total_price_by_dept;
 }
 
 //<----------------------------- ส่วนของ Report -------------------------------------------------->

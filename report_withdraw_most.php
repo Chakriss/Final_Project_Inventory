@@ -25,22 +25,26 @@ $currentYear = date('Y');
 $selectedMonth = isset($_POST['month']) ? $_POST['month'] : $currentMonth;
 $selectedYear = isset($_POST['year']) ? $_POST['year'] : $currentYear;
 
+$result_withdraw_most_product = selectWithdrawMostProduct($conn, $stock, $selectedMonth, $selectedYear);
+$result_product_dept = selectProductDeptByDept($conn, $stock, $selectedMonth, $selectedYear);
 
-// Fetch popular products data
-$result_popular_product = selectPopularProduct($conn, $stock, $selectedMonth, $selectedYear);
-
-// Prepare data arrays for the chart
-$product_names = [];
+// Prepare data for the chart
+$dept_names = [];
 $product_amounts = [];
 
-if ($result_popular_product->num_rows > 0) {
-    // Loop through the result set and extract product names and amounts
-    while ($row = $result_popular_product->fetch_assoc()) {
-        $product_names[] = $row['prod_name']; // Add product name to the array
-        $product_amounts[] = (int)$row['prod_amount']; // Add product amount (cast to integer) to the array
+if ($result_withdraw_most_product->num_rows > 0) {
+    while ($row = $result_withdraw_most_product->fetch_assoc()) {
+        $dept_names[] = $row['dept_name'];
+        $product_amounts[] = (int)$row['prod_amount'];
     }
 } else {
-    echo "No data found"; // Handle the case where no data is returned
+    echo "No data found";
+}
+
+// สร้าง array เก็บข้อมูลของแผนกแต่ละแผนก
+$departments = [];
+while ($row = $result_product_dept->fetch_assoc()) {
+    $departments[$row['dept_name']][] = $row;
 }
 
 $user_stock = $_SESSION["user_stock"];
@@ -52,7 +56,6 @@ if ($user_stock == 1) {
     $stock_menu = 'stock_hr.php';
 }
 ?>
-
 
 <body>
     <div id="app">
@@ -148,11 +151,11 @@ if ($user_stock == 1) {
                                     <a href="report_product_min.php"><span> Products Low</a>
                                 </li>
 
-                                <li class="submenu-item active">
+                                <li class="submenu-item">
                                     <a href="report_popular_product.php"><span> Popular Products</a>
                                 </li>
 
-                                <li class="submenu-item">
+                                <li class="submenu-item active">
                                     <a href="report_withdraw_most.php"><span> Department Withdraws Most Products</a>
                                 </li>
 
@@ -177,8 +180,8 @@ if ($user_stock == 1) {
             <div class="page-heading">
                 <div class="page-title">
                     <div class="row">
-                        <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3>Top 10 Popular Products</h3>
+                        <div class="col-12 order-md-1 order-last">
+                            <h3>Top 10 departments that withdraw the most products</h3>
                         </div>
                     </div>
                 </div>
@@ -222,11 +225,41 @@ if ($user_stock == 1) {
                         </div>
                     </div>
                 </section>
+
+                <section class="section">
+                    <h3>Detail </h3>
+                    <?php foreach ($departments as $dept_name => $products) { ?>
+                        <div class="card">
+                            <div class="card-header">
+                                <h4><?php echo $dept_name; ?></h4>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($products as $product) { ?>
+                                            <tr>
+                                                <td><?php echo $product['prod_name']; ?></td>
+                                                <td><?php echo $product['prod_amount']; ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </section>
+
             </div>
 
             <script>
                 // PHP arrays passed to JavaScript
-                var productNames = <?php echo json_encode($product_names); ?>;
+                var productNames = <?php echo json_encode($dept_names); ?>;
                 var productAmounts = <?php echo json_encode($product_amounts); ?>;
 
                 // Create the chart options

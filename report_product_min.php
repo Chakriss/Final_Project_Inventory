@@ -135,20 +135,28 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                             </li>
 
                             <li class="sidebar-item active has-sub">
-                            <a href="#" class='sidebar-link'>
-                                <i class="bi bi-clipboard2-fill"></i>
-                                <span>Report</span>
-                            </a>
-                            <ul class="submenu active">
-                                <li class="submenu-item active">
-                                    <a href="report_product_min.php"><span> Product Low</a>
-                                </li>
+                                <a href="#" class='sidebar-link'>
+                                    <i class="bi bi-clipboard2-fill"></i>
+                                    <span>Report</span>
+                                </a>
+                                <ul class="submenu active">
+                                    <li class="submenu-item active">
+                                        <a href="report_product_min.php"><span> Products Low</a>
+                                    </li>
 
-                                <li class="submenu-item">
-                                <a href="report_popular_product.php"><span> Popular Products</a>
-                                </li>
-                            </ul>
-                        </li>
+                                    <li class="submenu-item">
+                                        <a href="report_popular_product.php"><span> Popular Products</a>
+                                    </li>
+
+                                    <li class="submenu-item">
+                                        <a href="report_withdraw_most.php"><span> Department Withdraws Most Products</a>
+                                    </li>
+
+                                    <li class="submenu-item">
+                                        <a href="report_totalprice_most.php"><span> Department Total Price Most Products</a>
+                                    </li>
+                                </ul>
+                            </li>
 
                         </ul>
                     </div>
@@ -229,7 +237,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
 
             <script>
-
                 //นับจำนวนสินค้าที่อยู่ในรถเข็นขึ้น show ที่ปุ่ม
                 $(document).ready(function() {
                     // ดึงค่า withdraw_count จาก Local Storage ถ้ามี

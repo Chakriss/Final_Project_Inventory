@@ -134,6 +134,30 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 </ul>
                             </li>
 
+                            <li class="sidebar-item has-sub">
+                                <a href="#" class='sidebar-link'>
+                                    <i class="bi bi-clipboard2-fill"></i>
+                                    <span>Report</span>
+                                </a>
+                                <ul class="submenu">
+                                    <li class="submenu-item">
+                                        <a href="report_product_min.php"><span> Products Low</a>
+                                    </li>
+
+                                    <li class="submenu-item">
+                                        <a href="report_popular_product.php"><span> Popular Products</a>
+                                    </li>
+
+                                    <li class="submenu-item">
+                                        <a href="report_withdraw_most.php"><span> Department Withdraws Most Products</a>
+                                    </li>
+
+                                    <li class="submenu-item">
+                                        <a href="report_totalprice_most.php"><span> Department Total Price Most Products</a>
+                                    </li>
+                                </ul>
+                            </li>
+
                         </ul>
                     </div>
                     <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>

@@ -119,7 +119,7 @@ if ($user_stock == 1) {
                             </a>
                             <ul class="submenu">
                                 <li class="submenu-item">
-                                    <a href="report_product_min.php"><span> Product Low</a>
+                                    <a href="report_product_min.php"><span> Products Low</a>
                                 </li>
 
                                 <li class="submenu-item">
@@ -127,7 +127,11 @@ if ($user_stock == 1) {
                                 </li>
 
                                 <li class="submenu-item">
-                                    <a href="report_popular_product.php"><span> Popular Products</a>
+                                    <a href="report_withdraw_most.php"><span> Department Withdraws Most Products</a>
+                                </li>
+
+                                <li class="submenu-item">
+                                    <a href="report_totalprice_most.php"><span> Department Total Price Most Products</a>
                                 </li>
                             </ul>
                         </li>
