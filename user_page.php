@@ -14,7 +14,7 @@ if (isset($_SESSION["user_level"]) && $_SESSION["user_level"] === "U") {
     include_once 'header.php';
     include_once 'menu_user.php';
     include_once 'navbar.php';
-    include_once 'content.php';
+    include_once 'content_user.php';
     include_once 'footer.php';
 } else {
     // Redirect or show an error if the user level is not "User"
