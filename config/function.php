@@ -306,9 +306,6 @@ function orderHistory($conn, $stock)
 
 
 //ประวัติสินค้าเข้า
-
-
-//<----------------------------- ส่วนของ history Admin -------------------------------------------------->
 function receiveHistory($conn, $stock)
 {
     $receive_sql = "SELECT receive_product.rec_id,
@@ -327,6 +324,10 @@ function receiveHistory($conn, $stock)
     $result_receive = $receive_history_stmt->get_result();
     return $result_receive;
 }
+
+//<----------------------------- ส่วนของ history Admin -------------------------------------------------->
+
+
 
 //<----------------------------- ส่วนของ history User -------------------------------------------------->
 function orderHistoryUser($conn, $us_id)

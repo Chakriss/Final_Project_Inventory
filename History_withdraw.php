@@ -284,10 +284,10 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
 
             <script>
-                //modal  order_detail
+                //modal order_detail
                 $(document).ready(function() {
-                    // Handle the row click to load order details
-                    $('.order-row').on('click', function() {
+                    // Use event delegation to handle the row click
+                    $('#table1').on('click', '.order-row', function() {
                         var orderId = $(this).data('order-id'); // Get the order ID from the row's data attribute
 
                         // Make an AJAX request to fetch order details
@@ -314,6 +314,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         });
                     });
                 });
+
 
                 //นับจำนวนสินค้าที่อยู่ในรถเข็นขึ้น show ที่ปุ่ม
                 $(document).ready(function() {

@@ -183,7 +183,8 @@
             //modal  order_detail
             $(document).ready(function() {
                 // Handle the row click to load order details
-                $('.order-row').on('click', function() {
+                
+                $('#table1').on('click', '.order-row', function()  {
                     var orderId = $(this).data('order-id'); // Get the order ID from the row's data attribute
 
                     // Make an AJAX request to fetch order details

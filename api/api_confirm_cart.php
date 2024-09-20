@@ -1,5 +1,6 @@
 <?php
 include_once('../config/connect_db.php');
+session_start();
 // Set the timezone to Bangkok
 date_default_timezone_set('Asia/Bangkok');
 
@@ -10,12 +11,18 @@ if (isset($_POST['code']) && isset($_POST['cart_id']) && isset($_POST['dept'])) 
     $date = $_POST['date'];
     $time = $_POST['time'];
     $cart_status = 'P';  // Assuming 'P' stands for the status code for 'confirmed'
+    $user = $_SESSION["user_level"]; // Get user level from session
 
     if ($code == 'xxx') {
         // Start a transaction
         mysqli_begin_transaction($conn);
 
         try {
+            // If the user is an admin, set the status to 'A'
+            if ($user == 'A') {
+                $cart_status = 'A';  // Admin approval status
+            }
+
             // Update the cart status and date/time
             $cart_sql = "UPDATE cart SET cart_date = ?, cart_time = ?, cart_status_id = ?, dept_id = ? WHERE cart_id = ?";
             $cart_stmt = mysqli_prepare($conn, $cart_sql);
