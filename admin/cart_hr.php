@@ -140,6 +140,32 @@ include_once '../navbar.php';
         background-color: #fff;
         color: #333;
     }
+
+    /* สไตล์สำหรับ textarea */
+    textarea {
+        resize: none;
+        /* ปิดการปรับขนาด textarea */
+        border: 1px solid #ccc;
+        /* กำหนดเส้นขอบ */
+        border-radius: 8px;
+        /* ปรับให้ขอบโค้งมน */
+        padding: 8px;
+        /* เพิ่มระยะห่างภายใน */
+        font-size: 14px;
+        /* ปรับขนาดตัวอักษร */
+        width: 100%;
+        /* ให้ขยายเต็มพื้นที่ cell */
+        background-color: #f9f9f9;
+        /* พื้นหลังอ่อนเพื่อให้ดูสบายตา */
+    }
+
+    /* กำหนดขนาดพื้นที่ของ textarea ให้อยู่ในตารางอย่างสมดุล */
+    .table textarea {
+        max-height: 60px;
+        /* กำหนดความสูงสูงสุด */
+        min-height: 40px;
+        /* กำหนดความสูงต่ำสุด */
+    }
 </style>
 
 
@@ -206,7 +232,9 @@ include_once '../navbar.php';
                                         <span id="quantity-<?php echo $row['cart_detail_id']; ?>"><?php echo $row['cart_amount']; ?></span>
                                         <button class="quantity-button btn-increase" onclick="increaseQuantity(<?php echo $row['cart_detail_id']; ?>)">+</button>
                                     </td>
-                                    <td align="center"><textarea rows="2" readonly><?php echo $row['cart_detail']; ?></textarea></td>
+                                    <td align="center">
+                                        <textarea rows="2" readonly><?php echo $row['cart_detail']; ?></textarea>
+                                    </td>
                                     <td align="center">
                                         <button style="border-radius: 50%;" class="btn btn-danger" onclick="deleteCart(<?php echo $row['cart_detail_id']; ?>)">
                                             <span class="fas fa-eraser"></span>

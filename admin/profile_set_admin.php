@@ -1,17 +1,17 @@
 <?php
 session_start();
-include_once 'config/function.php';
+include_once '../config/function.php';
 
-include_once 'header.php';
+include_once '../header.php';
 include_once 'menu_admin.php';
-include_once 'navbar.php';
+include_once '../navbar.php';
 
 $us_id = $_SESSION["user_id"];
 
 if (empty($us_id)) {
     echo "<script type='text/javascript'>";
     echo "alert('An error occurred. Please select the account first!!');";
-    echo "window.location = 'account_set.php'; ";
+    echo "window.location = 'login.php'; ";
     echo "</script>";
 }
 
@@ -124,7 +124,7 @@ $result_dept = selectDept($conn);
 
 
     <?php
-    include_once 'footer.php';
+    include_once '../footer.php';
     ?>
 
     <script>
@@ -182,7 +182,7 @@ $result_dept = selectDept($conn);
                                 text: result.message,
                                 icon: "info"
                             }).then((result) => {
-                                window.location.href = 'logout.php';
+                                window.location.href = '../logout.php';
                             });
                         } else {
                             Swal.fire({
@@ -308,7 +308,7 @@ $result_dept = selectDept($conn);
                                 showConfirmButton: false
                             }).then((result) => {
                                 $('#resetPasswordModal').modal('hide');
-                                location.reload();  // รีเฟรชหน้าเว็บหลังจากปิด modal
+                                location.reload(); // รีเฟรชหน้าเว็บหลังจากปิด modal
                             });
                         } else {
                             Swal.fire({
