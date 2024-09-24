@@ -56,7 +56,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             <section class="section">
                 <div class="card">
                     <div class="card-header" style="margin-bottom: 20px;">
-                        <h5>product <?php echo $productlist ?></h5>
+                        <h5>product</h5>
                     </div>
                     <div class="card-body">
                         <div id="productFormsContainer">

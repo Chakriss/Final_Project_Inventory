@@ -333,6 +333,19 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 });
             }
         }
+
+        //ดึงวันที่และเวลา
+    $(document).ready(function() {
+        // Set the current date
+        var today = new Date().toISOString().split('T')[0];
+        $('#receive_date').val(today);
+
+        // Set the current time
+        var now = new Date();
+        var hours = ('0' + now.getHours()).slice(-2);
+        var minutes = ('0' + now.getMinutes()).slice(-2);
+        $('#receive_time').val(hours + ':' + minutes);
+    });
     </script>
 
 <?php
