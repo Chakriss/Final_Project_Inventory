@@ -44,7 +44,7 @@
                             </div>
                             <div class="user-img d-flex align-items-center">
                                 <div class="avatar avatar-md">
-                                    <img src="assets/images/faces/2.jpg">
+                                    <img src="../assets/images/faces/2.jpg">
                                 </div>
                             </div>
                         </div>
@@ -55,7 +55,7 @@
                                 Profile</a></li>
                         <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="logout.php"><i
+                        <li><a class="dropdown-item" href="../logout.php"><i
                                     class="icon-mid bi bi-box-arrow-left me-2"></i> Logout</a></li>
                     </ul>
                 </div>

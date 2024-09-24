@@ -30,12 +30,13 @@ if (!empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['code
                         $_SESSION["user_level"] = $row['us_level_id'];
                         $_SESSION["user_stock"] = $row['st_id'];
                         $_SESSION["user_id"] = $row['us_id'];
+                        $_SESSION["user_dept"] = $row['dept_id'];
 
                         // Redirect based on user level
                         if ($_SESSION["user_level"] === "A") {
-                            $data_json = array("status" => "successfully", "level" => "admin_page.php");
+                            $data_json = array("status" => "successfully", "level" => "admin/admin_page.php");
                         } else {
-                            $data_json = array("status" => "successfully", "level" => "user_page.php");
+                            $data_json = array("status" => "successfully", "level" => "user/user_page.php");
                         }
                     } else {
                         $data_json = array("status" => "This account has been deactivated.");
