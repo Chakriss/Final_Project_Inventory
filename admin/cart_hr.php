@@ -7,6 +7,18 @@ if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk"
     exit();
 }
 
+// Check the user level and include relevant files
+if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 2)) {
+} else {
+    // Redirect or show an error if the user level is not "User"
+    if (isset($_SESSION["user_level"]) && $_SESSION["user_level"] === "A") {
+        header("location: ../user/error_user_page.php");
+    } else {
+        header("location: ../admin/error_admin_page.php");
+    }
+    exit();
+}
+
 //เรียกใช้ฟังชันดึงข้อมูลใน cart
 $cart_data = cartDetailHr($conn);
 $max_cart_id = $cart_data['max_cart_id'];

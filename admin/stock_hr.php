@@ -11,7 +11,7 @@ if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk"
     exit();
 }
 
-if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 2 || $_SESSION["user_stock"] == 3)) {
+if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 2)) {
     $stock = 2;
     // Fetch product data using the selectProduct function
     $result = selectProduct($conn, $stock);
@@ -739,6 +739,10 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 2 || $_SESSION
 
 <?php
 } else {
-    header("location: ../user/error_user_page.php");
+    if(isset($_SESSION["user_level"]) && $_SESSION["user_level"] === "A"){
+        header("location: ../user/error_user_page.php");
+    }else{
+       header("location: ../admin/error_admin_page.php");
+    }
 }
 ?>

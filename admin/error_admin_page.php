@@ -39,7 +39,7 @@
 <script>
     // Example of handling errors or messages on the client-side
     document.addEventListener('DOMContentLoaded', function() {
-        <?php if (!isset($_SESSION["user_level"]) || $_SESSION["user_level"] !== "Admin") { ?>
+        <?php if (!isset($_SESSION["user_level"]) || $_SESSION["user_level"] !== "A") { ?>
             Swal.fire({
                 title: "Access Denied",
                 text: "You do not have permission to view this page.",
@@ -57,7 +57,7 @@
                     window.location.href = '../user/user_page.php';
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     // Redirect to logout.php
-                    window.location.href = 'logout.php';
+                    window.location.href = '../logout.php';
                 }
             });
         <?php } ?>

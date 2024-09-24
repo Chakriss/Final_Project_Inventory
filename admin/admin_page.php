@@ -16,6 +16,6 @@ if (isset($_SESSION["user_level"]) && $_SESSION["user_level"] === "A") {
     include_once '../footer.php';
 } else {
     // Redirect or show an error if the user level is not "User"
-    header("Location: error_admin_page.php"); // Change to your actual error handling page
+    header("Location: ../admin/error_admin_page.php"); // Change to your actual error handling page
     exit();
 }

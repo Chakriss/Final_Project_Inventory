@@ -410,6 +410,6 @@ if (isset($_SESSION["user_level"]) && ($_SESSION["user_level"] == 'U')) {
 
 <?php
 } else {
-    header("location: ../admin/error_admin_page.php");
+    header("location: ../user/error_user_page.php");
 }
 ?>

@@ -13,7 +13,7 @@ if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk"
 if (isset($_SESSION["user_level"]) && $_SESSION["user_level"] === "A") {
 } else {
     // Redirect or show an error if the user level is not "User"
-    header("Location: error_admin_page.php");
+    header("Location: ../admin/error_admin_page.php");
     exit();
 }
 

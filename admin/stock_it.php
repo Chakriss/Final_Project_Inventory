@@ -130,11 +130,11 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
                                             <?php if ($_SESSION["user_level"] !== "U") : ?>
                                                 <a href="edit_product.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-warning">
                                                     <span class="fas fa-edit"></span> Edit
-                                                    </a>
+                                                </a>
 
                                                 <button class="btn btn-danger" onclick="deleteProduct(<?php echo $row['prod_id']; ?>)">
                                                     <span class="fas fa-trash-alt"></span> Delete
-                                                    </button>
+                                                </button>
                                             <?php endif; ?>
                                         </td>
                                     </tr>
@@ -734,6 +734,10 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
 
 <?php
 } else {
-    header("location: ../admin/error_admin_page.php");
+    if (isset($_SESSION["user_level"]) && $_SESSION["user_level"] === "A") {
+        header("location: ../user/error_user_page.php");
+    } else {
+        header("location: ../admin/error_admin_page.php");
+    }
 }
 ?>

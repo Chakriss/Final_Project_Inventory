@@ -547,6 +547,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
 
 <?php
 } else {
-    header("location: error_user_page.php");
+    header("location: ../admin/error_admin_page.php");
 }
 ?>

@@ -38,7 +38,7 @@
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        <?php if (!isset($_SESSION["user_level"]) || $_SESSION["user_level"] !== "User") { ?>
+        <?php if (!isset($_SESSION["user_level"]) || $_SESSION["user_level"] !== "U") { ?>
             Swal.fire({
                 title: "Access Denied",
                 text: "You do not have permission to view this page.",
@@ -56,7 +56,7 @@
                     window.location.href = '../admin/admin_page.php';
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     // Redirect to logout.php
-                    window.location.href = 'logout.php';
+                    window.location.href = '../logout.php';
                 }
             });
         <?php } ?>
