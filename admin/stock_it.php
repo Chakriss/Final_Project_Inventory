@@ -113,7 +113,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
                                         <td align="center">
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#detailModal"
                                                 onclick="showDetail('<?php echo htmlspecialchars($row['prod_detail']); ?>', '<?php echo $row['prod_price']; ?>')"><i class="bi bi-eye"></i>
-                                                View
+                                                
                                             </button>
                                             <?php
                                             // Determine if the button should be disabled
@@ -124,16 +124,16 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
                                                 data-bs-toggle="modal" data-bs-target="#modalAddCart"
                                                 data-prod-id="<?php echo $row['prod_id']; ?>"
                                                 <?php echo ($row['prod_status_desc'] !== 'Active') ? 'disabled' : ''; ?>>
-                                                <span class="fas fa-cart-plus"></span> Cart
+                                                <span class="fas fa-cart-plus"></span> 
                                             </button>
 
                                             <?php if ($_SESSION["user_level"] !== "U") : ?>
                                                 <a href="edit_product.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-warning">
-                                                    <span class="fas fa-edit"></span> Edit
+                                                    <span class="fas fa-edit"></span> 
                                                 </a>
 
                                                 <button class="btn btn-danger" onclick="deleteProduct(<?php echo $row['prod_id']; ?>)">
-                                                    <span class="fas fa-trash-alt"></span> Delete
+                                                    <span class="fas fa-trash-alt"></span> 
                                                 </button>
                                             <?php endif; ?>
                                         </td>
