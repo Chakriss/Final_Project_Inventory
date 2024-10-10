@@ -7,7 +7,7 @@ include_once '../navbar.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk") {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -18,6 +18,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
     } else {
         $stock_pd = "stock_hr.php";
     }
+
 
     //เรียกใช้ฟังชันดึงประเภทสินค้า
     $result_type = selectType($conn);
@@ -68,14 +69,14 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                             <input type="text" id="prod_name_0" placeholder="Please enter name / กรุณากรอกชื่อสินค้า" class="form-control">
                                             <div class="invalid-feedback" id="nameFeedback_0"></div>
                                         </div>
-                                        <label>Amount: </label>
+                                        <label>Quantity: </label>
                                         <div class="form-group">
-                                            <input type="number" id="prod_amount_0" min="0" oninput="validity.valid||(value='');" placeholder="Please enter amount / กรุณากรอกจำนวนสินค้า" class="form-control">
+                                            <input type="number" id="prod_amount_0" min="0" oninput="validity.valid||(value='');" placeholder="Please enter quantity / กรุณากรอกจำนวนสินค้า" class="form-control">
                                             <div class="invalid-feedback" id="amountFeedback"></div>
                                         </div>
-                                        <label>Minimum Amount: </label>
+                                        <label>Quantity Minimum: </label>
                                         <div class="form-group">
-                                            <input type="number" id="prod_amount_min_0" min="0" oninput="validity.valid||(value='');" placeholder="Please enter amount min / กรุณากรอกจำนวนสินค้าขั้นต่ำ" class="form-control">
+                                            <input type="number" id="prod_amount_min_0" min="0" oninput="validity.valid||(value='');" placeholder="Please enter quantity min / กรุณากรอกจำนวนสินค้าขั้นต่ำ" class="form-control">
                                             <div class="invalid-feedback" id="amountMinFeedback_0"></div>
                                         </div>
                                         <label>Price(baht): </label>
@@ -134,7 +135,8 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 <div class="d-flex justify-content-between w-100">
                     <div>
                         <button type="button" class="btn btn-primary btn-fw" onclick="addProductForm()">Add product form</button>
-                        <button type="submit" class="btn btn-info btn-fw">Import CSV</button>
+                        <button type="submit" class="btn btn-success btn-fw" data-bs-backdrop="false"
+                            data-bs-toggle="modal" data-bs-target="#modalcsv"><i class="bi bi-filetype-csv"></i> Import CSV</button>
                     </div>
                     <div>
                         <button type="button" class="btn btn-danger btn-fw" onclick="window.location.href='<?php echo $stock_pd ?>';">Cancle</button>
@@ -143,6 +145,49 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 </div>
             </section>
         </div>
+
+        <!-- Add Modal csv -->
+        <div class="modal fade text-left" id="modalcsv" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <h4 class="modal-title white" id="myModalLabel33">Add Product From CSV</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    <form id="csvUploadForm" method="post" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <h4>Example:</h4>
+                                    <img id="cart_img" src="../assets/images/general/Example_csv.png" alt="Image"
+                                        style="display:block; margin-top:10px; max-width: 100%; height: auto;">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="formFile" class="form-label">
+                                        <h4>CSV files:</h4>
+                                    </label>
+                                    <input class="form-control" type="file" id="formFileCsv" accept=".csv" name="file">
+                                    <small class="form-text text-muted">Allowed file types: csv only / อัพโหลดไฟล์ได้แค่ csv เท่านั้น</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <span class="d-none d-sm-block">Cancel</span>
+                            </button>
+                            <button type="button" class="btn btn-success ml-1" onclick="addCSV()">
+                                <span class="d-none d-sm-block">Confirm</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Add Modal csv -->
+
 
         <?php include_once '../footer.php'; ?>
 
@@ -192,14 +237,14 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                         <input type="text" id="prod_name_${formCount}" placeholder="Please enter name / กรุณากรอกชื่อสินค้า" class="form-control">
                                         <div class="invalid-feedback" id="nameFeedback_${formCount}"></div>
                                     </div>
-                                    <label>Amount: </label>
+                                    <label>Quantity: </label>
                                     <div class="form-group">
-                                        <input type="number" id="prod_amount_${formCount}" min="0" oninput="validity.valid||(value='');" placeholder="Please enter amount / กรุณากรอกจำนวนสินค้า" class="form-control">
+                                        <input type="number" id="prod_amount_${formCount}" min="0" oninput="validity.valid||(value='');" placeholder="Please enter quantity / กรุณากรอกจำนวนสินค้า" class="form-control">
                                         <div class="invalid-feedback" id="amountFeedback_${formCount}"></div>
                                     </div>
-                                    <label>Minimum Amount: </label>
+                                    <label>Quantity Minimum: </label>
                                     <div class="form-group">
-                                        <input type="number" id="prod_amount_min_${formCount}" min="0" oninput="validity.valid||(value='');" placeholder="Please enter amount min / กรุณากรอกจำนวนสินค้าขั้นต่ำ" class="form-control">
+                                        <input type="number" id="prod_amount_min_${formCount}" min="0" oninput="validity.valid||(value='');" placeholder="Please enter quantity Min / กรุณากรอกจำนวนสินค้าขั้นต่ำ" class="form-control">
                                         <div class="invalid-feedback" id="amountMinFeedback_${formCount}"></div>
                                     </div>
                                     <label>Price(baht): </label>
@@ -311,12 +356,12 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                     }
                     if (prodAmount.val() == "") {
                         prodAmount.addClass('is-invalid');
-                        $(this).find(`#amountFeedback_${index}`).text("Amount is empty.");
+                        $(this).find(`#amountFeedback_${index}`).text("Quantity is empty.");
                         isValid = false;
                     }
                     if (prodAmountMin.val() == "") {
                         prodAmountMin.addClass('is-invalid');
-                        $(this).find(`#amountMinFeedback_${index}`).text("Amount Min is empty.");
+                        $(this).find(`#amountMinFeedback_${index}`).text("Quantity Min is empty.");
                         isValid = false;
                     }
                     if (prodPrice.val() == "") {
@@ -388,9 +433,11 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         Swal.fire({
                                 title: 'Add product success!',
                                 icon: 'success',
+                                timer: 1000,
+                                showConfirmButton: false
                             })
                             .then((result) => {
-                                window.location.href = 'stock_it.php';
+                                window.location.href = '<?php echo $stock_pd; ?>';
                             });
                     }).fail(function() {
                         Swal.fire({
@@ -400,6 +447,69 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         });
                     });
                 }
+            }
+
+
+            function addCSV() {
+                const fileInput = $('#formFileCsv')[0];
+                const file = fileInput.files[0];
+
+                if (!file) {
+                    Swal.fire({
+                        title: 'No file selected',
+                        text: 'Please select a CSV file to upload.',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                // ตรวจสอบไฟล์ว่ามีประเภทเป็น CSV
+                if (file.type !== 'application/vnd.ms-excel' && !file.name.endsWith('.csv')) {
+                    Swal.fire({
+                        title: 'Invalid file type',
+                        text: 'Please upload a CSV file only.',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                let formData = new FormData();
+                formData.append('file', file);
+
+                // ส่งข้อมูลผ่าน AJAX
+                $.ajax({
+                    url: '/Final_Project/api/api_import_csv.php', // ไฟล์ PHP สำหรับประมวลผล CSV
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                title: 'Add product success!',
+                                text: response.message,
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload(); // รีเฟรชหน้าเมื่ออัพโหลดสำเร็จ
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message,
+                                icon: 'error'
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: 'Upload Failed',
+                            text: 'There was an error uploading the CSV file.',
+                            icon: 'error'
+                        });
+                    }
+                });
             }
         </script>
 

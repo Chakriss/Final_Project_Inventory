@@ -21,7 +21,7 @@ if (empty($_GET["prod_id"])) {
 
 // Check if the user is logged in
 if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk") {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -69,13 +69,13 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <div class="invalid-feedback" id="nameFeedback"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="basicInput">Amount:</label>
-                                    <input type="number" class="form-control" id="prod_amount" value="<?php echo $row['prod_amount']; ?>" min="0" oninput="validity.valid||(value='');" placeholder="Please enter amount / กรุณากรอกจำนวนสินค้า">
+                                    <label for="basicInput">Quantity:</label>
+                                    <input type="number" class="form-control" id="prod_amount" value="<?php echo $row['prod_amount']; ?>" min="0" oninput="validity.valid||(value='');" placeholder="Please enter Quantity / กรุณากรอกจำนวนสินค้า">
                                     <div class="invalid-feedback" id="amountFeedback"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="basicInput">Amount Min:</label>
-                                    <input type="number" class="form-control" id="prod_amount_min" value="<?php echo $row['prod_amount_min']; ?>" min="0" oninput="validity.valid||(value='');" placeholder="Please enter amount min / กรุณากรอกจำนวนสินค้าขั้นต่ำ">
+                                    <label for="basicInput">Quantity Minimum:</label>
+                                    <input type="number" class="form-control" id="prod_amount_min" value="<?php echo $row['prod_amount_min']; ?>" min="0" oninput="validity.valid||(value='');" placeholder="Please enter Quantity min / กรุณากรอกจำนวนสินค้าขั้นต่ำ">
                                     <div class="invalid-feedback" id="amountMinFeedback"></div>
                                 </div>
                                 <div class="form-group">
@@ -131,7 +131,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     <input class="form-control" type="file" id="formFile" accept="image/jpeg, image/jpg, image/png">
 
                                     <!-- Image preview -->
-                                    <img id="imagePreview" src="photo/<?= $row['prod_img']; ?>" alt="Image Preview" style="display:block; margin-top:10px; max-width: 100%; height: auto;">
+                                    <img id="imagePreview" src="../photo/<?= $row['prod_img']; ?>" alt="Image Preview" style="display:block; margin-top:10px; max-width: 100%; height: auto;">
 
                                     <small class="form-text text-muted">Allowed file types: jpeg, jpg, png only / อัพโหลดรูปภาพได้แค่ jpeg, jpg, png เท่านั้น</small>
                                 </div>
@@ -170,12 +170,12 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 }
                 if ($('#prod_amount').val() == "") {
                     $('#prod_amount').addClass('is-invalid');
-                    $('#amountFeedback').text("Amount is empty.");
+                    $('#amountFeedback').text("Quantity is empty.");
                     isValid = false;
                 }
                 if ($('#prod_amount_min').val() == "") {
                     $('#prod_amount_min').addClass('is-invalid');
-                    $('#amountMinFeedback').text("Amount Min is empty.");
+                    $('#amountMinFeedback').text("Quantity Min is empty.");
                     isValid = false;
                 }
                 if ($('#prod_price').val() == "") {

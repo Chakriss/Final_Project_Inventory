@@ -7,7 +7,7 @@ include_once '../config/function.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk") {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -84,7 +84,7 @@ if (isset($_SESSION["user_level"]) && ($_SESSION["user_level"] == 'U')) {
                                     <th style="text-align: center;">Product ID</th>
                                     <th style="text-align: center;"> Photo </th>
                                     <th style="text-align: center;">Name</th>
-                                    <th style="text-align: center;">Amount</th>
+                                    <th style="text-align: center;">Quantity</th>
                                     <th style="text-align: center;">Unit</th>
                                     <th style="text-align: center;">Type</th>
                                     <th style="text-align: center;">Action</th>
@@ -165,10 +165,10 @@ if (isset($_SESSION["user_level"]) && ($_SESSION["user_level"] == 'U')) {
                                     <div class="form-group">
                                         <input type="text" id="cart_name" class="form-control" placeholder="ชื่อสินค้า" readonly>
                                     </div>
-                                    <label>Amount: </label>
+                                    <label>Quantity: </label>
                                     <div class="form-group">
                                         <input type="number" id="cart_amount" min="1" oninput="validity.valid||(value='');"
-                                            placeholder="Enter Product Amount" class="form-control" required>
+                                            placeholder="Enter Product Quantity" class="form-control" required>
                                         <div class="invalid-feedback" id="amountCartFeedback"></div>
                                     </div>
                                     <label>Unit: </label>
@@ -310,7 +310,7 @@ if (isset($_SESSION["user_level"]) && ($_SESSION["user_level"] == 'U')) {
             // Form validation checks
             if ($('#cart_amount').val() == "") {
                 $('#cart_amount').addClass('is-invalid');
-                $('#amountCartFeedback').text("Amount is empty.");
+                $('#amountCartFeedback').text("Quantity is empty.");
                 isValid = false;
             }
             if ($('#cart_detail').val() == "") {

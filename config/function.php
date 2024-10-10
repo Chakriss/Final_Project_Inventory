@@ -15,6 +15,7 @@ function selectProduct($conn, $stock)
             product.prod_unit,
             product.prod_img,
             product.prod_detail,
+            product.prod_date,
             product_status.prod_status_desc, 
             product_type.prod_type_desc 
         FROM product

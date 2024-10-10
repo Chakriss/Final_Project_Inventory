@@ -7,7 +7,7 @@ include_once '../config/function.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk") {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -73,11 +73,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <?php if ($_SESSION["user_level"] !== "U") : ?>
-                            <!-- Button trigger for Add Product form modal -->
-                            <button type="button" class="btn btn-primary" data-bs-backdrop="false" data-bs-toggle="modal"
-                                data-bs-target="#modalAddProduct">
-                                + New Product
-                            </button>
+                            <a href="add_product.php" class="btn btn-primary">+ New Product</a>
                         <?php endif; ?>
                         <a href="cart_it.php" class="btn btn-warning">
                             <span class="fas fa-shopping-cart"></span>
@@ -91,7 +87,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
                                     <th style="text-align: center;">Product ID</th>
                                     <th style="text-align: center;"> Photo </th>
                                     <th style="text-align: center;">Name</th>
-                                    <th style="text-align: center;">Amount</th>
+                                    <th style="text-align: center;">Quantity</th>
                                     <th style="text-align: center;">Unit</th>
                                     <th style="text-align: center;">Type</th>
                                     <th style="text-align: center;">Action</th>
@@ -112,7 +108,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
                                         <td align="center"><?php echo $row['prod_type_desc']; ?></td>
                                         <td align="center">
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#detailModal"
-                                                onclick="showDetail('<?php echo htmlspecialchars($row['prod_detail']); ?>', '<?php echo $row['prod_price']; ?>')"><i class="bi bi-eye"></i>
+                                                onclick="showDetail('<?php echo htmlspecialchars($row['prod_detail']); ?>', '<?php echo $row['prod_price']; ?>', '<?php echo $row['prod_date']; ?>')"><i class="bi bi-eye"></i>
                                                 
                                             </button>
                                             <?php
@@ -162,123 +158,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
         </div>
         <!-- ขยายรูปออกมาเป็น Modal -->
 
-        <!-- Add Product form Modal l -->
-        <div class="modal fade text-left" id="modalAddProduct" tabindex="-1"
-            role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
-                role="document">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary">
-                        <h4 class="modal-title white" id="myModalLabel33">New Product</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal"
-                            aria-label="Close">
-                            <i data-feather="x"></i>
-                        </button>
-                    </div>
-                    <form method="post" enctype="multipart/form-data">
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Name: </label>
-                                    <div class="form-group">
-                                        <input type="text" id="prod_name" placeholder="Enter Product Name"
-                                            class="form-control">
-                                        <div class="invalid-feedback" id="nameFeedback"></div>
-                                    </div>
-                                    <label>Amount: </label>
-                                    <div class="form-group">
-                                        <input type="number" id="prod_amount" min="0" oninput="validity.valid||(value='');" placeholder="Enter Product Amount"
-                                            class="form-control">
-                                        <div class="invalid-feedback" id="amountFeedback"></div>
-                                    </div>
-                                    <label>Amount Minimum: </label>
-                                    <div class="form-group">
-                                        <input type="number" id="prod_amount_min" min="0" oninput="validity.valid||(value='');" placeholder="Enter Product Amount Minimum"
-                                            class="form-control">
-                                        <div class="invalid-feedback" id="amountMinFeedback"></div>
-                                    </div>
-                                    <label>Price(baht): </label>
-                                    <div class="form-group">
-                                        <input type="number" id="prod_price" min="0" oninput="validity.valid||(value='');" placeholder="Enter Product Price"
-                                            class="form-control">
-                                        <div class="invalid-feedback" id="priceFeedback"></div>
-                                    </div>
-                                    <label>Unit: </label>
-                                    <div class="form-group">
-                                        <input type="text" id="prod_unit" placeholder="Enter Product Unit"
-                                            class="form-control">
-                                        <div class="invalid-feedback" id="unitFeedback"></div>
-                                    </div>
-                                    <label>Product Type: </label>
-                                    <div class="form-group">
-                                        <select class="form-select" id="prod_type">
-                                            <option value="" selected>Select Product Type</option> <!-- Default option -->
-                                            <?php
-                                            while ($type = $result_type->fetch_assoc()) :
-                                            ?>
-                                                <option value="<?php echo $type['prod_type_id']; ?>"><?php echo $type['prod_type_desc']; ?></option>
-                                            <?php endwhile ?>
-                                        </select>
-                                        <div class="invalid-feedback" id="typeFeedback"></div>
-                                    </div>
-                                    <label>Product Status: </label>
-                                    <div class="form-group">
-                                        <select class="form-select" id="prod_status">
-                                            <option value="" selected>Select Product Status</option> <!-- Default option -->
-                                            <?php
-                                            while ($status = $result_status->fetch_assoc()) :
-                                            ?>
-                                                <option value="<?php echo $status['prod_status']; ?>"><?php echo $status['prod_status_desc']; ?></option>
-                                            <?php endwhile ?>
-                                        </select>
-                                        <div class="invalid-feedback" id="statusFeedback"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label>Detail:</label>
-                                    <div class="form-group">
-                                        <textarea class="form-control" id="prod_detail" placeholder="Please enter detail" rows="3"></textarea>
-                                        <div class="invalid-feedback" id="detailFeedback"></div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="formFile" class="form-label"> Photo </label>
-                                        <input class="form-control" type="file" id="formFile" accept="image/jpeg, image/jpg, image/png">
-
-                                        <!-- Image preview -->
-                                        <img id="imagePreview" src="" alt="Image Preview" style="display:block; margin-top:10px; max-width: 100%; height: auto;">
-
-                                        <small class="form-text text-muted">Allowed file types: jpeg, jpg, png only / อัพโหลดรูปภาพได้แค่ jpeg, jpg, png เท่านั้น</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="d-flex justify-content-between w-100">
-                                <div>
-                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="redirectToAddProduct()">
-                                        <i class="bx bx-x d-block d-sm-none"></i>
-                                        <span class="d-none d-sm-block">Add multiple products</span>
-                                    </button>
-                                </div>
-                                <div>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                        <i class="bx bx-x d-block d-sm-none"></i>
-                                        <span class="d-none d-sm-block">Cancle</span>
-                                    </button>
-                                    <button type="button" class="btn btn-success ml-1" onclick="addProduct()">
-                                        <i class="bx bx-check d-block d-sm-none"></i>
-                                        <span class="d-none d-sm-block">Add</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- Add Product form Modal -->
-
 
         <!-- Add Cart form Modal -->
         <div class="modal fade text-left" id="modalAddCart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33"
@@ -303,10 +182,10 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
                                     <div class="form-group">
                                         <input type="text" id="cart_name" class="form-control" placeholder="ชื่อสินค้า" readonly>
                                     </div>
-                                    <label>Amount: </label>
+                                    <label>Quantity: </label>
                                     <div class="form-group">
                                         <input type="number" id="cart_amount" min="1" oninput="validity.valid||(value='');"
-                                            placeholder="Enter Product Amount" class="form-control" required>
+                                            placeholder="Enter Product Quantity" class="form-control" required>
                                         <div class="invalid-feedback" id="amountCartFeedback"></div>
                                     </div>
                                     <label>Unit: </label>
@@ -354,6 +233,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
                     <div class="modal-body">
                         <p><strong>Detail:</strong> <span id="detailContent"></span></p>
                         <p><strong>Price:</strong> <span id="priceContent"></span> baht</p>
+                        <p><strong>Entry date:</strong> <span id="dateContent"></span></p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -440,115 +320,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
             });
         }
 
-        //ฟังชันเพิ่มสินค้า
-        function addProduct() {
-            event.preventDefault();
-            let isValid = true;
-
-            // Reset validation messages
-            $('.invalid-feedback').text('');
-            $('.form-control').removeClass('is-invalid');
-
-            // Form validation checks
-            if ($('#prod_name').val() == "") {
-                $('#prod_name').addClass('is-invalid');
-                $('#nameFeedback').text("Name is empty.");
-                isValid = false;
-            }
-            if ($('#prod_amount').val() == "") {
-                $('#prod_amount').addClass('is-invalid');
-                $('#amountFeedback').text("Amount is empty.");
-                isValid = false;
-            }
-            if ($('#prod_amount_min').val() == "") {
-                $('#prod_amount_min').addClass('is-invalid');
-                $('#amountMinFeedback').text("Amount Min is empty.");
-                isValid = false;
-            }
-            if ($('#prod_price').val() == "") {
-                $('#prod_price').addClass('is-invalid');
-                $('#priceFeedback').text("Price is empty.");
-                isValid = false;
-            }
-            if ($('#prod_unit').val() == "") {
-                $('#prod_unit').addClass('is-invalid');
-                $('#unitFeedback').text("Unit is empty.");
-                isValid = false;
-            }
-            if ($('#prod_detail').val() == "") {
-                $('#prod_detail').addClass('is-invalid');
-                $('#detailFeedback').text("detail is empty.");
-                isValid = false;
-            }
-            if ($('#prod_type').val() == "") {
-                $('#prod_type').addClass('is-invalid');
-                $('#typeFeedback').text("Type is empty.");
-                isValid = false;
-            }
-            if ($('#prod_status').val() == "") {
-                $('#prod_status').addClass('is-invalid');
-                $('#statusFeedback').text("Status is empty.");
-                isValid = false;
-            }
-
-            let fileUploaded = $('#formFile')[0].files.length > 0;
-
-            if (isValid) {
-                let formData = new FormData();
-                if (fileUploaded) {
-                    // Append the image file if uploaded
-                    formData.append('img', $('#formFile')[0].files[0]);
-                }
-                formData.append('name', $('#prod_name').val());
-                formData.append('amount', $('#prod_amount').val());
-                formData.append('amount_min', $('#prod_amount_min').val());
-                formData.append('price', $('#prod_price').val());
-                formData.append('unit', $('#prod_unit').val());
-                formData.append('detail', $('#prod_detail').val());
-                formData.append('type', $('#prod_type').val());
-                formData.append('status', $('#prod_status').val());
-
-                $.ajax({
-                    url: "/Final_Project/api/api_add_pd.php",
-                    type: 'POST',
-                    dataType: "json",
-                    data: formData,
-                    processData: false, // Prevent jQuery from converting the FormData object into a query string
-                    contentType: false, // Prevent jQuery from overriding the content type
-                    success: function(result) {
-                        if (result.status === "successfully") {
-                            Swal.fire({
-                                title: 'Add product success!',
-                                icon: 'success',
-                                timer: 1000,
-                                showConfirmButton: false
-                            }).then(() => {
-                                window.location.reload();
-                            });
-                        } else {
-                            Swal.fire({
-                                title: "Wrong product added!",
-                                text: result.message,
-                                icon: "error"
-                            });
-                        }
-                    }
-                });
-            } else {
-                // Validation failed, show an error message and keep the modal open
-                Swal.fire({
-                    title: "Wrong product added!",
-                    text: "Please fill in all information completely.",
-                    icon: "error"
-                });
-                return; // Keep modal open if validation fails
-            }
-
-            if (!fileUploaded && isValid) {
-                // Close the modal if no file was uploaded and the form is valid
-                $('#modalAddProduct').modal('hide');
-            }
-        }
+       
 
         // ดึงข้อมูลเพื่อจะเพิ่มสินค้าลงตะกร้า 
         // Event listener for the modal when it's triggered
@@ -658,33 +430,6 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
 
 
 
-
-        // Handle image preview when a file is selected
-        document.getElementById('formFile').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const imagePreview = document.getElementById('imagePreview');
-
-            // Check if a file is selected and is an image
-            if (file && (file.type === "image/jpeg" || file.type === "image/jpg" || file.type === "image/png")) {
-                const reader = new FileReader();
-
-                // Once the file is read, set it as the src for the img element
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                }
-
-                reader.readAsDataURL(file); // Read the file as a data URL
-            } else {
-                // Display a default image or reset to the previous image
-                imagePreview.src = '../photo/no_img.jpg'; // Change this to the appropriate path
-            }
-        });
-
-        // ไปหน้า add_product.php
-        function redirectToAddProduct() {
-            window.location.href = 'add_product.php';
-        }
-
         //ขยายรูปออกมา
         function expandImage(imageSrc) {
             // Set the image source in the modal
@@ -717,15 +462,15 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
             }
         });
 
-        function showDetail(detail, price) {
+        function showDetail(detail, price, date) {
             // แสดงรายละเอียดสินค้า
             document.getElementById('detailContent').textContent = detail;
             // แสดงราคา
             document.getElementById('priceContent').textContent = price;
+            // แสดงวันที่เพิ่ม
+            document.getElementById('dateContent').textContent = date;
         }
     </script>
-
-
 
 
     </body>

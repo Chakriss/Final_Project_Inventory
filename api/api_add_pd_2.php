@@ -5,8 +5,12 @@ session_start();
 include_once('../config/connect_db.php');
 header('Content-Type: application/json');
 
+// Set the timezone to Bangkok
+date_default_timezone_set('Asia/Bangkok');
+
 $stock = $_SESSION["user_stock"];
 $data_json = array();
+$date = date('Y-m-d');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Extract and sanitize POST data
@@ -65,14 +69,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     // Insert product into the database
-    $insert_sql = "INSERT INTO product (prod_name, prod_amount, prod_amount_min, prod_price, prod_unit, prod_type_id, prod_status, prod_img, st_id, prod_detail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $insert_sql = "INSERT INTO product (prod_name, prod_amount, prod_amount_min, prod_price, prod_unit, prod_type_id, prod_date, prod_status, prod_img, st_id, prod_detail) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $insert_stmt = mysqli_prepare($conn, $insert_sql);
-    mysqli_stmt_bind_param($insert_stmt, "siidssssis", $name, $amount, $amount_min, $price, $unit, $type, $status, $prod_img, $stock, $detail);
+    mysqli_stmt_bind_param($insert_stmt, "siidsssssis", $name, $amount, $amount_min, $price, $unit, $type, $date, $status, $prod_img, $stock, $detail);
 
+    // กรณีเพิ่มสินค้าสำเร็จ
     if (mysqli_stmt_execute($insert_stmt)) {
-        $data_json = array('status' => 'successfully', 'message' => 'Add finished product');
+        $data_json = array('status' => 'successfully', 'message' => 'Add product success!');
     } else {
-        $data_json = array('status' => 'error', 'message' => 'Added the wrong product');
+        $data_json = array('status' => 'error', 'message' => 'Failed to add product.');
     }
 
     mysqli_stmt_close($insert_stmt);

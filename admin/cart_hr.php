@@ -3,7 +3,7 @@ session_start();
 include_once '../config/function.php';
 // Check if the user is logged in
 if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk") {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -215,8 +215,8 @@ include_once '../navbar.php';
                             <tr>
                                 <th style="text-align: center;">Product ID</th>
                                 <th style="text-align: center;">Name</th>
-                                <th style="text-align: center;">Total Amount</th>
-                                <th style="text-align: center;">Amount</th>
+                                <th style="text-align: center;">Total Quantity</th>
+                                <th style="text-align: center;">Quantity</th>
                                 <th style="text-align: center;">Detail</th>
                                 <th style="text-align: center;">Action</th>
                             </tr>
@@ -361,7 +361,7 @@ include_once '../navbar.php';
                     // เพิ่มการจัดการกรณีที่การอัพเดตสำเร็จ เช่น การรีเฟรชข้อมูล
                 } else {
                     Swal.fire({
-                        title: "Add amount fail!",
+                        title: "Add Quantity fail!",
                         text: result.message,
                         icon: "error"
                     });

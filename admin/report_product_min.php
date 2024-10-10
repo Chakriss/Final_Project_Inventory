@@ -6,7 +6,7 @@ include_once '../config/function.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk") {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -187,7 +187,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                         <tr>
                                             <th style="text-align: center;">Product ID</th>
                                             <th style="text-align: center;">Name</th>
-                                            <th style="text-align: center;">Amount</th>
+                                            <th style="text-align: center;">Quantity</th>
                                             <th style="text-align: center;">Unit</th>
                                         </tr>
                                     </thead>

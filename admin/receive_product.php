@@ -9,7 +9,7 @@ include_once '../navbar.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk") {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -90,7 +90,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                             <tr>
                                                 <th style="text-align: center;">Photo</th>
                                                 <th style="text-align: center;">Name</th>
-                                                <th style="text-align: center;">Amount</th>
+                                                <th style="text-align: center;">Quantity</th>
                                                 <th style="text-align: center;">ACTION</th>
                                             </tr>
                                         </thead>
@@ -113,7 +113,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                                 </td>
 
                                                 <td>
-                                                    <input type="number" class="form-control" id="amount" name="products[0][amount]" min="1" oninput="validity.valid||(value='');" placeholder="Enter Amount / กรุณากรอกจำนวน">
+                                                    <input type="number" class="form-control" id="amount" name="products[0][amount]" min="1" oninput="validity.valid||(value='');" placeholder="Enter Quantity / กรุณากรอกจำนวน">
                                                     <div class="invalid-feedback" id="amountFeedback_0"></div>
                                                 </td>
                                                 <td align="center">
@@ -186,7 +186,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             <div class="invalid-feedback" id="productFeedback_${productIndex}"></div>
         </td>
         <td>
-            <input type="number" class="form-control" name="products[${productIndex}][amount]" min="1" oninput="validity.valid||(value='');" placeholder="Enter Amount / กรุณากรอกจำนวน">
+            <input type="number" class="form-control" name="products[${productIndex}][amount]" min="1" oninput="validity.valid||(value='');" placeholder="Enter Quantity / กรุณากรอกจำนวน">
             <div class="invalid-feedback" id="productFeedback_${productIndex}"></div>
         </td>
         <td align="center">
@@ -281,7 +281,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 if (!amount || amount < 1) {
                     isValid = false;
                     $(row).find('input[name^="products"]').addClass('is-invalid');
-                    $(row).find('.invalid-feedback').text('Please enter a valid amount.');
+                    $(row).find('.invalid-feedback').text('Please enter a valid Quantity.');
                 }
 
                 if (productId && amount) {

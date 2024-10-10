@@ -6,7 +6,7 @@ include_once '../header.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk") {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 // Check the user level and include relevant files
@@ -237,7 +237,7 @@ if ($user_stock == 1) {
                         height: 350
                     },
                     series: [{
-                        name: 'Product Amount',
+                        name: 'Product Quantity',
                         data: productAmounts
                     }],
                     xaxis: {

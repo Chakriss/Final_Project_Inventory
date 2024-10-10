@@ -3,7 +3,7 @@ session_start();
 include_once '../config/function.php';
 // Check if the user is logged in
 if (!isset($_SESSION["login_status"]) || $_SESSION["login_status"] !== "loginOk") {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -144,22 +144,29 @@ include_once '../navbar.php';
 
     /* สไตล์สำหรับ textarea */
     textarea {
-        resize: none; /* ปิดการปรับขนาด textarea */
-        border: 1px solid #ccc; /* กำหนดเส้นขอบ */
-        border-radius: 8px; /* ปรับให้ขอบโค้งมน */
-        padding: 8px; /* เพิ่มระยะห่างภายใน */
-        font-size: 14px; /* ปรับขนาดตัวอักษร */
-        width: 100%; /* ให้ขยายเต็มพื้นที่ cell */
-        background-color: #f9f9f9; /* พื้นหลังอ่อนเพื่อให้ดูสบายตา */
+        resize: none;
+        /* ปิดการปรับขนาด textarea */
+        border: 1px solid #ccc;
+        /* กำหนดเส้นขอบ */
+        border-radius: 8px;
+        /* ปรับให้ขอบโค้งมน */
+        padding: 8px;
+        /* เพิ่มระยะห่างภายใน */
+        font-size: 14px;
+        /* ปรับขนาดตัวอักษร */
+        width: 100%;
+        /* ให้ขยายเต็มพื้นที่ cell */
+        background-color: #f9f9f9;
+        /* พื้นหลังอ่อนเพื่อให้ดูสบายตา */
     }
 
     /* กำหนดขนาดพื้นที่ของ textarea ให้อยู่ในตารางอย่างสมดุล */
     .table textarea {
-        max-height: 60px; /* กำหนดความสูงสูงสุด */
-        min-height: 40px; /* กำหนดความสูงต่ำสุด */
+        max-height: 60px;
+        /* กำหนดความสูงสูงสุด */
+        min-height: 40px;
+        /* กำหนดความสูงต่ำสุด */
     }
-
-
 </style>
 
 
@@ -209,8 +216,8 @@ include_once '../navbar.php';
                             <tr>
                                 <th style="text-align: center;">Product ID</th>
                                 <th style="text-align: center;">Name</th>
-                                <th style="text-align: center;">Total Amount</th>
-                                <th style="text-align: center;">Amount</th>
+                                <th style="text-align: center;">Total Quantity</th>
+                                <th style="text-align: center;">Quantity</th>
                                 <th style="text-align: center;">Detail</th>
                                 <th style="text-align: center;">Action</th>
                             </tr>
@@ -355,7 +362,7 @@ include_once '../navbar.php';
                     // เพิ่มการจัดการกรณีที่การอัพเดตสำเร็จ เช่น การรีเฟรชข้อมูล
                 } else {
                     Swal.fire({
-                        title: "Add amount fail!",
+                        title: "Add Quantity fail!",
                         text: result.message,
                         icon: "error"
                     });
