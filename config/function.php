@@ -16,7 +16,7 @@ function selectProduct($conn, $stock)
             product.prod_img,
             product.prod_detail,
             product.prod_date,
-            product_status.prod_status_desc, 
+            product_status.prod_status_desc,
             product_type.prod_type_desc 
         FROM product
         LEFT JOIN product_status ON product.prod_status = product_status.prod_status 
