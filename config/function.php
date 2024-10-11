@@ -555,7 +555,7 @@ function selectWithdrawMostProduct($conn, $stock, $selectedMonth, $selectedYear)
 // ดึงข้อมูลสินค้าแยกตามแผนก และเรียงตามยอดรวมการเบิกมากที่สุดขึ้นก่อน
 function selectProductDeptByDept($conn, $stock, $selectedMonth, $selectedYear)
 {
-    $sql = "SELECT department.dept_name, product.prod_name, SUM(cart_detail.cart_amount) AS prod_amount, dept_totals.total_amount
+    $sql = "SELECT department.dept_name, product.prod_name, SUM(cart_detail.cart_amount) AS prod_amount, MAX(dept_totals.total_amount) AS total_amount
             FROM cart_detail
             LEFT JOIN product ON cart_detail.prod_id = product.prod_id
             LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
@@ -578,7 +578,7 @@ function selectProductDeptByDept($conn, $stock, $selectedMonth, $selectedYear)
             AND MONTH(cart.cart_date) = ?
             AND YEAR(cart.cart_date) = ?
             GROUP BY department.dept_name, product.prod_name
-            ORDER BY dept_totals.total_amount DESC, SUM(cart_detail.cart_amount) DESC
+            ORDER BY total_amount DESC, prod_amount DESC
             LIMIT 10";
 
     $stmt = mysqli_prepare($conn, $sql);
@@ -625,7 +625,7 @@ function selectTotalPriceMost($conn, $stock, $selectedMonth, $selectedYear)
 // ดึงข้อมูลสินค้าแยกตามแผนก และเรียงตามยอดรวมการเบิกมากที่แพงที่สุดขึ้นก่อน
 function selectTotalPriceMostByDept($conn, $stock, $selectedMonth, $selectedYear)
 {
-    $sql = "SELECT department.dept_name, product.prod_name, cart_detail.cart_amount, SUM(cart_detail.cart_amount * product.prod_price) AS total_value
+    $sql = "SELECT department.dept_name, product.prod_name, SUM(cart_detail.cart_amount) AS cart_amount, SUM(cart_detail.cart_amount * product.prod_price) AS total_value
             FROM cart_detail
             LEFT JOIN product ON cart_detail.prod_id = product.prod_id
             LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
@@ -653,5 +653,6 @@ function selectTotalPriceMostByDept($conn, $stock, $selectedMonth, $selectedYear
 
     return $result_total_price_by_dept;
 }
+
 
 //<----------------------------- ส่วนของ Report -------------------------------------------------->

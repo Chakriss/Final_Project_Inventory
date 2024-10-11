@@ -441,7 +441,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 //ขยายรูปออกมา
                 function expandImage(imageSrc) {
                     // Set the image source in the modal
-                    $('#imageModalSrc').attr('src', '../photo/' + imageSrc);
+                    $('#imageModalSrc').attr('src', 'photo/' + imageSrc);
                     // Show the modal
                     $('#imageModal').modal('show');
                 }

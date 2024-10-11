@@ -37,8 +37,13 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         $statuses[] = $status;
     }
 
-?>
 
+?>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
     <script>
         // Pass PHP data to JavaScript
         const types = <?php echo json_encode($types); ?>;
@@ -174,19 +179,71 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <span class="d-none d-sm-block">Cancel</span>
-                            </button>
-                            <button type="button" class="btn btn-success ml-1" onclick="addCSV()">
-                                <span class="d-none d-sm-block">Confirm</span>
-                            </button>
+                        <div class="modal-footer d-flex justify-content-between w-100">
+                            <div>
+                                <button type="button" class="btn btn-primary" onclick="CsvExport()">
+                                    <span class="d-none d-sm-block">Example</span>
+                                </button>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <span class="d-none d-sm-block">Cancel</span>
+                                </button>
+                                <button type="button" class="btn btn-success ml-1" onclick="addCSV()">
+                                    <span class="d-none d-sm-block">Confirm</span>
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
         <!-- Add Modal csv -->
+
+        <!-- <------Export ตัวอย่าง csv------>
+        <table id="productTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Quantity Minimum</th>
+                    <th>Price (baht)</th>
+                    <th>Unit</th>
+                    <th>Detail</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>เมาส์ L</td>
+                    <td>10</td>
+                    <td>5</td>
+                    <td>400</td>
+                    <td>ชิ้น</td>
+                    <td>Logitech</td>
+                    <td>อุปกรณ์คอมพิวเตอร์</td>
+                </tr>
+                <tr>
+                    <td>คีย์บอร์ด D</td>
+                    <td>20</td>
+                    <td>10</td>
+                    <td>500</td>
+                    <td>ชิ้น</td>
+                    <td>Dell</td>
+                    <td>อุปกรณ์คอมพิวเตอร์</td>
+                </tr>
+                <tr>
+                    <td>หูฟัง H</td>
+                    <td>30</td>
+                    <td>15</td>
+                    <td>1000</td>
+                    <td>ชิ้น</td>
+                    <td>HyperX</td>
+                    <td>อุปกรณ์คอมพิวเตอร์</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- <------Export ตัวอย่าง csv------>
 
 
         <?php include_once '../footer.php'; ?>
@@ -492,7 +549,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 timer: 1500,
                                 showConfirmButton: false
                             }).then(() => {
-                                location.reload(); // รีเฟรชหน้าเมื่ออัพโหลดสำเร็จ
+                                window.location.href = '<?php echo $stock_pd; ?>';
                             });
                         } else {
                             Swal.fire({
@@ -510,6 +567,44 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         });
                     }
                 });
+            }
+
+            function CsvExport() {
+                // ดึงตารางจาก DOM
+                var table = document.getElementById("productTable");
+                var rows = table.querySelectorAll("tr");
+
+                // สร้าง array เพื่อเก็บข้อมูล CSV
+                var csvContent = "\uFEFF"; // ใส่ BOM ตอนเริ่มไฟล์
+
+                // Loop ผ่านแต่ละ row ในตาราง
+                rows.forEach(function(row) {
+                    var rowData = [];
+                    var cols = row.querySelectorAll("th, td");
+
+                    // เก็บข้อมูลแต่ละ cell ใน array
+                    cols.forEach(function(col) {
+                        rowData.push('"' + col.innerText + '"'); // ใส่เครื่องหมาย " เพื่อป้องกันข้อมูลที่มี , 
+                    });
+
+                    // รวมข้อมูลในแต่ละ row ด้วยการคั่น , และขึ้นบรรทัดใหม่
+                    csvContent += rowData.join(",") + "\n";
+                });
+
+                // สร้าง blob จากข้อมูล CSV
+                var blob = new Blob([csvContent], {
+                    type: 'text/csv;charset=utf-8;'
+                });
+                var link = document.createElement("a");
+                var url = URL.createObjectURL(blob);
+
+                link.setAttribute("href", url);
+                link.setAttribute("download", "Example_data.csv");
+                link.style.visibility = 'hidden';
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             }
         </script>
 
