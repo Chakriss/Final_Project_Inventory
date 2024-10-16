@@ -313,7 +313,7 @@ if ($user_stock == 1) {
                         height: 350
                     },
                     series: [{
-                        name: 'Product Quantity',
+                        name: 'Product Total Price',
                         data: productAmounts
                     }],
                     xaxis: {

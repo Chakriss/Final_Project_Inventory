@@ -71,7 +71,6 @@ if (isset($_SESSION["user_level"]) && ($_SESSION["user_level"] == 'U')) {
                             <thead>
                                 <tr>
                                     <th style="text-align: center;">Order ID</th>
-                                    <th style="text-align: center;">Department</th>
                                     <th style="text-align: center;">Date</th>
                                     <th style="text-align: center;">Time</th>
                                     <th style="text-align: center;">Status</th>
@@ -81,7 +80,6 @@ if (isset($_SESSION["user_level"]) && ($_SESSION["user_level"] == 'U')) {
                                 <?php while ($row = $result_order_head_user->fetch_assoc()) : ?>
                                     <tr id="row_<?php echo $row['cart_id']; ?>" class="order-row" data-order-id="<?php echo $row['cart_id']; ?>">
                                         <td align="center"><?php echo $row['cart_id']; ?></td>
-                                        <td align="center"><?php echo $row['dept_name']; ?></td>
                                         <td align="center"><?php echo $row['cart_date']; ?></td>
                                         <td align="center"><?php echo $row['cart_time']; ?></td>
                                         <td align="center">

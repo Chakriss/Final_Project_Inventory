@@ -68,8 +68,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 2)) {
         <div class="page-heading">
             <div class="page-title">
                 <div class="row">
-                    <div class="col-12 col-md-6 order-md-1 order-last">
+                    <div class="d-flex justify-content-between align-items-center">
                         <h3>Inventory</h3>
+                        <button type="submit" class="btn btn-success btn-fw" onclick="ExcelExport()"><i class="bi bi-filetype-csv"></i> Export CSV </button>
                     </div>
                 </div>
             </div>
@@ -267,6 +268,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 2)) {
     <script src="../assets/vendors/fontawesome/all.min.js"></script>
     <script src="../assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script src="../assets/vendors/choices.js/choices.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
@@ -473,6 +475,58 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 2)) {
             document.getElementById('priceContent').textContent = price;
             // แสดงวันที่เพิ่ม
             document.getElementById('dateContent').textContent = date;
+        }
+
+        // ปุ่ม Export csv
+        function ExcelExport() {
+            $.ajax({
+                url: "../api/api_export_stock.php", // Endpoint to fetch all data
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        var sheet_name = "excel_sheet";
+                        var data = response.data;
+
+                        // Create an array with the column headers
+                        var export_data = [
+                            ["Id", "Name", "Quantity", "Quantity Minimum", "Price", "Unit", "Detail", "Type"]
+                        ];
+
+                        // Push data rows to export_data array
+                        data.forEach(function(item) {
+                            export_data.push([
+                                item.prod_id,
+                                item.prod_name,
+                                item.prod_amount,
+                                item.prod_amount_min,
+                                item.prod_price,
+                                item.prod_unit,
+                                item.prod_detail,
+                                item.prod_type_desc
+                            ]);
+                        });
+
+                        // Create a worksheet
+                        var ws = XLSX.utils.aoa_to_sheet(export_data);
+
+                        // Create a workbook and add the worksheet
+                        var wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, ws, sheet_name);
+
+                        // Export as CSV file
+                        XLSX.writeFile(wb, 'product.csv', {
+                            bookType: 'csv',
+                            type: 'string'
+                        });
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while fetching the data.');
+                }
+            });
         }
     </script>
 

@@ -11,6 +11,9 @@ if (isset($_POST['id'])) {
     $us_id = $_SESSION["user_id"];
     $stock = '2';  // Assuming stock ID is fixed for the query
     $status = 'TBC';  // Assuming 'WC' is the status code for active carts
+    $dept_id = '0';
+    $date = null;
+    $time = null;
 
     // Check available stock for the product
     $stock_sql = "SELECT prod_amount FROM product WHERE prod_id = ?";
@@ -39,9 +42,9 @@ if (isset($_POST['id'])) {
     
     // If no existing cart, create a new one
     if (!$cart) {
-        $sql = "INSERT INTO cart (cart_id, st_id, us_id, cart_status_id) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO cart (cart_id, st_id, us_id, dept_id, cart_date, cart_time, cart_status_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "iiis", $null, $stock, $us_id, $status);
+        mysqli_stmt_bind_param($stmt, "iiiisss", $null, $stock, $us_id, $dept_id, $date, $time, $status);
         mysqli_stmt_execute($stmt);
         $cart = mysqli_insert_id($conn);
         mysqli_stmt_close($stmt);

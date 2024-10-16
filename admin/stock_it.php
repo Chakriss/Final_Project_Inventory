@@ -64,8 +64,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
         <div class="page-heading">
             <div class="page-title">
                 <div class="row">
-                    <div class="col-12 col-md-6 order-md-1 order-last">
+                    <div class="d-flex justify-content-between align-items-center">
                         <h3>Inventory</h3>
+                        <button type="submit" class="btn btn-success btn-fw" onclick="ExcelExport()"><i class="bi bi-filetype-csv"></i> Export CSV </button>
                     </div>
                 </div>
             </div>
@@ -109,7 +110,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
                                         <td align="center">
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#detailModal"
                                                 onclick="showDetail('<?php echo htmlspecialchars($row['prod_detail']); ?>', '<?php echo $row['prod_price']; ?>', '<?php echo $row['prod_date']; ?>')"><i class="bi bi-eye"></i>
-                                                
+
                                             </button>
                                             <?php
                                             // Determine if the button should be disabled
@@ -120,16 +121,16 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
                                                 data-bs-toggle="modal" data-bs-target="#modalAddCart"
                                                 data-prod-id="<?php echo $row['prod_id']; ?>"
                                                 <?php echo ($row['prod_status_desc'] !== 'Active') ? 'disabled' : ''; ?>>
-                                                <span class="fas fa-cart-plus"></span> 
+                                                <span class="fas fa-cart-plus"></span>
                                             </button>
 
                                             <?php if ($_SESSION["user_level"] !== "U") : ?>
                                                 <a href="edit_product.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn btn-warning">
-                                                    <span class="fas fa-edit"></span> 
+                                                    <span class="fas fa-edit"></span>
                                                 </a>
 
                                                 <button class="btn btn-danger" onclick="deleteProduct(<?php echo $row['prod_id']; ?>)">
-                                                    <span class="fas fa-trash-alt"></span> 
+                                                    <span class="fas fa-trash-alt"></span>
                                                 </button>
                                             <?php endif; ?>
                                         </td>
@@ -261,6 +262,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
     <script src="../assets/vendors/fontawesome/all.min.js"></script>
     <script src="../assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script src="../assets/vendors/choices.js/choices.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
@@ -320,7 +322,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
             });
         }
 
-       
+
 
         // ดึงข้อมูลเพื่อจะเพิ่มสินค้าลงตะกร้า 
         // Event listener for the modal when it's triggered
@@ -469,6 +471,58 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1)) {
             document.getElementById('priceContent').textContent = price;
             // แสดงวันที่เพิ่ม
             document.getElementById('dateContent').textContent = date;
+        }
+
+        // ปุ่ม Export csv
+        function ExcelExport() {
+            $.ajax({
+                url: "../api/api_export_stock.php", // Endpoint to fetch all data
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        var sheet_name = "excel_sheet";
+                        var data = response.data;
+
+                        // Create an array with the column headers
+                        var export_data = [
+                            ["Id", "Name", "Quantity", "Quantity Minimum", "Price", "Unit", "Detail", "Type"]
+                        ];
+
+                        // Push data rows to export_data array
+                        data.forEach(function(item) {
+                            export_data.push([
+                                item.prod_id,
+                                item.prod_name,
+                                item.prod_amount,
+                                item.prod_amount_min,
+                                item.prod_price,
+                                item.prod_unit,
+                                item.prod_detail,
+                                item.prod_type_desc
+                            ]);
+                        });
+
+                        // Create a worksheet
+                        var ws = XLSX.utils.aoa_to_sheet(export_data);
+
+                        // Create a workbook and add the worksheet
+                        var wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, ws, sheet_name);
+
+                        // Export as CSV file
+                        XLSX.writeFile(wb, 'product.csv', {
+                            bookType: 'csv',
+                            type: 'string'
+                        });
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while fetching the data.');
+                }
+            });
         }
     </script>
 

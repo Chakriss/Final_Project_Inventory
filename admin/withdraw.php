@@ -348,7 +348,9 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                 icon: 'success',
                                 title: 'Order Confirmed',
                                 text: response.message,
-                                confirmButtonText: 'OK'
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
                             }).then(function() {
                                 $('#orderDetailsModal').modal('hide'); // Hide the modal
                                 location.reload(); // Refresh the page or use other methods to update the list
