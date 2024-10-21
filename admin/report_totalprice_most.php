@@ -214,8 +214,14 @@ if ($user_stock == 1) {
             <div class="page-heading">
                 <div class="page-title">
                     <div class="row">
-                        <div class="col-12 order-md-1 order-last">
+                        <div class="d-flex justify-content-between align-items-center">
                             <h3>Top 10 Departments with Highest Product Withdraw Volume</h3>
+                            <!-- Export Button -->
+                            <form method="POST" action="export_csv.php">
+                                <input type="hidden" name="month" value="<?php echo $selectedMonth; ?>">
+                                <input type="hidden" name="year" value="<?php echo $selectedYear; ?>">
+                                <button type="submit" class="btn btn-success"><i class="bi bi-filetype-csv"></i> Export CSV</button>
+                            </form>
                         </div>
                     </div>
                 </div>
