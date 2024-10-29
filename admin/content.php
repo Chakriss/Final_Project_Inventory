@@ -250,7 +250,7 @@ $disapprovedCount = $orderApprovalData['disapproved'];
                         <div class="card-body">
                             <h5 class="text-center">สถานะของสินค้า</h5>
                             <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
-                                <canvas id="productStatusPieChart" width="200" height="200"></canvas>
+                                <canvas id="productStatusPieChart" width="220" height="220"></canvas>
                             </div>
                         </div>
                     </div>
