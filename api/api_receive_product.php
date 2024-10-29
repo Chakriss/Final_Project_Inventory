@@ -4,12 +4,20 @@ session_start();
 include_once('../config/connect_db.php');
 $stock = $_SESSION["user_stock"];
 $us_id = $_SESSION["user_id"];
-$products = $_POST['products'];
+$products = isset($_POST['products']) ? $_POST['products'] : null; // Check if products are set
 $date = $_POST['date'];
 $time = $_POST['time'];
 
 $data_json = array();
 $error_messages = [];
+
+// Check if products are provided
+if (is_null($products) || empty($products)) {
+    $data_json = ["status" => "error", "message" => "No products provided."];
+    header('Content-Type: application/json');
+    echo json_encode($data_json);
+    exit; // Terminate the script
+}
 
 try {
     // Start transaction

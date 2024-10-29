@@ -23,7 +23,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <!-- <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown me-3">
                         <a class="nav-link active dropdown-toggle" href="#" data-bs-toggle="dropdown"
                             aria-expanded="false">
@@ -36,7 +36,8 @@
                             <li><a class="dropdown-item">No notification available</a></li>
                         </ul>
                     </li>
-                </ul>
+                </ul> -->
+                
                 <div class="dropdown">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="user-menu d-flex">

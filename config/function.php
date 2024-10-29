@@ -656,3 +656,162 @@ function selectTotalPriceMostByDept($conn, $stock, $selectedMonth, $selectedYear
 
 
 //<----------------------------- ส่วนของ Report -------------------------------------------------->
+
+//<----------------------------- ส่วนของ Dashboard -------------------------------------------------->
+
+//สินค้าทั้งหมด
+function selectAllProduct($conn, $stock)
+{
+    $sql = "SELECT SUM(prod_amount) AS total_amount 
+            FROM product 
+            WHERE st_id = ?";
+
+    // Prepare the SQL statement
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, "i", $stock);
+
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch the results
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    // Close the statement
+    $stmt->close();
+
+    // Return the total amount (if null, return 0)
+    return $row['total_amount'] ?? 0;
+}
+
+//จำนวนสินค้าเหลือน้อย
+function countLowStock($conn, $stock)
+{
+    $sql = "SELECT COUNT(*) AS low_stock_count 
+            FROM product 
+            WHERE st_id = ? AND prod_amount <= prod_amount_min";
+
+    // Prepare the SQL statement
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, "i", $stock);
+
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch the result
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    // Close the statement
+    $stmt->close();
+
+    // Return the count of low stock products
+    return $row['low_stock_count'] ?? 0;
+}
+
+//จำนวนสินค้าหมด stock
+function countOutOfStock($conn, $stock)
+{
+    $sql = "SELECT COUNT(*) AS out_of_stock_count 
+            FROM product 
+            WHERE st_id = ? AND prod_amount = 0";
+
+    // Prepare the SQL statement
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, "i", $stock);
+
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch the result
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    // Close the statement
+    $stmt->close();
+
+    // Return the count of out-of-stock products
+    return $row['out_of_stock_count'] ?? 0;
+}
+
+//จำนวนผู้ใช้งานระบบ
+function countUser($conn)
+{
+    $sql = "SELECT COUNT(*) AS user_count 
+            FROM user 
+            WHERE us_status_id = 'A' ";
+
+    // Prepare the SQL statement
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch the result
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    // Close the statement
+    $stmt->close();
+
+    return $row['user_count'] ?? 0;
+}
+
+
+//จำนวนสถานะของสินค้า (Active, Inactive)
+function product_status_piechart($conn, $stock)
+{
+    $sql = "SELECT prod_status, COUNT(*) AS product_status_count 
+            FROM product 
+            WHERE st_id = ?
+            GROUP BY prod_status";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $stock);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    $data = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[$row['prod_status']] = $row['product_status_count'];
+    }
+
+    return $data;
+}
+
+
+//จำนวนการอนุมัติและไม่อนุมัติ
+function orderApproveAndDisapprove($conn, $stock, $selectedMonth, $selectedYear)
+{
+    $sql1 = "SELECT cart_status_id, COUNT(*) AS cart_status_count
+            FROM cart
+            WHERE st_id = ?
+            AND MONTH(cart_date) = ?
+            AND YEAR(cart_date) = ?
+            GROUP BY cart_status_id";
+
+    $stmt1 = mysqli_prepare($conn, $sql1);
+    mysqli_stmt_bind_param($stmt1, "iss", $stock, $selectedMonth, $selectedYear);
+    mysqli_stmt_execute($stmt1);
+    $result1 = mysqli_stmt_get_result($stmt1);
+
+    // ค่าเริ่มต้นสำหรับ Approved และ Disapproved
+    $bar = ['approved' => 0, 'disapproved' => 0];
+
+    while ($row = mysqli_fetch_assoc($result1)) {
+        if ($row['cart_status_id'] === 'A') {
+            $bar['approved'] = $row['cart_status_count'];
+        } elseif ($row['cart_status_id'] === 'R') {
+            $bar['disapproved'] = $row['cart_status_count'];
+        }
+    }
+
+    return $bar;
+}
+
+//<----------------------------- ส่วนของ Dashboard -------------------------------------------------->

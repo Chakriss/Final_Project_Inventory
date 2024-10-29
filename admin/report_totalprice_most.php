@@ -255,7 +255,7 @@ if ($user_stock == 1) {
                                     </div>
                                     <div class="col-md-3">
                                         <label>&nbsp;</label><br>
-                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                        <button type="submit" class="btn btn-primary">ค้นหา</button>
                                     </div>
                                 </div>
                             </form>

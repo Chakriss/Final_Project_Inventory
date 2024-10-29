@@ -1257,7 +1257,8 @@ a {
   font-weight: 700;
 }
 .font-extrabold {
-  font-weight: 800;
+  font-weight: 700;
+  font-size: 28px; /* ปรับขนาดให้ใหญ่ขึ้น */
 }
 .text-width-md {
   max-width: 450px;

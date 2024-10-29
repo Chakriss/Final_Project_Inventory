@@ -330,15 +330,20 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                                 <div class="invalid-feedback" id="emailAdminFeedback"></div>
                                             </div>
                                             <label>Password: </label>
-                                            <div class="form-group">
-                                                <input type="password" id="us_password_admin" placeholder="Enter your Password"
-                                                    class="form-control">
+                                            <div class="form-group position-relative">
+                                                <input type="password" id="us_password_admin" placeholder="Enter your Password" class="form-control">
+                                                <button type="button" onclick="togglePasswordVisibility('us_password_admin', this)" class="btn border-0 bg-transparent position-absolute" style="right: 10px; top: 5px;">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
                                                 <div class="invalid-feedback" id="passwordAdminFeedback"></div>
                                             </div>
+
                                             <label>Confirm Password: </label>
-                                            <div class="form-group">
-                                                <input type="password" id="us_confirmpassword_admin" placeholder="Enter your Confirm Password"
-                                                    class="form-control">
+                                            <div class="form-group position-relative">
+                                                <input type="password" id="us_confirmpassword_admin" placeholder="Enter your Confirm Password" class="form-control">
+                                                <button type="button" onclick="togglePasswordVisibility('us_confirmpassword_admin', this)" class="btn border-0 bg-transparent position-absolute" style="right: 10px; top: 5px;">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
                                                 <div class="invalid-feedback" id="confirmpasswordAdminFeedback"></div>
                                             </div>
                                         </div>
@@ -770,6 +775,20 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                         });
                     }
                 });
+
+
+                function togglePasswordVisibility(fieldId, button) {
+                    const passwordField = document.getElementById(fieldId);
+                    const icon = button.querySelector("i");
+
+                    if (passwordField.type === "password") {
+                        passwordField.type = "text";
+                        icon.classList.replace("bi-eye", "bi-eye-slash");
+                    } else {
+                        passwordField.type = "password";
+                        icon.classList.replace("bi-eye-slash", "bi-eye");
+                    }
+                }
             </script>
 
     </body>

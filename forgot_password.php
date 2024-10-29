@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Optinova</title>
+    <title>Forgot Password - Optinova</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -27,27 +27,38 @@
         <div class="row h-100">
             <div class="col-lg-5 col-12">
                 <div id="auth-left">
-                    <h1 class="auth-title">Log in.</h1>
-                    <form id="loginForm" method="POST">
+                    <h1 class="auth-title">Forgot Password</h1>
+
+                    <form id="forgotPasswordForm" method="POST">
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="text" class="form-control form-control-xl" id="email" name="email" placeholder="Username">
+                            <input type="email" class="form-control form-control-xl" id="email" name="email" placeholder="Email">
                             <div class="form-control-icon">
-                                <i class="bi bi-person"></i>
+                                <i class="bi bi-envelope"></i>
                             </div>
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="password" class="form-control form-control-xl" id="password" name="password" placeholder="Password">
+                            <input type="password" class="form-control form-control-xl" id="password-new" name="password-new" placeholder="New Password">
                             <div class="form-control-icon">
                                 <i class="bi bi-shield-lock"></i>
                             </div>
-                            <div class="toggle-password" onclick="togglePassword('password')">
-                                <i class="bi bi-eye" id="togglePasswordIcon-password"></i>
+                            <div class="toggle-password" onclick="togglePassword('password-new')">
+                                <i class="bi bi-eye" id="togglePasswordIcon-password-new"></i>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5" id="top-center" onclick="login()">Log in</button>
+                        <div class="form-group position-relative has-icon-left mb-4">
+                            <input type="password" class="form-control form-control-xl" id="password-confirm" name="password-confirm" placeholder="Confirm Password">
+                            <div class="form-control-icon">
+                                <i class="bi bi-shield-lock"></i>
+                            </div>
+                            <div class="toggle-password" onclick="togglePassword('password-confirm')">
+                                <i class="bi bi-eye" id="togglePasswordIcon-password-confirm"></i>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5" onclick="forgotPassword()">Submit</button>
                     </form>
+
                     <div class="text-center mt-5 text-lg fs-4">
-                        <p><a class="font-bold" href="forgot_password.php">Forgot password?</a>.</p>
+                        <p><a href="login.php" class="font-bold">Back to Login</a></p>
                     </div>
                 </div>
             </div>
@@ -60,12 +71,10 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
-    <!-- <script src="assets/js/main.js"></script> -->
 
     <script>
-        function login() {
+        function forgotPassword() {
             event.preventDefault();
             let isValid = true;
 
@@ -78,38 +87,40 @@
                 $('#email').addClass('is-invalid');
                 isValid = false;
             }
-            if ($('#password').val() == "") {
-                $('#password').addClass('is-invalid');
+            if ($('#password-new').val() == "") {
+                $('#password-new').addClass('is-invalid');
+                isValid = false;
+            }
+            if ($('#password-confirm').val() == "") {
+                $('#password-confirm').addClass('is-invalid');
                 isValid = false;
             }
 
-
             if (isValid) {
-                const formData = new FormData(document.getElementById('loginForm'));
-                formData.append('code', 'xxxxx'); // Append the code to FormData
+                const formData = new FormData(document.getElementById('forgotPasswordForm'));
 
                 $.ajax({
-                    url: "/Final_Project/api/api_login.php",
+                    url: "/Final_Project/api/api_forgot_password.php",
                     type: 'POST',
                     dataType: 'json',
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function(result) {
-                        if (result.status === "successfully") {
+                        if (result.status === "success") {
                             Swal.fire({
-                                title: "Login successfully!",
-                                text: "Welcome To Inventory Management System",
+                                title: "Success",
+                                text: "Your password has been reset.",
                                 icon: "success",
-                                timer: 1000,
+                                timer: 1200,
                                 showConfirmButton: false
                             }).then(() => {
-                                window.location.href = result.level;
+                                window.location.href = "login.php";
                             });
                         } else {
                             Swal.fire({
-                                title: "Login!",
-                                text: result.status,
+                                title: "Error",
+                                text: result.message,
                                 icon: "error"
                             });
                         }
