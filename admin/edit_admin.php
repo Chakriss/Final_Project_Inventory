@@ -199,7 +199,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     text: result.message,
                                     icon: "info"
                                 }).then((result) => {
-                                    window.location.href = 'logout.php';
+                                    window.location.href = '../logout.php';
                                 });
                             } else {
                                 Swal.fire({

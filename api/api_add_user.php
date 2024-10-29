@@ -5,8 +5,8 @@ include_once('../config/connect_db.php');
 
 $name = trim($_POST['name']);
 $email = trim($_POST['email']);
-$password = base64_encode(trim($_POST['password']));
-$confirmpassword = base64_encode(trim($_POST['confirmpassword']));
+$password = ($_POST['password']);
+$confirmpassword = ($_POST['confirmpassword']);
 $dept = trim($_POST['dept']);
 $status = trim($_POST['status']);
 $stock = 3;
@@ -43,12 +43,15 @@ if ($password !== $confirmpassword) {
     exit();
 }
 
+// แฮชรหัสผ่านใหม่ด้วย password_hash()
+$hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
 // Insert new user
-$sql = "INSERT INTO user (us_name, us_email, us_password, us_level, dept_id, st_id, us_status_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+$sql = "INSERT INTO user (us_name, us_email, us_password, us_level_id, dept_id, st_id, us_status_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 $stmt = mysqli_prepare($conn, $sql);
 
 if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "ssssiis", $name, $email, $password, $us_level, $dept, $stock, $status);
+    mysqli_stmt_bind_param($stmt, "ssssiis", $name, $email, $hashed_password, $us_level, $dept, $stock, $status);
     $result = mysqli_stmt_execute($stmt);
 
     if ($result) {
