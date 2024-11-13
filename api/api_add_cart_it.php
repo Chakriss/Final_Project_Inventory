@@ -15,14 +15,15 @@ if (isset($_POST['id'])) {
     $date = null;
     $time = null;
 
-    // Check available stock for the product
-    $stock_sql = "SELECT prod_amount FROM product WHERE prod_id = ?";
+    // Check available stock and product name for the product
+    $stock_sql = "SELECT prod_amount, prod_name, prod_price FROM product WHERE prod_id = ?";
     $stock_stmt = mysqli_prepare($conn, $stock_sql);
     mysqli_stmt_bind_param($stock_stmt, "i", $prod_id);
     mysqli_stmt_execute($stock_stmt);
-    mysqli_stmt_bind_result($stock_stmt, $available_stock);
+    mysqli_stmt_bind_result($stock_stmt, $available_stock, $prod_name, $prod_price);
     mysqli_stmt_fetch($stock_stmt);
     mysqli_stmt_close($stock_stmt);
+
 
     if ($amount > $available_stock) {
         $data_json = array("status" => "error", "message" => "Not enough stock available.");
@@ -39,7 +40,7 @@ if (isset($_POST['id'])) {
     mysqli_stmt_fetch($check_stmt);
     mysqli_stmt_close($check_stmt);
     $cart = $cart_id;
-    
+
     // If no existing cart, create a new one
     if (!$cart) {
         $sql = "INSERT INTO cart (cart_id, st_id, us_id, dept_id, cart_date, cart_time, cart_status_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -66,9 +67,9 @@ if (isset($_POST['id'])) {
     }
 
     // Add to cart_detail
-    $sql2 = "INSERT INTO cart_detail (cart_detail_id, cart_id, prod_id, cart_amount, cart_detail, cart_status_id) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql2 = "INSERT INTO cart_detail (cart_detail_id, cart_id, prod_id, prod_name, cart_amount, prod_price, cart_detail, cart_status_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt2 = mysqli_prepare($conn, $sql2);
-    mysqli_stmt_bind_param($stmt2, "iiiiss", $null, $cart, $prod_id, $amount, $detail, $status);
+    mysqli_stmt_bind_param($stmt2, "iiisiiss", $null, $cart, $prod_id, $prod_name, $amount, $prod_price, $detail, $status);
     $result2 = mysqli_stmt_execute($stmt2);
     mysqli_stmt_close($stmt2);
 
@@ -83,4 +84,3 @@ if (isset($_POST['id'])) {
 
 echo json_encode($data_json);
 mysqli_close($conn);
-?>

@@ -5,11 +5,10 @@ if (isset($_GET['order_id'])) {
     $rec_id = $_GET['order_id'];
 
     // Fetch order details from the database
-    $query = "SELECT product.prod_name,
-                     receive_product_detail.rec_amount
+    $query = "SELECT prod_name,
+                     rec_amount
               FROM receive_product_detail
-              LEFT JOIN product ON receive_product_detail.prod_id = product.prod_id
-              WHERE receive_product_detail.rec_id = ?";
+              WHERE rec_id = ?";
               
     if ($stmt = $conn->prepare($query)) {
         $stmt->bind_param("i", $rec_id);

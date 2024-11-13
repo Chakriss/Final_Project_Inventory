@@ -57,10 +57,19 @@ try {
                 continue;
             }
 
+            //ดึง prod_name มา
+            $stock_sql = "SELECT prod_name FROM product WHERE prod_id = ?";
+            $stock_stmt = mysqli_prepare($conn, $stock_sql);
+            mysqli_stmt_bind_param($stock_stmt, "i", $product_id);
+            mysqli_stmt_execute($stock_stmt);
+            mysqli_stmt_bind_result($stock_stmt, $prod_name);
+            mysqli_stmt_fetch($stock_stmt);
+            mysqli_stmt_close($stock_stmt);
+
             // Insert into receive_product_detail (details)
-            $receive_detail_sql = "INSERT INTO receive_product_detail (rec_detail_id, rec_id, prod_id, rec_amount) VALUES (?, ?, ?, ?)";
+            $receive_detail_sql = "INSERT INTO receive_product_detail (rec_detail_id, rec_id, prod_id, prod_name, rec_amount) VALUES (?, ?, ?, ?, ?)";
             $receive_detail_stmt = mysqli_prepare($conn, $receive_detail_sql);
-            mysqli_stmt_bind_param($receive_detail_stmt, "iiii", $null, $receive_id, $product_id, $amount);
+            mysqli_stmt_bind_param($receive_detail_stmt, "iiisi", $null, $receive_id, $product_id, $prod_name, $amount);
             if (!mysqli_stmt_execute($receive_detail_stmt)) {
                 throw new Exception("Failed to insert into receive_product_detail for product ID $product_id: " . mysqli_stmt_error($receive_detail_stmt));
             }

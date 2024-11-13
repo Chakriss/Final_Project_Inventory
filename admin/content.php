@@ -19,7 +19,7 @@ $disapprovedCount = $orderApprovalData['disapproved'];
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
 
 <style>
     .card {
@@ -238,7 +238,7 @@ $disapprovedCount = $orderApprovalData['disapproved'];
                         <div class="card-body">
                             <h5 class="text-center">การอนุมัติและไม่อนุมัติ</h5>
                             <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
-                                <div id="chart"></div>
+                                <div id="highcharts_chart" style="width: 100%; height: 100%;"></div>
                             </div>
                         </div>
                     </div>
@@ -314,47 +314,78 @@ $disapprovedCount = $orderApprovalData['disapproved'];
 
                 // <-----barchart ------>
 
-                const approvedCount = <?php echo json_encode($approvedCount); ?>;
-                const disapprovedCount = <?php echo json_encode($disapprovedCount); ?>;
+                // Use PHP values directly in the JavaScript
+                var approvedCount = <?php echo $approvedCount; ?>;
+                var disapprovedCount = <?php echo $disapprovedCount; ?>;
 
-                const options = {
+                var options = {
+                    series: [{
+                        name: 'Status',
+                        data: [approvedCount, disapprovedCount] // Correct structure with 'data' property
+                    }],
                     chart: {
                         type: 'bar',
-                        height: 300,
-                        width: '150%',
+                        height: 300, // ปรับความสูงของกราฟ
+                        width: '150%' // ปรับความกว้างของกราฟเป็น 100% ของ container
                     },
-                    series: [{
-                        name: 'Order',
-                        data: [approvedCount, disapprovedCount]
-                    }],
-                    colors: ['#008FFB', '#FF4560'], // สีของแต่ละแท่ง
                     xaxis: {
                         categories: ['Approved', 'Disapproved']
-                    },
-                    title: {
-                        text: 'Order'
-                    },
-                    plotOptions: {
-                        bar: {
-                            distributed: true, // ทำให้แต่ละแท่งมีสีที่แตกต่างกันตามลำดับใน colors
-                            dataLabels: {
-                                position: 'center' // วาง label ไว้ตรงกลางของแท่ง 
-                            }
-                        }
-                    },
-                    dataLabels: {
-                        enabled: true,
-                        formatter: function(val) {
-                            return val;
-                        },
-                        offsetY: 0, // วาง label ไว้ตรงกลางของแท่ง
-                        style: {
-                            fontSize: '12px',
-                            colors: ["#FFFFFF"] // ตั้งค่าสีของตัวเลขให้ชัดเจน
-                        }
                     }
                 };
 
-                const chart = new ApexCharts(document.querySelector("#chart"), options);
+                var chart = new ApexCharts(document.querySelector("#chart"), options);
                 chart.render();
+            </script>
+
+            <script>
+                // Bar Chart - Order Approval
+                Highcharts.chart('highcharts_chart', {
+                    chart: {
+                        type: 'column',
+                        height: 320, // กำหนดความสูงของกราฟ (ในพิกเซล)
+                        width: 500, // กำหนดความกว้างของกราฟ (ในพิกเซล)
+                    },
+                    title: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: ['Status'],
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Number of Orders'
+                        },
+                        min: 0, // กำหนดค่าเริ่มต้นที่ 0
+                        labels: {
+                            style: {
+                                fontWeight: 'bold', // ตัวหนาของตัวเลข
+                                color: '#000' // สีของตัวเลขในแกน Y
+                            }
+                        }
+                    },
+                    plotOptions: {
+                        column: {
+                            dataLabels: {
+                                enabled: true, // เปิดการแสดงตัวเลข
+                                color: '#FFFFFF', // สีของตัวเลข
+                                style: {
+                                    fontWeight: 'bold', // ตัวหนาของตัวเลข
+                                    textOutline: 'none' // ไม่มีขอบตัวหนังสือ
+                                },
+                                verticalAlign: 'middle', // ตั้งตัวเลขให้อยู่กลางแท่งกราฟ
+                                align: 'center', // ตั้งตำแหน่งตัวเลขให้อยู่กึ่งกลางแท่ง
+                                inside: true // ทำให้ตัวเลขแสดงภายในแท่งกราฟ
+                            }
+                        }
+                    },
+                    series: [{
+                        name: 'Approved',
+                        data: [<?php echo $approvedCount; ?>],
+                        color: '#0099CC'
+                    }, {
+                        name: 'Disapproved',
+                        data: [<?php echo $disapprovedCount; ?>],
+                        color: '#00CCFF'
+                    }]
+                });
             </script>

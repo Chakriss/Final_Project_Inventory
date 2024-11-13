@@ -81,7 +81,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                         </div>
                                         <label>Quantity Minimum: </label>
                                         <div class="form-group">
-                                            <input type="number" id="prod_amount_min_0" min="0" oninput="validity.valid||(value='');" placeholder="Please enter quantity min / กรุณากรอกจำนวนสินค้าขั้นต่ำ" class="form-control">
+                                            <input type="number" id="prod_amount_min_0" min="1" oninput="validity.valid||(value='');" placeholder="Please enter quantity min / กรุณากรอกจำนวนสินค้าขั้นต่ำ" class="form-control">
                                             <div class="invalid-feedback" id="amountMinFeedback_0"></div>
                                         </div>
                                         <label>Price(baht): </label>
@@ -301,7 +301,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                     </div>
                                     <label>Quantity Minimum: </label>
                                     <div class="form-group">
-                                        <input type="number" id="prod_amount_min_${formCount}" min="0" oninput="validity.valid||(value='');" placeholder="Please enter quantity Min / กรุณากรอกจำนวนสินค้าขั้นต่ำ" class="form-control">
+                                        <input type="number" id="prod_amount_min_${formCount}" min="1" oninput="validity.valid||(value='');" placeholder="Please enter quantity Min / กรุณากรอกจำนวนสินค้าขั้นต่ำ" class="form-control">
                                         <div class="invalid-feedback" id="amountMinFeedback_${formCount}"></div>
                                     </div>
                                     <label>Price(baht): </label>

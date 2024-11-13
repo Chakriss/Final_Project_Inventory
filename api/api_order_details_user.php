@@ -7,14 +7,13 @@ if (isset($_GET['order_id'])) {
     // Fetch order details from the database
     $query = "SELECT cart_detail.cart_id,
                      cart_detail.cart_detail_id,
-                     product.prod_id,
-                     product.prod_name,
+                     cart_detail.prod_id,
+                     cart_detail.prod_name,
                      cart_detail.cart_amount,
                      cart_detail.cart_detail,
                      cart_detail.cart_status_id,
                      cart_status.cart_status 
               FROM cart_detail 
-              LEFT JOIN product ON cart_detail.prod_id = product.prod_id
               LEFT JOIN cart_status ON cart_detail.cart_status_id = cart_status.cart_status_id
               WHERE cart_detail.cart_id = ?";
               

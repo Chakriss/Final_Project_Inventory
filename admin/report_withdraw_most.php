@@ -38,7 +38,7 @@ if ($result_withdraw_most_product->num_rows > 0) {
         $product_amounts[] = (int)$row['prod_amount'];
     }
 } else {
-    echo "No data found";
+    //echo "No data found";
 }
 
 // สร้าง array เก็บข้อมูลของแผนกแต่ละแผนก

@@ -495,16 +495,15 @@ function selectLowStock($conn, $stock)
 //สินค้ายอดนิยม
 function selectPopularProduct($conn, $stock, $selectedMonth, $selectedYear)
 {
-    $sql = "SELECT product.prod_name, SUM(cart_detail.cart_amount) AS prod_amount
+    $sql = "SELECT cart_detail.prod_name, SUM(cart_detail.cart_amount) AS prod_amount
             FROM cart_detail
-            LEFT JOIN product ON cart_detail.prod_id = product.prod_id
             LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
             WHERE cart.st_id = ? 
             AND cart_detail.cart_status_id = 'A'
             AND cart.cart_status_id = 'A'
             AND MONTH(cart.cart_date) = ?
             AND YEAR(cart.cart_date) = ?
-            GROUP BY cart_detail.prod_id, product.prod_name
+            GROUP BY cart_detail.prod_id, cart_detail.prod_name
             ORDER BY SUM(cart_detail.cart_amount) DESC LIMIT 10";
 
     // Prepare the SQL statement
@@ -555,9 +554,8 @@ function selectWithdrawMostProduct($conn, $stock, $selectedMonth, $selectedYear)
 // ดึงข้อมูลสินค้าแยกตามแผนก และเรียงตามยอดรวมการเบิกมากที่สุดขึ้นก่อน
 function selectProductDeptByDept($conn, $stock, $selectedMonth, $selectedYear)
 {
-    $sql = "SELECT department.dept_name, product.prod_name, SUM(cart_detail.cart_amount) AS prod_amount, MAX(dept_totals.total_amount) AS total_amount
+    $sql = "SELECT department.dept_name, cart_detail.prod_name, SUM(cart_detail.cart_amount) AS prod_amount, MAX(dept_totals.total_amount) AS total_amount
             FROM cart_detail
-            LEFT JOIN product ON cart_detail.prod_id = product.prod_id
             LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
             LEFT JOIN department ON cart.dept_id = department.dept_id
             LEFT JOIN (
@@ -577,7 +575,7 @@ function selectProductDeptByDept($conn, $stock, $selectedMonth, $selectedYear)
             AND cart.cart_status_id = 'A'
             AND MONTH(cart.cart_date) = ?
             AND YEAR(cart.cart_date) = ?
-            GROUP BY department.dept_name, product.prod_name
+            GROUP BY department.dept_name, cart_detail.prod_name
             ORDER BY total_amount DESC, prod_amount DESC
             LIMIT 10";
 
@@ -593,9 +591,8 @@ function selectProductDeptByDept($conn, $stock, $selectedMonth, $selectedYear)
 //แผนกที่เบิกสินค้าที่ราคาเยอะที่สุด
 function selectTotalPriceMost($conn, $stock, $selectedMonth, $selectedYear)
 {
-    $sql = "SELECT department.dept_name, SUM(cart_detail.cart_amount * product.prod_price) AS total_value
+    $sql = "SELECT department.dept_name, SUM(cart_detail.cart_amount * cart_detail.prod_price) AS total_value
             FROM cart_detail
-            LEFT JOIN product ON cart_detail.prod_id = product.prod_id
             LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
             LEFT JOIN department ON cart.dept_id = department.dept_id
             WHERE cart.st_id = ? 
@@ -625,9 +622,8 @@ function selectTotalPriceMost($conn, $stock, $selectedMonth, $selectedYear)
 // ดึงข้อมูลสินค้าแยกตามแผนก และเรียงตามยอดรวมการเบิกมากที่แพงที่สุดขึ้นก่อน
 function selectTotalPriceMostByDept($conn, $stock, $selectedMonth, $selectedYear)
 {
-    $sql = "SELECT department.dept_name, product.prod_name, SUM(cart_detail.cart_amount) AS cart_amount, SUM(cart_detail.cart_amount * product.prod_price) AS total_value
+    $sql = "SELECT department.dept_name, cart_detail.prod_name, SUM(cart_detail.cart_amount) AS cart_amount, SUM(cart_detail.cart_amount * cart_detail.prod_price) AS total_value
             FROM cart_detail
-            LEFT JOIN product ON cart_detail.prod_id = product.prod_id
             LEFT JOIN cart ON cart_detail.cart_id = cart.cart_id
             LEFT JOIN department ON cart.dept_id = department.dept_id
             WHERE cart.st_id = ? 
@@ -635,7 +631,7 @@ function selectTotalPriceMostByDept($conn, $stock, $selectedMonth, $selectedYear
             AND cart.cart_status_id = 'A'
             AND MONTH(cart.cart_date) = ?
             AND YEAR(cart.cart_date) = ?
-            GROUP BY department.dept_name, product.prod_name
+            GROUP BY department.dept_name, cart_detail.prod_name
             ORDER BY total_value DESC 
             LIMIT 10";
 

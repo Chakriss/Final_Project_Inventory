@@ -37,7 +37,7 @@ if ($result_total_price_most->num_rows > 0) {
         $product_amounts[] = (int)$row['total_value'];
     }
 } else {
-    echo "No data found";
+    //echo "No data found";
 }
 
 // Initialize an array to hold department data

@@ -41,7 +41,7 @@ if ($result_popular_product->num_rows > 0) {
         $product_amounts[] = (int)$row['prod_amount']; // Add product amount (cast to integer) to the array
     }
 } else {
-    echo "No data found"; // Handle the case where no data is returned
+    //echo "No data found"; // Handle the case where no data is returned
 }
 
 $user_stock = $_SESSION["user_stock"];
