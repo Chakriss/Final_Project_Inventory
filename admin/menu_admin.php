@@ -47,7 +47,7 @@ if ($user_stock == 1) {
                         <li class="sidebar-title">Menu</li>
 
                         <li class="sidebar-item">
-                            <a href="admin_page.php" class='sidebar-link'> <i class="bi bi-grid-fill"></i> <span>Dashboard</span> </a>
+                            <a href="admin_page.php" class='sidebar-link'> <i class="bi bi-grid-fill"></i> <span>Home</span> </a>
                         </li>
 
                         <li class="sidebar-item">
