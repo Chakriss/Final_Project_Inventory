@@ -24,7 +24,6 @@ if (isset($_POST['id'])) {
     mysqli_stmt_fetch($stock_stmt);
     mysqli_stmt_close($stock_stmt);
 
-
     if ($amount > $available_stock) {
         $data_json = array("status" => "error", "message" => "Not enough stock available.");
         echo json_encode($data_json);
