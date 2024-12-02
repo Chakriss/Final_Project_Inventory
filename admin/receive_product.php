@@ -91,6 +91,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                                 <th style="text-align: center;">Photo</th>
                                                 <th style="text-align: center;">Name</th>
                                                 <th style="text-align: center;">Quantity</th>
+                                                <th style="text-align: center;">Price</th>
                                                 <th style="text-align: center;">ACTION</th>
                                             </tr>
                                         </thead>
@@ -103,7 +104,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                                 </td>
                                                 <td>
                                                     <!-- Dropdown for product selection -->
-                                                    <select class="form-select" name="products[0][product_id]" onchange="loadProductImage(this)">
+                                                    <select class="form-select"  id="prod_id_0" onchange="loadProductImage(this)">
                                                         <option value="" selected>Select Product</option>
                                                         <?php foreach ($productData as $product) : ?>
                                                             <option value="<?php echo $product['prod_id']; ?>"><?php echo $product['prod_name']; ?></option>
@@ -113,9 +114,15 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                                                 </td>
 
                                                 <td>
-                                                    <input type="number" class="form-control" id="amount" name="products[0][amount]" min="1" oninput="validity.valid||(value='');" placeholder="Enter Quantity / กรุณากรอกจำนวน">
+                                                    <input type="number" class="form-control" id="prod_amount_0"  min="1" oninput="validity.valid||(value='');" placeholder="Enter Quantity / กรุณากรอกจำนวน">
                                                     <div class="invalid-feedback" id="amountFeedback_0"></div>
                                                 </td>
+
+                                                <td>
+                                                    <input type="number" class="form-control" id="prod_price_0"  min="0" oninput="validity.valid||(value='');" placeholder="Enter Price / กรุณากรอกราคา">
+                                                    <div class="invalid-feedback" id="priceFeedback_0"></div>
+                                                </td>
+
                                                 <td align="center">
                                                     <button type="button" class="btn btn-danger" onclick="removeProduct(this)">Remove</button>
                                                 </td>
@@ -180,15 +187,20 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
             <img src="../photo/no_img.jpg" id="product_image_${productIndex}" alt="Product Image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10%; display: none;" onclick="expandImage('no_img.jpg')">
         </td>
         <td>
-            <select class="form-select" name="products[${productIndex}][product_id]" onchange="loadProductImage(this)">
+            <select class="form-select"  id="prod_id_${productIndex}" onchange="loadProductImage(this)">
                 ${options}
             </select>
             <div class="invalid-feedback" id="productFeedback_${productIndex}"></div>
         </td>
         <td>
-            <input type="number" class="form-control" name="products[${productIndex}][amount]" min="1" oninput="validity.valid||(value='');" placeholder="Enter Quantity / กรุณากรอกจำนวน">
-            <div class="invalid-feedback" id="productFeedback_${productIndex}"></div>
+            <input type="number" class="form-control" id="prod_amount_${productIndex}"  min="1" oninput="validity.valid||(value='');" placeholder="Enter Quantity / กรุณากรอกจำนวน">
+            <div class="invalid-feedback" id="amountFeedback_${productIndex}"></div>
         </td>
+        <td>
+            <input type="number" class="form-control" id="prod_price_${productIndex}"  min="0" oninput="validity.valid||(value='');" placeholder="Enter Price / กรุณากรอกราคา">
+            <div class="invalid-feedback" id="priceFeedback_${productIndex}"></div>
+        </td>
+
         <td align="center">
             <button type="button" class="btn btn-danger" onclick="removeProduct(this)">Remove</button>
         </td>
@@ -251,7 +263,7 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         function comfirmProduct() {
             event.preventDefault();
             let isValid = true;
-
+            let products = [];
             // Reset validation messages
             $('.invalid-feedback').text('');
             $('.form-control').removeClass('is-invalid');
@@ -266,29 +278,38 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
                 $('#timeFeedback').text("time is empty.");
                 isValid = false;
             }
-            // Gather all product data
-            let products = [];
-            $('#productTable tbody tr').each(function(index, row) {
-                let productId = $(row).find('select[name^="products"]').val();
-                let amount = $(row).find('input[name^="products"]').val();
+            // Loop through each product row
+            $('#productTable tbody tr').each(function(index) {
+                const productId = $(this).find(`#prod_id_${index}`);
+                const prodAmount = $(this).find(`#prod_amount_${index}`);
+                const prodPrice = $(this).find(`#prod_price_${index}`);
 
-                if (!productId) {
+                // Perform validation checks
+                if (productId.val() == "") {
+                    productId.addClass('is-invalid');
+                    $(this).find(`#productFeedback_${index}`).text("Product is empty.");
                     isValid = false;
-                    $(row).find('.form-select').addClass('is-invalid');
-                    $(row).find('.invalid-feedback').text('Please select a product.');
+                }
+                if (prodAmount.val() == "") {
+                    prodAmount.addClass('is-invalid');
+                    $(this).find(`#amountFeedback_${index}`).text("Quantity is empty.");
+                    isValid = false;
+                }
+                if (prodPrice.val() == "") {
+                    prodPrice.addClass('is-invalid');
+                    $(this).find(`#priceFeedback_${index}`).text("Price is empty.");
+                    isValid = false;
                 }
 
-                if (!amount || amount < 1) {
-                    isValid = false;
-                    $(row).find('input[name^="products"]').addClass('is-invalid');
-                    $(row).find('.invalid-feedback').text('Please enter a valid Quantity.');
-                }
+                // If all validations pass, gather product data
+                if (isValid) {
+                    let product = {
+                        product_id: productId.val(),
+                        amount: prodAmount.val(),
+                        price: prodPrice.val()
+                    };
 
-                if (productId && amount) {
-                    products.push({
-                        product_id: productId,
-                        amount: amount
-                    });
+                    products.push(product); // Store product data in the array
                 }
             });
 
@@ -335,17 +356,17 @@ if (isset($_SESSION["user_stock"]) && ($_SESSION["user_stock"] == 1 || $_SESSION
         }
 
         //ดึงวันที่และเวลา
-    $(document).ready(function() {
-        // Set the current date
-        var today = new Date().toISOString().split('T')[0];
-        $('#receive_date').val(today);
+        $(document).ready(function() {
+            // Set the current date
+            var today = new Date().toISOString().split('T')[0];
+            $('#receive_date').val(today);
 
-        // Set the current time
-        var now = new Date();
-        var hours = ('0' + now.getHours()).slice(-2);
-        var minutes = ('0' + now.getMinutes()).slice(-2);
-        $('#receive_time').val(hours + ':' + minutes);
-    });
+            // Set the current time
+            var now = new Date();
+            var hours = ('0' + now.getHours()).slice(-2);
+            var minutes = ('0' + now.getMinutes()).slice(-2);
+            $('#receive_time').val(hours + ':' + minutes);
+        });
     </script>
 
 <?php

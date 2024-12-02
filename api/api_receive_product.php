@@ -50,6 +50,7 @@ try {
         if (isset($product['product_id']) && isset($product['amount'])) {
             $product_id = intval($product['product_id']);
             $amount = intval($product['amount']);
+            $price = intval($product['price']);
 
             // Validate the inputs
             if ($product_id <= 0 || $amount <= 0) {
@@ -74,6 +75,15 @@ try {
                 throw new Exception("Failed to insert into receive_product_detail for product ID $product_id: " . mysqli_stmt_error($receive_detail_stmt));
             }
             mysqli_stmt_close($receive_detail_stmt);
+            
+            // Update product price in the product table
+            $update_price_sql = "UPDATE product SET prod_price = (prod_price + ?) / 2 WHERE prod_id = ?";
+            $update_price_stmt = mysqli_prepare($conn, $update_price_sql);
+            mysqli_stmt_bind_param($update_price_stmt, "ii", $price, $product_id);
+            if (!mysqli_stmt_execute($update_price_stmt)) {
+                throw new Exception("Failed to update product price for product ID $product_id: " . mysqli_stmt_error($update_price_stmt));
+            }
+            mysqli_stmt_close($update_price_stmt);
 
             // Update product amount in the product table
             $update_product_sql = "UPDATE product SET prod_amount = prod_amount + ? WHERE prod_id = ?";
